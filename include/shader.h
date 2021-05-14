@@ -35,7 +35,7 @@ public:
 	template<uniform_key_constraint T>
 	const T &get_uniform(const uniform_key_type &key) const {
 		auto iter = uniforms.find(key);
-		assert(iter->second() == uniforms.end());
+		assert(iter == uniforms.end());
 		return std::get<T>(iter->second);
 	}
 

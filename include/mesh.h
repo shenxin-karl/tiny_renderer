@@ -1,5 +1,6 @@
 #pragma once
 
+class FrameBuffer;
 struct Shader;
 using uint = unsigned int;
 

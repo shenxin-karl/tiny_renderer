@@ -1,5 +1,7 @@
 #pragma once
 
+class FrameBuffer;
+
 class Model {
 	std::vector<Mesh> meshs;
 	std::string		  directory;
@@ -11,7 +13,7 @@ public:
 	Model &operator=(Model &&) noexcept = default;
 	~Model() = default;
 
-	void draw(Shader &shader);
+	void draw(FrameBuffer &frame, Shader &shader);
 
 	static Model load_obj(const std::string &path);
 private:
