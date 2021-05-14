@@ -1,6 +1,6 @@
 #pragma once
 
-class Shader;
+struct Shader;
 using uint = unsigned int;
 
 
@@ -10,17 +10,23 @@ struct Vertex {
 	vec2	texcoords;
 };
 
-//struct Texture {
-//	std::string var;
-//	Image2D		data;
-//};
+struct Texture {
+	std::string		var;		// 变量名
+	Texture2d		texture;	// 纹理对象
+public:
+	Texture(const std::string &_var, const std::string &_path);
+	Texture(const Texture &) = default;
+	Texture(Texture &&) noexcept = default;
+	Texture &operator=(const Texture &) = default;
+};
 
 class Mesh {
-	std::vector<Vertex>	vertices;
-	std::vector<uint>	indices;
+	std::vector<Vertex>		vertices;
+	std::vector<uint>		indices;
+	std::vector<Texture>	textures;
 public:
-	Mesh(std::vector<Vertex> &&_vertices, std::vector<uint> &&_indices);
-	Mesh(Mesh &&) = default;
+	Mesh(std::vector<Vertex> &&_vertices, std::vector<uint> &&_indices, std::vector<Texture> &&_textures);
+	Mesh(Mesh &&) noexcept = default;
 	Mesh(const Mesh &) = delete;
 	void draw(Shader &shader);
 	~Mesh() = default;
