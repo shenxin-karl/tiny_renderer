@@ -70,11 +70,11 @@ public:
     }
 
     friend constexpr Matrix operator*(const Matrix &lhs, const Matrix &rhs) noexcept {
-        constexpr auto calc_value = [&](size_t i) {
-            int row = i / N;
-            int col = i % N;
+        auto calc_value = [&](size_t i) {
+            size_t row = i / N;
+            size_t col = i % N;
             auto sum = T{};
-            for (int i = 0; i < N; ++i)
+            for (size_t i = 0; i < N; ++i)
                 sum += (lhs.data[row][i] * rhs.data[i][col]);
             return sum;
         };
@@ -82,7 +82,7 @@ public:
         return { calc_value(I)... };
     }
     
-    friend vec<T, N> operator*(const Matrix &mat, const vec<T, N> &v) {
+    friend vec<T, N> operator*(const Matrix &mat, const vec<T, N> &v) noexcept {
         vec<T, N> res;
         for (int row = 0; row < N; ++row) {
             auto sum = T{};
@@ -104,7 +104,7 @@ private:
 };
 
 template<typename T, size_t N, size_t...I>
-std::ostream &operator<<(std::ostream &os, const Matrix<T, N, std::index_sequence<I...>> &mat) noexcept {
+inline std::ostream &operator<<(std::ostream &os, const Matrix<T, N, std::index_sequence<I...>> &mat) noexcept {
     for (auto &row : mat.data) {
         for (T f : row) 
             os << f << " ";

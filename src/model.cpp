@@ -12,6 +12,11 @@ Model::Model(const std::string &path) {
 	process_node(scene->mRootNode, scene);
 }
 
+void Model::draw(Shader &shader) {
+	for (Mesh &mesh : meshs)
+		mesh.draw(shader);
+}
+
 Model Model::load_obj(const std::string &path) {
 	std::ifstream file(path, std::ios::in);
 	if (!file.is_open())

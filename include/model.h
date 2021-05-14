@@ -11,6 +11,8 @@ public:
 	Model &operator=(Model &&) noexcept = default;
 	~Model() = default;
 
+	void draw(Shader &shader);
+
 	static Model load_obj(const std::string &path);
 private:
 	Model() = default;

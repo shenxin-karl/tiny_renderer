@@ -10,8 +10,8 @@ concept uniform_key_constraint = requires {
 
 struct Shader {
 	virtual ~Shader() = default;
-	virtual vec4 vertex() = 0;
-	virtual bool fragment(const std::array<Vertex, 3> &vertice, vec3 &color) = 0;
+	virtual vec4 vertex(const Vertex &vertex) = 0;
+	virtual bool fragment(std::array<Vertex &, 3> &vertices, vec3 &color) = 0;
 
 	template<typename T>
 	inline T interp(const T &v1, const T &v2, const T &v3) const noexcept {

@@ -58,7 +58,7 @@ public:
 
     using VecBase<T, N, std::make_index_sequence<N>>::VecBase;
 
-    constexpr const T &operator[](size_t i) const {
+    constexpr const T &operator[](size_t i) const noexcept {
         return data[i];
     }
 
@@ -257,23 +257,23 @@ private:
     }
 };
 
-template<typename T, size_t N>
-T length(const vec<T, N> &v) noexcept {
+template<typename T, size_t N, typename Seq>
+inline T length(const vec<T, N, Seq> &v) noexcept {
     return v.length();
 }
 
-template<typename T, size_t N>
-vec<T, N> normalized(const vec<T, N> &v) noexcept {
+template<typename T, size_t N, typename Seq>
+inline vec<T, N> normalized(const vec<T, N, Seq> &v) noexcept {
     return v.normalized();
 } 
 
 template<typename T>
-vec<T, 3> cross(const vec<T, 3> &lhs, const vec<T, 3> &rhs) noexcept {
+inline vec<T, 3> cross(const vec<T, 3> &lhs, const vec<T, 3> &rhs) noexcept {
     return lhs.cross(rhs);
 }
 
 template<typename T, size_t N>
-T dot(const vec<T, N> &lhs, const vec<T, N> &rhs) {
+inline T dot(const vec<T, N> &lhs, const vec<T, N> &rhs) {
     return lhs.dot(rhs);
 }
 
@@ -283,14 +283,14 @@ using vec4 = vec<float, 4>;
 
 
 template<typename T, size_t N, typename Seq>
-std::ostream &operator<<(std::ostream &os, const vec<T, N, Seq> &v) {
+inline std::ostream &operator<<(std::ostream &os, const vec<T, N, Seq> &v) {
     for (const auto &f : v) 
         os << f << " ";
     return os;
 }
 
 template<typename T, size_t N, typename Seq>
-std::istream &operator>>(std::istream &is, vec<T, N, Seq> &v) {
+inline std::istream &operator>>(std::istream &is, vec<T, N, Seq> &v) {
     for (auto &f : v)
         is >> f;
     return is;
