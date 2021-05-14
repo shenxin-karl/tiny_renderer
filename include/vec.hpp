@@ -73,6 +73,11 @@ public:
     }
 
     template<size_t UN>
+    constexpr const vec<T, UN> &head() const noexcept {
+        return this->operator const vec<T, UN>();
+    }
+
+    template<size_t UN>
     vec &operator=(const vec<T, UN> &other) noexcept {
         static_assert(UN >= N);        
         std::memcpy(data, other.data, sizeof(data));
@@ -110,7 +115,7 @@ public:
     }
 
     vec cross(const vec &other) const noexcept {
-        static_assert(N == 3);
+        static_assert(N == 3, "cross only vec3 use");
         return {
             y() * other.z() - z() * other.y(),
             z() * other.x() - x() * other.z(),
@@ -272,16 +277,21 @@ T dot(const vec<T, N> &lhs, const vec<T, N> &rhs) {
     return lhs.dot(rhs);
 }
 
-using vec2i = vec<int, 2>;
 using vec2 = vec<float, 2>;
 using vec3 = vec<float, 3>;
 using vec4 = vec<float, 4>;
 
 
-template<typename T, size_t N>
-std::ostream &operator<<(std::ostream &out, const vec<T, N> &v) {
-    for (const auto &f : v) {
-        out << f << std::endl;
-    }
-    return out;
+template<typename T, size_t N, typename Seq>
+std::ostream &operator<<(std::ostream &os, const vec<T, N, Seq> &v) {
+    for (const auto &f : v) 
+        os << f << " ";
+    return os;
+}
+
+template<typename T, size_t N, typename Seq>
+std::istream &operator>>(std::istream &is, vec<T, N, Seq> &v) {
+    for (auto &f : v)
+        is >> f;
+    return is;
 }
