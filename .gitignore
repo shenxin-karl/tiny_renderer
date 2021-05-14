@@ -2,3 +2,6 @@
 gitignore
 CMakeSettings.json
 /.vs
+/stb
+/assimp
+.gitignore
