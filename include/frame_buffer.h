@@ -27,6 +27,7 @@ public:
 	void resize(int _width, int _height);
 	void clear(FrameBufferType type);
 	void clear_color(const vec3 &color);
+	void save(const std::string &path, FrameBufferType flag) const;
 	~FrameBuffer() = default;
 	friend class Window;
 };

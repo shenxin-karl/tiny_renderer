@@ -13,7 +13,7 @@ void FrameBuffer::set_color(const vec3 &point, const vec3 &color) {
 	if (x < 0 || x >= width || y < 0 || y >= height)
 		return;
 #endif
-	int index = (y * height) + x;
+	int index = (y * width) + x;
 	if (point.z() < depth_buffer[index]) {
 		depth_buffer[index] = point.z();
 		frame_buffer[index] = color;
@@ -39,4 +39,31 @@ void FrameBuffer::clear(FrameBufferType type) {
 
 void FrameBuffer::clear_color(const vec3 &color) {
 	fill_color = color;
+}
+
+void FrameBuffer::save(const std::string &path, FrameBufferType flag) const {
+	auto save_frame = [&]() {
+		if (!(flag & FrameBufferType::ColorBuffer)) 
+			return;
+
+		std::string file_name = path + ".frame.ppm";
+		std::fstream stream(file_name, std::ios::binary | std::ios::out);
+		if (!stream.is_open()) {
+			std::cout << "failed open " << file_name << std::endl;
+			return;
+		}
+		
+		int index = 0;
+		stream << "P6\n" << width << " " << height << "\n255\n";
+		for (int x = 0; x < width; ++x) {
+			for (int y = height-1; y >= 0; --y) {
+				const vec3 &vec = frame_buffer[index++];
+				stream << static_cast<unsigned char>(vec.r() * 255)
+					   << static_cast<unsigned char>(vec.g() * 255)
+					   << static_cast<unsigned char>(vec.b() * 255);
+			}
+		}
+		stream.close();
+	};
+	save_frame();
 }
