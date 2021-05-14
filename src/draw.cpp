@@ -32,13 +32,13 @@ void Draw::line(FrameBuffer &frame, const vec3 &start, const vec3 &last, const v
 }
 
 // Vertex 的所有属性都是除 w 的. 在 Shader::fragment 函数里面 透视矫正插值
-void Draw::triangle(FrameBuffer &frame, Shader &shader, std::array<Vertex &, 3> vertice) {
+void Draw::triangle(FrameBuffer &frame, Shader &shader, std::array<Vertex *, 3> vertice) {
 	vec2 bboxmin(std::numeric_limits<float>::max());
 	vec2 bboxmax(std::numeric_limits<float>::min());
-	for (const Vertex &vertex : vertice) {
+	for (const Vertex *vertex_ptr : vertice) {
 		for (int i = 0; i < 2; ++i) {
-			bboxmin[i] = std::min(bboxmin[i], vertex.position[i]);
-			bboxmax[i] = std::max(bboxmax[i], vertex.position[i]);
+			bboxmin[i] = std::min(bboxmin[i], vertex_ptr->position[i]);
+			bboxmax[i] = std::max(bboxmax[i], vertex_ptr->position[i]);
 		}
 	}
 
@@ -49,9 +49,9 @@ void Draw::triangle(FrameBuffer &frame, Shader &shader, std::array<Vertex &, 3> 
 	int maxy = static_cast<int>(std::floor(bboxmax.y()));
 	for (int x = minx; x < maxx; ++x) {
 		for (int y = miny; y < maxy; ++y) {
-			const vec3 &v1 = vertice[0].position;
-			const vec3 &v2 = vertice[1].position;
-			const vec3 &v3 = vertice[2].position;
+			const vec3 &v1 = vertice[0]->position;
+			const vec3 &v2 = vertice[1]->position;
+			const vec3 &v3 = vertice[2]->position;
 			vec3 coords = barycentric_coord(vec2(float(x), float(y)), v1, v2, v3);
 			if (coords[0] < 0.f || coords[1] < 0.f || coords[2] < 0.f)
 				continue;

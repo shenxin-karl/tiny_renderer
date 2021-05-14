@@ -132,18 +132,17 @@ std::vector<Texture> Model::load_material_texture(aiMaterial *mat, aiTextureType
 		aiString str;
 		mat->GetTexture(type, int(i), &str);
 		std::string path = directory + '/' + str.C_Str();
-		Texture texture(name, path);
+		Texture texture = { name, load_texture(path) };
 		textures.emplace_back(std::move(texture));
 	}
 	return textures;
 }
 
 Texture2d Model::load_texture(const std::string &path) {
-	std::string file_path = directory = directory + path;
-	if (auto iter = texture_cache.find(file_path); iter != texture_cache.end())
+	if (auto iter = texture_cache.find(path); iter != texture_cache.end())
 		return iter->second;
 	
-	Texture2d new_texture(file_path);
-	texture_cache.insert(std::make_pair(file_path, new_texture));
+	Texture2d new_texture(path);
+	texture_cache.insert(std::make_pair(path, new_texture));
 	return new_texture;
 }

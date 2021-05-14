@@ -11,7 +11,7 @@ concept uniform_key_constraint = requires {
 struct Shader {
 	virtual ~Shader() = default;
 	virtual vec4 vertex(const Vertex &vertex) = 0;
-	virtual bool fragment(std::array<Vertex &, 3> &vertices, vec3 &color) = 0;
+	virtual bool fragment(std::array<Vertex *, 3> &vertices, vec3 &color) = 0;
 
 	template<typename T>
 	inline T interp(const T &v1, const T &v2, const T &v3) const noexcept {
@@ -34,7 +34,9 @@ private:
 public:
 	template<uniform_key_constraint T>
 	const T &get_uniform(const uniform_key_type &key) const {
-		return std::get<T>(uniforms.find(key)->second);
+		auto iter = uniforms.find(key);
+		assert(iter->second() == uniforms.end());
+		return std::get<T>(iter->second);
 	}
 
 	template<uniform_key_constraint T>

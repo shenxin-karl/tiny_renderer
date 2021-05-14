@@ -15,6 +15,7 @@ struct Texture {
 	Texture2d		texture;	// ÎÆÀí¶ÔÏó
 public:
 	Texture(const std::string &_var, const std::string &_path);
+	Texture(const std::string &_var, const Texture2d &_texture);
 	Texture(const Texture &) = default;
 	Texture(Texture &&) noexcept = default;
 	Texture &operator=(const Texture &) = default;

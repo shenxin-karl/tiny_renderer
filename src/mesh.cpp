@@ -5,6 +5,12 @@ Texture::Texture(const std::string &_var, const std::string &_path)
 
 }
 
+
+Texture::Texture(const std::string &_var, const Texture2d &_texture) 
+: var(_var), texture(_texture) {
+
+}
+
 Mesh::Mesh(std::vector<Vertex> &&_vertices, std::vector<uint> &&_indices, std::vector<Texture> &&_textures)
 : vertices(std::move(_vertices)), indices(std::move(_indices))
 , textures(std::move(_textures)) {
@@ -41,11 +47,11 @@ void Mesh::process_triangle(FrameBuffer &frame, Shader &shader, std::array<int, 
 		out_indices.push_back(i);
 	}
 
-	for (int i = 0; i < indices.size(); i += 3) {
+	for (int i = 0; i < out_indices.size(); i += 3) {
 		Draw::triangle(frame, shader, {
-			out_vertices[i],
-			out_vertices[i+1],
-			out_vertices[i+2],
+			&out_vertices[i],
+			&out_vertices[i+1],
+			&out_vertices[i+2],
 		});
 	}
 }
