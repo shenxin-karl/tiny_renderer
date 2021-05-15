@@ -12,13 +12,14 @@ add_executable(tiny_renderer
 	"include/mesh.h"			"src/mesh.cpp"
 	"include/model.h"			"src/model.cpp"
 	"include/texture2d.h"		"src/texture2d.cpp"
-	"include/shader.h"			
+	"shader/shader.h"			
  )
 
 target_include_directories(tiny_renderer PUBLIC
 	${PROJECT_SOURCE_DIR}/include
 	${PROJECT_SOURCE_DIR}/assimp/include
 	${PROJECT_SOURCE_DIR}/stb/include
+	${PROJECT_SOURCE_DIR}/shader
 )
 
 target_link_directories(tiny_renderer PUBLIC

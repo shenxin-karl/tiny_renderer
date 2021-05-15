@@ -10,14 +10,14 @@ concept uniform_key_constraint = requires {
 
 struct Shader {
 	virtual ~Shader() = default;
-	virtual vec4 vertex(const Vertex &vertex) = 0;
+	virtual vec4 vertex(const Vertex &vertex, int idx) = 0;
 	virtual bool fragment(std::array<Vertex *, 3> &vertices, vec3 &color) = 0;
 
 	template<typename T>
 	inline T interp(const T &v1, const T &v2, const T &v3) const noexcept {
-		T res1 = v1 * coords[0] * vertex_w[0];
-		T res2 = v2 * coords[1] * vertex_w[1];
-		T res3 = v3 * coords[2] * vertex_w[2];
+		T res1 = v1 * coords[0] / vertex_w[0];
+		T res2 = v2 * coords[1] / vertex_w[1];
+		T res3 = v3 * coords[2] / vertex_w[2];
 		return res1 + res2 + res3;
 	}
 public:
