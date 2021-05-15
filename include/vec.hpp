@@ -50,36 +50,33 @@ public:
     constexpr vec(vec &&) noexcept = default;
     constexpr vec &operator=(const vec &) = default;
 
-    template<size_t UN>
+    template<size_t UN> 
     constexpr vec(const vec<T, UN> &other) noexcept {
-        static_assert(UN >= N, "VEC is too low");
+        static_assert(UN >= N, "vec copy constructor: other vec too low!");
         *this = other;
     }
 
     using VecBase<T, N, std::make_index_sequence<N>>::VecBase;
 
     constexpr const T &operator[](size_t i) const noexcept {
+        assert(i < N);
         return data[i];
     }
 
     constexpr T &operator[](size_t i) {
-        return data[i];
+		assert(i < N);
+		return data[i];
     }
 
-    template<size_t UN>
-    constexpr explicit operator const vec<T, UN> &() const noexcept {
-        static_assert(UN < N && UN != 0);
-        return reinterpret_cast<const vec<T, UN> &>(*this);
-    }
-
-    template<size_t UN>
+    template<size_t UN> 
     constexpr const vec<T, UN> &head() const noexcept {
+        static_assert(UN <= N, "vec head: out of range!");
         return this->operator const vec<T, UN>();
     }
 
-    template<size_t UN>
+    template<size_t UN> 
     vec &operator=(const vec<T, UN> &other) noexcept {
-        static_assert(UN >= N);        
+        static_assert(UN >= N, "vec &operator=: other vec too low!");
         std::memcpy(data, other.data, sizeof(data));
         return *this;
     }
@@ -255,6 +252,11 @@ private:
             data[i] = OPF()(data[i], f);
         return *this;
     }
+
+	template<size_t UN>
+	constexpr explicit operator const vec<T, UN> &() const noexcept {
+		return reinterpret_cast<const vec<T, UN> &>(*this);
+	}
 };
 
 template<typename T, size_t N, typename Seq>

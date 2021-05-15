@@ -24,7 +24,7 @@ Model Model::load_obj(const std::string &path) {
 
 	std::vector<Vertex> vertices;
 	std::vector<uint> indices;
-	std::vector<vec3> all_vertices;
+	std::vector<vec4> all_vertices;
 	std::vector<vec3> all_normal;
 	std::vector<vec2> all_texcoords;
 
@@ -34,8 +34,9 @@ Model Model::load_obj(const std::string &path) {
 		std::stringstream isbuf(line);
 		char c_trash;
 		if (line.compare(0, 2, "v ") == 0) {				// 加载顶点
-			vec3 vertex;
+			vec4 vertex;
 			isbuf >> c_trash >> vertex;
+			vertex.w() = 1.0f;
 			all_vertices.emplace_back(std::move(vertex));
 
 		} else if (line.compare(0, 2, "vn") == 0) {			// 加载法线
@@ -87,6 +88,7 @@ Mesh Model::process_mesh(aiMesh *mesh, const aiScene *scene) {
 		vertex.position.x() = mesh->mVertices[i].x;
 		vertex.position.y() = mesh->mVertices[i].y;
 		vertex.position.z() = mesh->mVertices[i].z;
+		vertex.position.w() = 1.f;
 		vertex.normal.x() = mesh->mNormals[i].x;
 		vertex.normal.y() = mesh->mNormals[i].y;
 		vertex.normal.z() = mesh->mNormals[i].z;

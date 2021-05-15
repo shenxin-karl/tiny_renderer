@@ -6,7 +6,7 @@ using uint = unsigned int;
 
 
 struct Vertex {
-	vec3	position;
+	vec4	position;
 	vec3	normal;
 	vec2	texcoords;
 };

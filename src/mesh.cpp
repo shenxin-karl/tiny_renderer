@@ -28,7 +28,7 @@ void Mesh::process_triangle(FrameBuffer &frame, Shader &shader, std::array<int, 
 	for (int i = 0; i < 3; ++i) {
 		int index = our_indices[i];
 		const Vertex &vertex = vertices[index];
-		vertex_res[i] = shader.vertex(vertex);
+		vertex_res[i] = shader.vertex(vertex, i);
 	}
 
 	std::vector<Vertex> out_vertices;
@@ -40,7 +40,7 @@ void Mesh::process_triangle(FrameBuffer &frame, Shader &shader, std::array<int, 
 		vec4 &point = vertex_res[i];
 		const Vertex &vertex = vertices[i];
 		out_vertices.push_back(Vertex {
-			vec3(point.x(), point.y(), point.z()),
+			vec4(point.x(), point.y(), point.z()),
 			vertex.normal,
 			vertex.texcoords,
 		});
