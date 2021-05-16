@@ -19,14 +19,16 @@ vec3 Texture2d::texture(vec2 texcoord) const {
 }
 
 vec3 Texture2d::texture(float s, float t) const {
-	int index = int(s * width * 3) + int(t * height * 3);
 	unsigned char *image_data = data.get();
 #ifdef _DEBUG
 	if (image_data == nullptr) {
-		std::cerr << "texture: image_data is nullptr" << std::endl;
+		std::cerr << texture_name << " texture: image_data is nullptr" << std::endl;
 		return vec3(0);
 	}
 #endif // _DEBUG
+	int y = static_cast<int>(std::round(t * height));
+	int x = static_cast<int>(std::round(s * width));
+	int index = y * width * channel + x * channel;
 	return vec3 {
 		image_data[index]	/ 255.f,
 		image_data[index+1] / 255.f,

@@ -5,6 +5,7 @@ std::pair<std::string_view, std::function<bool(void)>> Test::test_func[]{
 	DECLARE_TEST_FUNC(test_barycentric_coord),
 	DECLARE_TEST_FUNC(test_viewport),
 	DECLARE_TEST_FUNC(test_view),
+	DECLARE_TEST_FUNC(test_texture2d),
 };
 #undef DECLARE_TEST_FUNC
 
@@ -78,6 +79,27 @@ bool Test::test_view() {
 	res = view * point;
 	if (res.x() != 1 && res.y() != 1 && res.z() != 0 && res.w() != 1)
 		return false;
+	return true;
+}
+
+bool Test::test_texture2d() {
+	return true;
+
+
+	int width = 1024;
+	int height = 1024;
+	Texture2d texture("test/test_texture_resource.png");
+	FrameBuffer frame(width, height);
+	frame.clear_color(vec3(0, 1, 0));
+	frame.clear(FrameBufferType::ColorBuffer);
+	for (int y = 0; y < height; ++y) {
+		for (int x = 0; x < width; ++x) {
+			vec2 texcoord = { float(x) / width, float(y) / height };
+			vec3 color = texture.texture(texcoord);
+			frame.set_color(vec3(x, y, 0), color);
+		}
+	}
+	frame.save("test_texture2d", FrameBufferType::ColorBuffer);
 	return true;
 }
 
