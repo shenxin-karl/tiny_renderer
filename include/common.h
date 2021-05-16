@@ -16,6 +16,7 @@
 #include <string_view>
 #include <tuple>
 #include <variant>
+#include <random>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>

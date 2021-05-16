@@ -20,13 +20,22 @@ struct Shader {
 		T res3 = v3 * coords[2];
 		return (res1 + res2 + res3) / inverse_z;
 	}
-public:
+
+	void set_model(const mat4 &_model);
+	void set_view(const mat4 &_view);
+	void set_projection(const mat4 &_projection);
+	void set_viewport(const mat4 &_viewport);
+	void set_coords(const vec3 &_coords);
+	void set_inverse_z(float _inverse_z);
+protected:
+	void update_mvp();
 	vec3 coords;		// 重心坐标
 	mat4 view;			
 	mat4 projection;	
 	mat4 model;		
 	mat4 viewport;
-	float inverse_z;	// z 倒数
+	mat4 mvp;
+	float inverse_z = 1.f;	// z 倒数
 private:
 	using uniform_key_type = std::string;
 	using uniform_value_type = std::variant<bool, int, float, vec2, vec3, vec4, mat2, mat3, mat4, Texture2d>;

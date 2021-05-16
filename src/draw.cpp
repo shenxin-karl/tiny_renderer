@@ -46,8 +46,8 @@ void Draw::triangle(FrameBuffer &frame, Shader &shader, std::array<Vertex *, 3> 
 	int miny = static_cast<int>(std::ceil(bboxmin.y()));
 	int maxx = static_cast<int>(std::floor(bboxmax.x()));
 	int maxy = static_cast<int>(std::floor(bboxmax.y()));
-	for (int x = minx; x < maxx; ++x) {
-		for (int y = miny; y < maxy; ++y) {
+	for (int x = minx; x <= maxx; ++x) {
+		for (int y = miny; y <= maxy; ++y) {
 			const vec3 &v1 = vertice[0]->position;
 			const vec3 &v2 = vertice[1]->position;
 			const vec3 &v3 = vertice[2]->position;
@@ -61,9 +61,8 @@ void Draw::triangle(FrameBuffer &frame, Shader &shader, std::array<Vertex *, 3> 
 			float depth = (z1 + z2 + z3);
 
 			vec3 color;
-			shader.coords = coords;
+			shader.set_coords(coords);
 			if (shader.fragment(vertice, color)) {
-
 				frame.set_color(vec3(float(x), float(y), depth), color);
 			}
 		}
@@ -93,6 +92,14 @@ vec3 Draw::barycentric_coord(vec2 point, const vec3 &v1, const vec3 &v2, const v
 
 float Draw::radians(float angle) {
 	return angle / 180.f * M_PI;
+}
+
+
+float Draw::random() noexcept {
+	static std::random_device rd;
+	static std::mt19937 gen(rd());
+	static std::uniform_real_distribution<float> dis(0.f, 1.f);
+	return dis(gen);
 }
 
 mat4 Draw::viewport(int width, int height) {

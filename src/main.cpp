@@ -4,7 +4,7 @@
 void init();
 
 namespace gvar {
-	constexpr int width = 800;
+	constexpr int width = 600;
 	constexpr int height = 600;
 	constexpr int frame_size = width * height;
 }
@@ -12,21 +12,25 @@ namespace gvar {
 
 int main(void) {
 	init();
+	Window window(gvar::width, gvar::height, "test");
 	Model our_model = Model::load_obj("resources/obj/african_head.obj");
 	FrameBuffer frame(gvar::width, gvar::height);
-	frame.clear_color(vec3(0, 0, 0));
-	frame.clear(FrameBufferType::ColorBuffer);
+
 
 	LightShader light_shader;
-	light_shader.set_uniform("light_dir", normalized(vec3(2, 2, 2)));
-	light_shader.view = Draw::view(vec3(0, 0, 2), vec3(0, 1, 0), vec3(0));
-	light_shader.viewport = Draw::viewport(gvar::width, gvar::height);
-	our_model.draw(frame, light_shader);
-	Window window(gvar::width, gvar::height, "test");
+	light_shader.set_uniform("light_dir", normalized(vec3(0, 0, 2)));
+	light_shader.set_view(Draw::view(vec3(0, 0, 2), vec3(0, 1, 0), vec3(0)));
+	light_shader.set_viewport(Draw::viewport(gvar::width, gvar::height));
+	Texture2d diffuse_texture("resources/obj/african_head_diffuse.tga");
+	light_shader.set_uniform("diffuse_texture", diffuse_texture);
+
 	while (!window.window_should_be_close()) {
-		window.poll_event();
+		window.poll_event();	
+		//frame.clear_color(vec3(0, 0, 0));
+		//frame.clear(FrameBufferType::ColorBuffer);
+		our_model.draw(frame, light_shader);
 		window.draw(frame);
-		std::this_thread::sleep_for(std::chrono::milliseconds(20));
+		//std::this_thread::sleep_for(std::chrono::milliseconds(20));
 	}
 	std::system("pause");
 	return 0;

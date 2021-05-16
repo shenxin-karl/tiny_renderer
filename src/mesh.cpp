@@ -24,28 +24,21 @@ void Mesh::draw(FrameBuffer &frame, Shader &shader) const {
 }
 
 void Mesh::process_triangle(FrameBuffer &frame, Shader &shader, std::array<int, 3> our_indices) const {
-	std::array<vec4, 3> vertex_res;
+	std::vector<Vertex> out_vertices;
+	out_vertices.reserve(5);
+	std::vector<uint>	out_indices;
 	for (int i = 0; i < 3; ++i) {
 		int index = our_indices[i];
 		const Vertex &vertex = vertices[index];
-		vertex_res[i] = shader.vertex(vertex, i);
-	}
-
-	std::vector<Vertex> out_vertices;
-	std::vector<uint>	out_indices;
-	out_vertices.reserve(5);
-	// TODO Æë´Î²Ã¼ô
-
-	for (int i = 0; i < 3; ++i) {
-		vec4 &point = vertex_res[i];
-		const Vertex &vertex = vertices[i];
-		out_vertices.push_back(Vertex {
-			vertex.position,
+		vec4 point = shader.vertex(vertex, i);
+		out_vertices.push_back(Vertex{
+			point,
 			vertex.normal,
-			vertex.texcoords,
+			vertex.texcoords
 		});
 		out_indices.push_back(i);
 	}
+
 
 	int limit = static_cast<int>(out_indices.size()) - 2;
 	for (int i = 0; i < limit; i += 3) {
