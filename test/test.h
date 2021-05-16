@@ -7,4 +7,5 @@ public:
 public:
 	static bool test_barycentric_coord();
 	static bool test_viewport();
+	static bool test_view();
 };

@@ -4,6 +4,7 @@
 std::pair<std::string_view, std::function<bool(void)>> Test::test_func[]{
 	DECLARE_TEST_FUNC(test_barycentric_coord),
 	DECLARE_TEST_FUNC(test_viewport),
+	DECLARE_TEST_FUNC(test_view),
 };
 #undef DECLARE_TEST_FUNC
 
@@ -62,3 +63,21 @@ bool Test::test_viewport() {
 		return false;
 	return true;
 }
+
+bool Test::test_view() {
+	vec3 look_from = { 2, 2, 0 };
+	vec3 look_up = { 0, 1, 0 };
+	vec3 look_at = { 0, 0, 0 };
+	auto view = Draw::view(look_from, look_up, look_at);
+	auto point = vec4(look_from, 1.f);
+	auto res = view * point;
+	if (res.x() != 0 && res.y() != 0 && res.z() != 0 && res.w() != 1)
+		return false;
+
+	point = { 1, 1, 0, 1 };
+	res = view * point;
+	if (res.x() != 1 && res.y() != 1 && res.z() != 0 && res.w() != 1)
+		return false;
+	return true;
+}
+

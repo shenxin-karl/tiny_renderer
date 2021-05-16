@@ -81,7 +81,7 @@ public:
 
         return { calc_value(I)... };
     }
-    
+
     friend vec<T, N> operator*(const Matrix &mat, const vec<T, N> &v) noexcept {
         vec<T, N> res;
         for (int row = 0; row < N; ++row) {
@@ -105,8 +105,8 @@ private:
 
 template<typename T, size_t N, size_t...I>
 inline std::ostream &operator<<(std::ostream &os, const Matrix<T, N, std::index_sequence<I...>> &mat) noexcept {
-    for (auto &row : mat.data) {
-        for (T f : row) 
+    for (const auto &row : mat.data) {
+        for (const T &f : row) 
             os << f << " ";
         os << std::endl;
     }

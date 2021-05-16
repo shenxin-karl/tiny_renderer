@@ -40,14 +40,15 @@ void Mesh::process_triangle(FrameBuffer &frame, Shader &shader, std::array<int, 
 		vec4 &point = vertex_res[i];
 		const Vertex &vertex = vertices[i];
 		out_vertices.push_back(Vertex {
-			vec4(point.x(), point.y(), point.z()),
+			vertex.position,
 			vertex.normal,
 			vertex.texcoords,
 		});
 		out_indices.push_back(i);
 	}
 
-	for (int i = 0; i < out_indices.size(); i += 3) {
+	int limit = static_cast<int>(out_indices.size()) - 2;
+	for (int i = 0; i < limit; i += 3) {
 		Draw::triangle(frame, shader, {
 			&out_vertices[i],
 			&out_vertices[i+1],

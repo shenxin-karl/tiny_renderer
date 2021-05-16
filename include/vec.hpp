@@ -24,10 +24,6 @@ public:
     constexpr VecBaseImpl(const vec<T, NV> &v, identity_t<T, I2>... scalar) noexcept {
         new (static_cast<vec<T, N> *>(this)->data) T[N]{ v[I1]..., decltype(I2, T{})(scalar)... };
     }
-
-    constexpr VecBaseImpl(identity_t<T, I2>... scalar) noexcept {
-        new (static_cast<vec<T, N> *>(this)->data) T[N]{ decltype(I2, T{})(scalar)... };
-    }
 };
 
 template<typename T, size_t N, typename Seq>
