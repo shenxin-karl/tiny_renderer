@@ -13,13 +13,16 @@ add_executable(tiny_renderer
 	"include/model.h"			"src/model.cpp"
 	"include/texture2d.h"		"src/texture2d.cpp"
 	"shader/shader.h"			
- )
+	"shader/LightShader.h"		"shader/LightShader.cpp"
+	"test/test.h"				"test/test.cpp"
+)
 
 target_include_directories(tiny_renderer PUBLIC
 	${PROJECT_SOURCE_DIR}/include
 	${PROJECT_SOURCE_DIR}/assimp/include
 	${PROJECT_SOURCE_DIR}/stb/include
 	${PROJECT_SOURCE_DIR}/shader
+	${PROJECT_SOURCE_DIR}/test
 )
 
 target_link_directories(tiny_renderer PUBLIC

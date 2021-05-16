@@ -30,6 +30,8 @@
 #include "vec.hpp"
 #include "matrix.hpp"
 
+#include "test.h"
+
 #include "texture2d.h"
 #include "mesh.h"
 #include "shader.h"
@@ -37,3 +39,4 @@
 #include "frame_buffer.h"
 #include "draw.h"
 #include "model.h"
+#include "LightShader.h"

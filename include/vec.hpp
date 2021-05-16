@@ -50,8 +50,8 @@ public:
     constexpr vec(vec &&) noexcept = default;
     constexpr vec &operator=(const vec &) = default;
 
-    template<size_t UN> 
-    constexpr vec(const vec<T, UN> &other) noexcept {
+    template<size_t UN, typename USeq> 
+    constexpr vec(const vec<T, UN, USeq> &other) noexcept {
         static_assert(UN >= N, "vec copy constructor: other vec too low!");
         *this = other;
     }
@@ -74,8 +74,8 @@ public:
         return this->operator const vec<T, UN>();
     }
 
-    template<size_t UN> 
-    vec &operator=(const vec<T, UN> &other) noexcept {
+    template<size_t UN, typename USeq> 
+    vec &operator=(const vec<T, UN, USeq> &other) noexcept {
         static_assert(UN >= N, "vec &operator=: other vec too low!");
         std::memcpy(data, other.data, sizeof(data));
         return *this;
@@ -274,8 +274,8 @@ inline vec<T, 3> cross(const vec<T, 3> &lhs, const vec<T, 3> &rhs) noexcept {
     return lhs.cross(rhs);
 }
 
-template<typename T, size_t N>
-inline T dot(const vec<T, N> &lhs, const vec<T, N> &rhs) {
+template<typename T, size_t N, typename Seq>
+inline T dot(const vec<T, N, Seq> &lhs, const vec<T, N, Seq> &rhs) {
     return lhs.dot(rhs);
 }
 

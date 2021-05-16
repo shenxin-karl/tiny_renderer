@@ -42,7 +42,6 @@ void Draw::triangle(FrameBuffer &frame, Shader &shader, std::array<Vertex *, 3> 
 		}
 	}
 
-	const vec3 &vertex_w = shader.vertex_w;
 	int minx = static_cast<int>(std::ceil(bboxmin.x()));
 	int miny = static_cast<int>(std::ceil(bboxmin.y()));
 	int maxx = static_cast<int>(std::floor(bboxmax.x()));
@@ -56,13 +55,15 @@ void Draw::triangle(FrameBuffer &frame, Shader &shader, std::array<Vertex *, 3> 
 			if (coords[0] < 0.f || coords[1] < 0.f || coords[2] < 0.f)
 				continue;
 
+			float z1 = coords[0] * v1.z();
+			float z2 = coords[1] * v2.z();
+			float z3 = coords[2] * v3.z();
+			float depth = (z1 + z2 + z3);
+
 			vec3 color;
 			shader.coords = coords;
 			if (shader.fragment(vertice, color)) {
-				float z1 = coords[0] * v1.z() * vertex_w[0];
-				float z2 = coords[1] * v2.z() * vertex_w[1];
-				float z3 = coords[2] * v3.z() * vertex_w[2];
-				float depth = z1 + z2 + z3;
+
 				frame.set_color(vec3(float(x), float(y), depth), color);
 			}
 		}
@@ -82,7 +83,7 @@ vec3 Draw::barycentric_coord(vec2 point, const vec3 &v1, const vec3 &v2, const v
 	
 	//		b
 	//	a		c
-	auto ac_line = create_line_func(v1, v2);
+	auto ac_line = create_line_func(v1, v3);
 	auto bc_line = create_line_func(v2, v3);
 	float alpha = bc_line(point) / bc_line(v1.head<2>());
 	float beta = ac_line(point) / ac_line(v2.head<2>());
