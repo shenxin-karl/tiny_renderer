@@ -12,7 +12,7 @@ Model::Model(const std::string &path) {
 	process_node(scene->mRootNode, scene);
 }
 
-void Model::draw(FrameBuffer &frame, Shader &shader) {
+void Model::draw(FrameBuffer &frame, ShaderBase &shader) {
 	for (Mesh &mesh : meshs)
 		mesh.draw(frame, shader);
 }

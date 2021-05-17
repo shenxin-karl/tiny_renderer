@@ -13,7 +13,7 @@ public:
 	Model &operator=(Model &&) noexcept = default;
 	~Model() = default;
 
-	void draw(FrameBuffer &frame, Shader &shader);
+	void draw(FrameBuffer &frame, ShaderBase &shader);
 
 	static Model load_obj(const std::string &path);
 private:

@@ -17,13 +17,13 @@ Mesh::Mesh(std::vector<Vertex> &&_vertices, std::vector<uint> &&_indices, std::v
 
 }
 
-void Mesh::draw(FrameBuffer &frame, Shader &shader) const {
+void Mesh::draw(FrameBuffer &frame, ShaderBase &shader) const {
 	int limit = static_cast<int>(indices.size());
 	for (int i = 0; i < limit-2; i += 3) 
 		process_triangle(frame, shader, { i, i+1, i+2 });
 }
 
-void Mesh::process_triangle(FrameBuffer &frame, Shader &shader, std::array<int, 3> our_indices) const {
+void Mesh::process_triangle(FrameBuffer &frame, ShaderBase &shader, std::array<int, 3> our_indices) const {
 	std::vector<Vertex> out_vertices;
 	out_vertices.reserve(5);
 	std::vector<uint>	out_indices;

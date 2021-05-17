@@ -1,7 +1,7 @@
 #pragma once
 
 class FrameBuffer;
-struct Shader;
+struct ShaderBase;
 using uint = unsigned int;
 
 
@@ -30,8 +30,8 @@ public:
 	Mesh(std::vector<Vertex> &&_vertices, std::vector<uint> &&_indices, std::vector<Texture> &&_textures);
 	Mesh(Mesh &&) noexcept = default;
 	Mesh(const Mesh &) = delete;
-	void draw(FrameBuffer &frame, Shader &shader) const;
+	void draw(FrameBuffer &frame, ShaderBase &shader) const;
 	~Mesh() = default;
 private:
-	void process_triangle(FrameBuffer &frame, Shader &shader, std::array<int, 3> our_indices) const;
+	void process_triangle(FrameBuffer &frame, ShaderBase &shader, std::array<int, 3> our_indices) const;
 };

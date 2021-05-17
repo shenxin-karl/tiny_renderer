@@ -1,6 +1,6 @@
 #pragma once
 
-struct LightShader : public Shader {
+struct LightShader : public ShaderBase {
 	std::array<vec3, 3> vertex_color;
 public:
 	virtual vec4 vertex(const Vertex &vertex, int idx) override;

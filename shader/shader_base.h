@@ -8,8 +8,8 @@ concept uniform_key_constraint = requires {
 };
 
 
-struct Shader {
-	virtual ~Shader() = default;
+struct ShaderBase {
+	virtual ~ShaderBase() = default;
 	virtual vec4 vertex(const Vertex &vertex, int idx) = 0;
 	virtual bool fragment(std::array<Vertex *, 3> &vertices, vec3 &color) = 0;
 
