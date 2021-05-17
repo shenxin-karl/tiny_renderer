@@ -41,3 +41,4 @@
 #include "draw.h"
 #include "model.h"
 #include "light_shader.h"
+#include "camera.h"

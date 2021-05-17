@@ -4,11 +4,14 @@
 void init();
 
 namespace gvar {
-	constexpr int width = 600;
-	constexpr int height = 600;
-	constexpr int frame_size = width * height;
-}
 
+constexpr int width = 600;
+constexpr int height = 600;
+constexpr int frame_size = width * height;
+constexpr float near = 0.01f;
+constexpr float far = 1000.f;
+
+}
 
 int main(void) {
 	init();
@@ -26,11 +29,10 @@ int main(void) {
 
 	while (!window.window_should_be_close()) {
 		window.poll_event();	
-		//frame.clear_color(vec3(0, 0, 0));
-		//frame.clear(FrameBufferType::ColorBuffer);
+		frame.clear_color(vec3(0.2f, 0.5f, 0.2f));
+		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
 		our_model.draw(frame, light_shader);
 		window.draw(frame);
-		//std::this_thread::sleep_for(std::chrono::milliseconds(20));
 	}
 	std::system("pause");
 	return 0;

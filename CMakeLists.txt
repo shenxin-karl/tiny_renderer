@@ -15,7 +15,7 @@ add_executable(tiny_renderer
 	"shader/shader.h"			"shader/shader.cpp"
 	"shader/light_shader.h"		"shader/light_shader.cpp"
 	"test/test.h"				"test/test.cpp"
-)
+  "include/camera.h" "src/camera.cpp")
 
 target_include_directories(tiny_renderer PUBLIC
 	${PROJECT_SOURCE_DIR}/include
