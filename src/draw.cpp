@@ -31,7 +31,6 @@ void Draw::line(FrameBuffer &frame, const vec3 &start, const vec3 &last, const v
 	}
 }
 
-// Vertex 的所有属性都是除 w 的. 在 Shader::fragment 函数里面 透视矫正插值
 void Draw::triangle(FrameBuffer &frame, ShaderBase &shader, std::array<Vertex *, 3> vertice) {
 	vec2 bboxmin(std::numeric_limits<float>::max());
 	vec2 bboxmax(std::numeric_limits<float>::min());
