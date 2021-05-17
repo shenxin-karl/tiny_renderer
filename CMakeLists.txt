@@ -13,7 +13,7 @@ add_executable(tiny_renderer
 	"include/model.h"			"src/model.cpp"
 	"include/texture2d.h"		"src/texture2d.cpp"
 	"shader/shader.h"			"shader/shader.cpp"
-	"shader/LightShader.h"		"shader/LightShader.cpp"
+	"shader/light_shader.h"		"shader/light_shader.cpp"
 	"test/test.h"				"test/test.cpp"
 )
 

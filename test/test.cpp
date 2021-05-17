@@ -96,7 +96,7 @@ bool Test::test_texture2d() {
 		for (int x = 0; x < width; ++x) {
 			vec2 texcoord = { float(x) / width, float(y) / height };
 			vec3 color = texture.texture(texcoord);
-			frame.set_color(vec3(x, y, 0), color);
+			frame.set_color(vec3(float(x), float(y), 0), color);
 		}
 	}
 	frame.save("test_texture2d", FrameBufferType::ColorBuffer);
