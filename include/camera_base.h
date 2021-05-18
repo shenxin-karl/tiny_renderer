@@ -7,4 +7,6 @@ public:
 	virtual void mouse_callback(int x, int y) = 0;
 	virtual void scroll_callback(float offset) = 0;
 	virtual void frame_callback(int width, int height) = 0;
+	virtual const mat4 &get_view() const = 0;
+	virtual const mat4 &get_projection() const = 0;
 };

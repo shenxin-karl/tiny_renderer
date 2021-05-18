@@ -18,7 +18,7 @@ struct ShaderBase {
 		T res1 = v1 * coords[0];
 		T res2 = v2 * coords[1];
 		T res3 = v3 * coords[2];
-		return (res1 + res2 + res3) / inverse_z;
+		return (res1 + res2 + res3) / 1.f;
 	}
 
 	void set_model(const mat4 &_model);

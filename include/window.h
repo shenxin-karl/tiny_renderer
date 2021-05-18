@@ -8,12 +8,15 @@ public:
 		Backward,
 		Left,
 		Right,
+		MaxCount,
 	};
+	constexpr static int window_key_size = static_cast<int>(WindowKey::MaxCount);
 private:
-	bool	should_be_close;
-	HWND	window_hwnd;
-	int		width;
-	int		height;
+	bool		should_be_close;
+	HWND		window_hwnd;
+	int			width;
+	int			height;
+	bool		keys[window_key_size];
 public:
 	std::function<void(Window *, WindowKey)> key_callback;			// 键盘回调
 	std::function<void(Window *, int, int)>  mouse_callback;		// 鼠标回调
@@ -31,4 +34,7 @@ public:
 public:
 	static inline std::map<HWND, Window *> hwnd_to_window;
 	static inline auto start_time = std::chrono::steady_clock::now();
+private:
+	static std::map<int, WindowKey> standard_key_to_window_key;
+	void process_key_input(WPARAM param, bool pressed);
 };

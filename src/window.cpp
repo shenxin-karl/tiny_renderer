@@ -1,7 +1,8 @@
 #include "common.h"
 
 Window::Window(int _width, int _height, const std::string &title) 
-: should_be_close(false), window_hwnd(0), width(_width), height(_height) {
+: should_be_close(false), window_hwnd(0), width(_width), height(_height)
+, keys{false} {
 
 	HINSTANCE hins = GetModuleHandle(0);
 	WNDCLASSEX wc;
@@ -24,7 +25,11 @@ Window::Window(int _width, int _height, const std::string &title)
 	}
 
 	window_hwnd = CreateWindowEx(
-		WS_EX_TOPMOST, 
+#ifdef _DEBUG1
+		WS_ICONIC,
+#else
+		WS_EX_TOPMOST,
+#endif // _DEBUG
 		"LYSM_class", 
 		title.c_str(),
 		WS_OVERLAPPEDWINDOW,
@@ -71,6 +76,14 @@ void Window::poll_event() {
 	MSG msg;
 	if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) 	// 从消息队列中删除一条消息
 		DispatchMessage(&msg);
+
+	for (int i = 0; i < static_cast<int>(WindowKey::MaxCount); ++i) {
+		if (!keys[i]) 
+			continue;
+
+		WindowKey key = static_cast<WindowKey>(i);
+		key_callback(this, key);
+	}
 }
 
 void Window::draw(const FrameBuffer &frame_buff) {
@@ -147,19 +160,14 @@ LRESULT CALLBACK Window::wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpa
 		window->mouse_callback(window, x, y);
 		break;
 	}
-	case WM_KEYDOWN: 
 	case WM_KEYUP: 
-	case WM_LBUTTONDOWN:
-	case WM_RBUTTONDOWN: 
 	{
-		static std::map<decltype(WM_KEYDOWN), WindowKey> key_event_map = {
-			std::make_pair(WM_KEYUP, WindowKey::Froward),
-			std::make_pair(WM_KEYDOWN, WindowKey::Backward),
-			std::make_pair(WM_LBUTTONDOWN, WindowKey::Left),
-			std::make_pair(WM_RBUTTONDOWN, WindowKey::Right),
-		};
-		if (auto iter = key_event_map.find(msg); iter != key_event_map.end())
-			window->key_callback(window, iter->second);
+		window->process_key_input(wparam, false);
+		break;
+	}
+	case WM_KEYDOWN: 
+	{
+		window->process_key_input(wparam, true);
 		break;
 	}
 	case WM_MOUSEWHEEL: 
@@ -174,3 +182,20 @@ LRESULT CALLBACK Window::wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpa
 	return DefWindowProc(hwnd, msg, wparam, lparam);
 }
 
+std::map<int, Window::WindowKey> Window::standard_key_to_window_key = {
+	std::make_pair<int, WindowKey>(0x57, WindowKey::Froward),	// 'A'
+	std::make_pair<int, WindowKey>(0x53, WindowKey::Backward),	// 'B'
+	std::make_pair<int, WindowKey>(0x41, WindowKey::Left),		// 'C'
+	std::make_pair<int, WindowKey>(0x44, WindowKey::Right),		// 'D'
+};
+
+void Window::process_key_input(WPARAM param, bool pressed) {
+	if (param == VK_ESCAPE) {
+		set_window_should_be_close(true);
+		return;
+	}
+	if (auto iter = standard_key_to_window_key.find(param); iter != standard_key_to_window_key.end()) {
+		int index = static_cast<int>(iter->second);
+		keys[index] = pressed;
+	}
+}

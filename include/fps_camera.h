@@ -22,8 +22,7 @@ class FpsCamera : public CameraBase {
 public:
 	FpsCamera(vec3 _look_from, vec3 _look_up, float _fov, float _aspect, 
 		   float _near, float _far, float _speek, float _sensitivtiy);
-	const mat4 &get_view() const;
-	const mat4 &get_projection() const;
+
 	const vec3 &get_look_from() const;
 	const vec3 &get_look_up() const;
 	const vec3 &get_look_at() const;
@@ -32,6 +31,8 @@ public:
 	virtual void mouse_callback(int x, int y) override;
 	virtual void scroll_callback(float offset) override;
 	virtual void frame_callback(int width, int height) override;
+	virtual const mat4 &get_view() const override;
+	virtual const mat4 &get_projection() const override;
 private:
 	void update_base_vec();
 };

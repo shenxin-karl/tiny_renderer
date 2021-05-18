@@ -41,15 +41,17 @@ void Draw::triangle(FrameBuffer &frame, ShaderBase &shader, std::array<Vertex *,
 		}
 	}
 
-	int minx = static_cast<int>(std::ceil(bboxmin.x()));
-	int miny = static_cast<int>(std::ceil(bboxmin.y()));
-	int maxx = static_cast<int>(std::floor(bboxmax.x()));
-	int maxy = static_cast<int>(std::floor(bboxmax.y()));
-	for (int x = minx; x <= maxx; ++x) {
-		for (int y = miny; y <= maxy; ++y) {
-			const vec3 &v1 = vertice[0]->position;
-			const vec3 &v2 = vertice[1]->position;
-			const vec3 &v3 = vertice[2]->position;
+	int width = frame.get_width();
+	int height = frame.get_height();
+	int minx = std::clamp(static_cast<int>(std::floor(bboxmin.x())), 0, width);
+	int miny = std::clamp(static_cast<int>(std::floor(bboxmin.y())), 0, height);
+	int maxx = std::clamp(static_cast<int>(std::ceil(bboxmax.x())), 0, width);
+	int maxy = std::clamp(static_cast<int>(std::ceil(bboxmax.y())), 0, height);
+	for (int x = minx; x < maxx; ++x) {
+		for (int y = miny; y < maxy; ++y) {
+			const vec3 &v1 = vertice[0]->position.head<3>();
+			const vec3 &v2 = vertice[1]->position.head<3>();
+			const vec3 &v3 = vertice[2]->position.head<3>();
 			vec3 coords = barycentric_coord(vec2(float(x), float(y)), v1, v2, v3);
 			if (coords[0] < 0.f || coords[1] < 0.f || coords[2] < 0.f)
 				continue;
@@ -58,7 +60,6 @@ void Draw::triangle(FrameBuffer &frame, ShaderBase &shader, std::array<Vertex *,
 			float z2 = coords[1] * v2.z();
 			float z3 = coords[2] * v3.z();
 			float depth = (z1 + z2 + z3);
-
 			vec3 color;
 			shader.set_coords(coords);
 			if (shader.fragment(vertice, color)) {

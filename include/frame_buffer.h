@@ -28,6 +28,8 @@ public:
 	void clear(FrameBufferType type);
 	void clear_color(const vec3 &color);
 	void save(const std::string &path, FrameBufferType flag) const;
+	int get_width() const;
+	int get_height() const;
 	~FrameBuffer() = default;
 	friend class Window;
 };

@@ -7,14 +7,6 @@ FpsCamera::FpsCamera(vec3 _look_from, vec3 _look_up, float _fov, float _aspect,
 	update_base_vec();
 }
 
-const mat4 &FpsCamera::get_view() const {
-	return view;
-}
-
-const mat4 &FpsCamera::get_projection() const {
-	return projection;
-}
-
 const vec3 &FpsCamera::get_look_from() const {
 	return look_from;
 }
@@ -44,6 +36,7 @@ void FpsCamera::key_callback(Window::WindowKey key, int delta_time) {
 	default:
 		return;
 	}
+	std::cout << "look_from: " << look_from << std::endl;
 	update_base_vec();
 }
 
@@ -58,8 +51,11 @@ void FpsCamera::mouse_callback(int x, int y) {
 
 	float offset_x = x - last_x;
 	float offset_y = y - last_y;
+	last_x = static_cast<float>(x);
+	last_y = static_cast<float>(y);
 	pitch = std::clamp(pitch + (offset_y * sensitivity), -89.f, 89.f);
 	yaw = yaw + offset_x * sensitivity;
+	std::cout << "pitch: " << pitch << " yaw: " << yaw << std::endl;
 	update_base_vec();
 }
 
@@ -73,13 +69,24 @@ void FpsCamera::frame_callback(int width, int height) {
 	projection = Draw::projection(fov, aspect, near, far);
 }
 
+const mat4 &FpsCamera::get_view() const {
+	return view;
+}
+
+const mat4 &FpsCamera::get_projection() const {
+	return projection;
+}
+
 void FpsCamera::update_base_vec() {
+	constexpr float delta_offset = 0.0000001f;
+	float new_pitch = pitch != 0.f ? pitch : pitch + delta_offset;
+	float new_yaw = yaw != 0.f ? yaw : yaw + delta_offset;
 	vec3 offset;
-	offset.y() = std::sin(Draw::radians(pitch));
-	offset.x() = std::cos(Draw::radians(pitch)) * std::cos(Draw::radians(yaw));
-	offset.z() = std::cos(Draw::radians(pitch)) * std::sin(Draw::radians(yaw));
+	offset.y() = std::sin(Draw::radians(new_pitch));
+	offset.x() = std::cos(Draw::radians(new_pitch)) * std::cos(Draw::radians(new_yaw));
+	offset.z() = std::cos(Draw::radians(new_pitch)) * std::sin(Draw::radians(new_yaw));
 	look_at = normalized(offset);
 	world_right = normalized(cross(look_at, world_up));
 	look_up = normalized(cross(world_right, look_at));
-	view = Draw::view(look_from, look_up, look_from + look_up);
+	view = Draw::view(look_from, look_up, look_from + look_at);
 }
