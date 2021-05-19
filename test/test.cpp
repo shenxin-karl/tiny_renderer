@@ -7,6 +7,7 @@ std::pair<std::string_view, std::function<bool(void)>> Test::test_func[]{
 	DECLARE_TEST_FUNC(test_view),
 	DECLARE_TEST_FUNC(test_texture2d),
 	DECLARE_TEST_FUNC(test_vec),
+	DECLARE_TEST_FUNC(test_matrix),
 };
 #undef DECLARE_TEST_FUNC
 
@@ -74,25 +75,36 @@ bool Test::test_viewport() {
 }
 
 bool Test::test_view() {
-	vec3 look_from = { 2, 2, 0 };
-	vec3 look_up = { 0, 1, 0 };
-	vec3 look_at = { 0, 0, 0 };
-	auto view = Draw::view(look_from, look_up, look_at);
-	auto point = vec4(look_from, 1.f);
-	auto res = view * point;
-	if (res.x() != 0 && res.y() != 0 && res.z() != 0 && res.w() != 1)
-		return false;
+	{
+		vec3 look_from = { 2, 2, 0 };
+		vec3 look_up = { 0, 1, 0 };
+		vec3 look_at = { 0, 0, 0 };
+		auto view = Draw::view(look_from, look_up, look_at);
+		auto point = vec4(look_from, 1.f);
+		auto res = view * point;
+		if (res.x() != 0 && res.y() != 0 && res.z() != 0 && res.w() != 1)
+			return false;
 
-	point = { 1, 1, 0, 1 };
-	res = view * point;
-	if (res.x() != 1 && res.y() != 1 && res.z() != 0 && res.w() != 1)
-		return false;
+		point = { 1, 1, 0, 1 };
+		res = view * point;
+		if (res.x() != 1 && res.y() != 1 && res.z() != 0 && res.w() != 1)
+			return false;
+	}
+	{
+		vec3 look_from = { 1, 2, 2 };
+		vec3 look_up = { 0, 1, 0 };
+		vec3 look_at = { 1, 2, 0 };
+		mat4 view = Draw::view(look_from, look_up, look_at);
+		vec4 point = { 0, 0, 0, 1 };
+		auto point_res = view * point;
+		if (point_res.x() != -1.f || point_res.y() != -2.f || point_res.z() != -2.f)
+			return false;
+	}
 	return true;
 }
 
 bool Test::test_texture2d() {
 	return true;
-
 
 	int width = 1024;
 	int height = 1024;
@@ -132,6 +144,25 @@ bool Test::test_vec() {
 	vec3 v5 = vec3{ 5 };
 	v4 -= v5;
 	if (v4[0] != 5.f || v4[1] != 5.f || v4[2] != 5.f)
+		return false;
+	return true;
+}
+
+bool Test::test_matrix() {
+	vec4 p(1);
+	mat4 model = {
+		0.5f, 0, 0, 0,
+		0, 0.5f, 0, 0,
+		0, 0, 0.5f, 0,
+		0, 0, 0, 1,
+	};
+	auto res = model * p;
+	if (res.x() != 0.5f || res.y() != 0.5f || res.z() != 0.5f)
+		return false;
+
+	model = model * model;
+	res = model * p;
+	if (res.x() != 0.25f || res.y() != 0.25f || res.z() != 0.25f)
 		return false;
 	return true;
 }

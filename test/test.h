@@ -10,4 +10,5 @@ public:
 	static bool test_view();
 	static bool test_texture2d();
 	static bool test_vec();
+	static bool test_matrix();
 };

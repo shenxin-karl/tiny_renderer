@@ -77,12 +77,10 @@ const mat4 &FpsCamera::get_projection() const {
 
 void FpsCamera::update_base_vec() {
 	constexpr float delta_offset = 0.0000001f;
-	float new_pitch = pitch != 0.f ? pitch : pitch + delta_offset;
-	float new_yaw = yaw != 0.f ? yaw : yaw + delta_offset;
 	vec3 offset;
-	offset.y() = std::sin(Draw::radians(new_pitch));
-	offset.x() = std::cos(Draw::radians(new_pitch)) * std::cos(Draw::radians(new_yaw));
-	offset.z() = std::cos(Draw::radians(new_pitch)) * std::sin(Draw::radians(new_yaw));
+	offset.y() = std::sin(Draw::radians(pitch));
+	offset.x() = std::cos(Draw::radians(pitch)) * std::cos(Draw::radians(yaw));
+	offset.z() = std::cos(Draw::radians(pitch)) * std::sin(Draw::radians(yaw));
 	look_at = normalized(offset);
 	world_right = normalized(cross(look_at, world_up));
 	look_up = normalized(cross(world_right, look_at));

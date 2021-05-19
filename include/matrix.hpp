@@ -3,6 +3,9 @@
 template<typename T, size_t N, typename = std::make_index_sequence<N*N>>
 struct Matrix;
 
+template<typename T, size_t N, typename Seq>
+Matrix<T, N, Seq> transpose(const Matrix<T, N, Seq> &mat);
+
 template<typename T, size_t N, size_t...I>
 struct Matrix<T, N, std::index_sequence<I...>> {
     T data[N][N];

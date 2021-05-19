@@ -158,5 +158,6 @@ mat4 Draw::view(vec3 look_from, vec3 look_up, vec3 look_at) {
 		x.z(), y.z(), z.z(), 0,
 		0,	   0,	  0,	 1,
 	};
-	return transpose(rotate) * trans;
+	auto transpose_rotate = transpose(rotate);
+	return transpose_rotate * trans;
 }
