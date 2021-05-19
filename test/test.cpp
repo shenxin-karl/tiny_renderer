@@ -6,6 +6,7 @@ std::pair<std::string_view, std::function<bool(void)>> Test::test_func[]{
 	DECLARE_TEST_FUNC(test_viewport),
 	DECLARE_TEST_FUNC(test_view),
 	DECLARE_TEST_FUNC(test_texture2d),
+	DECLARE_TEST_FUNC(test_vec),
 };
 #undef DECLARE_TEST_FUNC
 
@@ -41,6 +42,13 @@ bool Test::test_barycentric_coord() {
 	if (coords[0] != 0 || !check_coords(coords))
 		return false;
 
+	vec2 p = { 591, 352 };
+	v1 = { 590.952515f, 352.662018f, 1.29826248f };
+	v2 = { 591.149719f, 355.008820f, 1.29185522f };
+	v3 = { 590.959473f, 352.809326f, 1.28281009f };
+	coords = Draw::barycentric_coord(p, v1, v2, v3);
+	//if (!(coords[0] > 0.f) || !(coords[1] > 0.f) || !(coords[2] > 0.f))
+		//return false;
 	return true;
 }
 
@@ -100,6 +108,31 @@ bool Test::test_texture2d() {
 		}
 	}
 	frame.save("test_texture2d", FrameBufferType::ColorBuffer);
+	return true;
+}
+
+bool Test::test_vec() {
+	vec3 v1 = { 1, 1, 1 };
+	v1 *= 3;
+	if (v1[0] != 3 || v1[1] != 3 || v1[2] != 3)
+		return false;
+
+	vec3 v2 = v1 * 3;
+	if (v2[0] != 9 || v2[1] != 9 || v2[2] != 9)
+		return false;
+
+	vec3 v3 = v1 / 3;
+	if (v3[0] != 1 || v3[1] != 1 || v3[2] != 1)
+		return false;
+
+	vec3 v4 = v3 + v2;
+	if (v4[0] != 10.f || v4[1] != 10.f || v4[2] != 10.f)
+		return false;
+
+	vec3 v5 = vec3{ 5 };
+	v4 -= v5;
+	if (v4[0] != 5.f || v4[1] != 5.f || v4[2] != 5.f)
+		return false;
 	return true;
 }
 

@@ -19,7 +19,7 @@ const vec3 &FpsCamera::get_look_at() const {
 	return look_at;
 }
 
-void FpsCamera::key_callback(Window::WindowKey key, int delta_time) {
+void FpsCamera::key_callback(Window::WindowKey key, float delta_time) {
 	switch (key) {
 	case Window::WindowKey::Froward:
 		look_from += look_at * (delta_time * speek);
@@ -37,19 +37,17 @@ void FpsCamera::key_callback(Window::WindowKey key, int delta_time) {
 		return;
 	}
 	std::cout << "look_from: " << look_from << std::endl;
-	update_base_vec();
+	view = Draw::view(look_from, look_up, look_from + look_at);
 }
 
 void FpsCamera::mouse_callback(int x, int y) {
-	static float last_x = 0.f;
-	static float last_y = 0.f;
 	if (last_x == 0.f && last_y == 0.f) {
 		last_x = static_cast<float>(x);
 		last_y = static_cast<float>(y);
 		return;
 	}
 
-	float offset_x = x - last_x;
+	float offset_x = last_x - x;
 	float offset_y = y - last_y;
 	last_x = static_cast<float>(x);
 	last_y = static_cast<float>(y);

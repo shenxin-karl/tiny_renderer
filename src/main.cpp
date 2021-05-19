@@ -25,7 +25,7 @@ void normal_renderer() {
 	constexpr float near = 0.001f;
 	constexpr float far = 100.f;
 	std::shared_ptr<CameraBase> camera_ptr 
-		= std::make_shared<FpsCamera>(vec3(0, 0, 2), vec3(0, 1, 0), 45.f, aspect, near, far, 5.f, 0.1f);
+		= std::make_shared<FpsCamera>(vec3(0, 0, 2), vec3(0, 1, 0), 45.f, aspect, near, far, 1000.f, 0.1f);
 	std::shared_ptr<LightShader> shader_ptr = std::make_shared<LightShader>();
 	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Model::load_obj("resources/obj/african_head.obj"));
 	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
@@ -36,7 +36,5 @@ void normal_renderer() {
 int main(void) {
 	init();
 	normal_renderer();
-
-	std::system("pause");
 	return 0;
 }

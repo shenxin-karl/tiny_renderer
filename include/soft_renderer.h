@@ -19,6 +19,7 @@ public:
 	void mouse_callback(int x, int y);
 	void scroll_callback(float offset);
 	void frame_callback(int width, int height);
+	void poll_event();
 public:
 	void normal_renderer();
 };

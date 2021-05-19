@@ -9,4 +9,5 @@ public:
 	static bool test_viewport();
 	static bool test_view();
 	static bool test_texture2d();
+	static bool test_vec();
 };

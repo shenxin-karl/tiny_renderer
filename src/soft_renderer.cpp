@@ -30,7 +30,6 @@ SoftRenderer::SoftRenderer(int _width, int _height,
 void SoftRenderer::key_callback(Window::WindowKey key) {
 	auto curr_time = window.get_time();
 	auto delta_time = curr_time - last_time;
-	last_time = curr_time;
 	camera_ptr->key_callback(key, delta_time);
 }
 
@@ -52,6 +51,11 @@ void SoftRenderer::frame_callback(int _width, int _height) {
 	camera_ptr->frame_callback(_width, _height);
 }
 
+void SoftRenderer::poll_event() {
+	last_time = window.get_time();
+	window.poll_event();
+}
+
 void SoftRenderer::normal_renderer() {
 	Texture2d diffuse_texture("resources/obj/african_head_diffuse.tga");
 	shader_ptr->set_uniform("diffuse_texture", diffuse_texture);
@@ -61,10 +65,11 @@ void SoftRenderer::normal_renderer() {
 	while (!window.window_should_be_close()) {
 		frame.clear_color(vec3(0.1f, 0.3f, 0.1f));
 		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
+		shader_ptr->set_viewport(Draw::viewport(width, height));
 		shader_ptr->set_view(camera_ptr->get_view());
 		model_ptr->draw(frame, *shader_ptr);
 		window.draw(frame);
-		window.poll_event();
+		poll_event();
 	}
 	return;
 }

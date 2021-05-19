@@ -35,6 +35,6 @@ public:
 	static inline std::map<HWND, Window *> hwnd_to_window;
 	static inline auto start_time = std::chrono::steady_clock::now();
 private:
-	static std::map<int, WindowKey> standard_key_to_window_key;
+	static std::map<WPARAM, WindowKey> standard_key_to_window_key;
 	void process_key_input(WPARAM param, bool pressed);
 };

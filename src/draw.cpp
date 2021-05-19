@@ -53,7 +53,7 @@ void Draw::triangle(FrameBuffer &frame, ShaderBase &shader, std::array<Vertex *,
 			const vec3 &v2 = vertice[1]->position.head<3>();
 			const vec3 &v3 = vertice[2]->position.head<3>();
 			vec3 coords = barycentric_coord(vec2(float(x), float(y)), v1, v2, v3);
-			if (coords[0] < 0.f || coords[1] < 0.f || coords[2] < 0.f)
+			if (!(coords[0] > 0.f) || !(coords[1] > 0.f) || !(coords[2] > 0.f))
 				continue;
 
 			float z1 = coords[0] * v1.z();
@@ -76,7 +76,7 @@ vec3 Draw::barycentric_coord(vec2 point, const vec3 &v1, const vec3 &v2, const v
 		float y0 = p1.y();
 		float y1 = p2.y();
 		return [=](const vec2 &p) {
-			return (y1-y0)*p.x() + (x0-x1)*p.y() + y0*x1 - x0*y1;
+			return (y0-y1)*p.x() + (x1-x0)*p.y() + x0*y1 - x1*y0;
 		};
 	};
 	
@@ -149,7 +149,7 @@ mat4 Draw::view(vec3 look_from, vec3 look_up, vec3 look_at) {
 		0, 0, 0, 1
 	};
 
-	vec3 z = normalized(look_at - look_from);
+	vec3 z = normalized(look_from - look_at);
 	vec3 x = normalized(cross(look_up, z));
 	vec3 y = normalized(cross(z, x));
 	mat4 rotate = {

@@ -81,6 +81,7 @@ void Window::poll_event() {
 		if (!keys[i]) 
 			continue;
 
+		keys[i] = false;
 		WindowKey key = static_cast<WindowKey>(i);
 		key_callback(this, key);
 	}
@@ -182,11 +183,11 @@ LRESULT CALLBACK Window::wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpa
 	return DefWindowProc(hwnd, msg, wparam, lparam);
 }
 
-std::map<int, Window::WindowKey> Window::standard_key_to_window_key = {
-	std::make_pair<int, WindowKey>(0x57, WindowKey::Froward),	// 'A'
-	std::make_pair<int, WindowKey>(0x53, WindowKey::Backward),	// 'B'
-	std::make_pair<int, WindowKey>(0x41, WindowKey::Left),		// 'C'
-	std::make_pair<int, WindowKey>(0x44, WindowKey::Right),		// 'D'
+std::map<WPARAM, Window::WindowKey> Window::standard_key_to_window_key = {
+	std::make_pair<WPARAM, WindowKey>(0x57, WindowKey::Froward),	// 'W'
+	std::make_pair<WPARAM, WindowKey>(0x53, WindowKey::Backward),	// 'S'
+	std::make_pair<WPARAM, WindowKey>(0x41, WindowKey::Left),		// 'A'
+	std::make_pair<WPARAM, WindowKey>(0x44, WindowKey::Right),		// 'D'
 };
 
 void Window::process_key_input(WPARAM param, bool pressed) {
