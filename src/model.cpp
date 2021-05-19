@@ -81,6 +81,60 @@ Model Model::load_obj(const std::string &path) {
 	return res;
 }
 
+
+Model Model::create_test_cube_obj() {
+	std::vector<Vertex> vertices = {
+		Vertex{ vec4{-0.5f, -0.5f, -0.5f, 1.0f}, vec3{0.0f,  0.0f, -1.0f},  vec2{ 0.0f, 0.0f},},
+		Vertex{ vec4{ 0.5f, -0.5f, -0.5f, 1.0f}, vec3{0.0f,  0.0f, -1.0f},  vec2{ 1.0f, 0.0f},},
+		Vertex{ vec4{ 0.5f,  0.5f, -0.5f, 1.0f}, vec3{0.0f,  0.0f, -1.0f},  vec2{ 1.0f, 1.0f},},
+		Vertex{ vec4{ 0.5f,  0.5f, -0.5f, 1.0f}, vec3{0.0f,  0.0f, -1.0f},  vec2{ 1.0f, 1.0f},},
+		Vertex{ vec4{-0.5f,  0.5f, -0.5f, 1.0f}, vec3{0.0f,  0.0f, -1.0f},  vec2{ 0.0f, 1.0f},},
+		Vertex{ vec4{-0.5f, -0.5f, -0.5f, 1.0f}, vec3{0.0f,  0.0f, -1.0f},  vec2{ 0.0f, 0.0f},},
+		Vertex{ vec4{-0.5f, -0.5f,  0.5f, 1.0f}, vec3{0.0f,  0.0f, 1.0f},   vec2{0.0f, 0.0f},},
+		Vertex{ vec4{ 0.5f, -0.5f,  0.5f, 1.0f}, vec3{0.0f,  0.0f, 1.0f},   vec2{1.0f, 0.0f},},
+		Vertex{ vec4{ 0.5f,  0.5f,  0.5f, 1.0f}, vec3{0.0f,  0.0f, 1.0f},   vec2{1.0f, 1.0f},},
+		Vertex{ vec4{ 0.5f,  0.5f,  0.5f, 1.0f}, vec3{0.0f,  0.0f, 1.0f},   vec2{1.0f, 1.0f},},
+		Vertex{ vec4{-0.5f,  0.5f,  0.5f, 1.0f}, vec3{0.0f,  0.0f, 1.0f},   vec2{0.0f, 1.0f},},
+		Vertex{ vec4{-0.5f, -0.5f,  0.5f, 1.0f}, vec3{0.0f,  0.0f, 1.0f},   vec2{0.0f, 0.0f},},
+		Vertex{ vec4{-0.5f,  0.5f,  0.5f, 1.0f}, vec3{-1.0f,  0.0f,  0.0f}, vec2{1.0f, 0.0f},},
+		Vertex{ vec4{-0.5f,  0.5f, -0.5f, 1.0f}, vec3{-1.0f,  0.0f,  0.0f}, vec2{1.0f, 1.0f},},
+		Vertex{ vec4{-0.5f, -0.5f, -0.5f, 1.0f}, vec3{-1.0f,  0.0f,  0.0f}, vec2{0.0f, 1.0f},},
+		Vertex{ vec4{-0.5f, -0.5f, -0.5f, 1.0f}, vec3{-1.0f,  0.0f,  0.0f}, vec2{0.0f, 1.0f},},
+		Vertex{ vec4{-0.5f, -0.5f,  0.5f, 1.0f}, vec3{-1.0f,  0.0f,  0.0f}, vec2{0.0f, 0.0f},},
+		Vertex{ vec4{-0.5f,  0.5f,  0.5f, 1.0f}, vec3{-1.0f,  0.0f,  0.0f}, vec2{1.0f, 0.0f},},
+		Vertex{ vec4{ 0.5f,  0.5f,  0.5f, 1.0f}, vec3{ 1.0f,  0.0f,  0.0f}, vec2{1.0f, 0.0f},},
+		Vertex{ vec4{ 0.5f,  0.5f, -0.5f, 1.0f}, vec3{ 1.0f,  0.0f,  0.0f}, vec2{1.0f, 1.0f},},
+		Vertex{ vec4{ 0.5f, -0.5f, -0.5f, 1.0f}, vec3{ 1.0f,  0.0f,  0.0f}, vec2{0.0f, 1.0f},},
+		Vertex{ vec4{ 0.5f, -0.5f, -0.5f, 1.0f}, vec3{ 1.0f,  0.0f,  0.0f}, vec2{0.0f, 1.0f},},
+		Vertex{ vec4{ 0.5f, -0.5f,  0.5f, 1.0f}, vec3{ 1.0f,  0.0f,  0.0f}, vec2{0.0f, 0.0f},},
+		Vertex{ vec4{ 0.5f,  0.5f,  0.5f, 1.0f}, vec3{ 1.0f,  0.0f,  0.0f}, vec2{1.0f, 0.0f},},
+		Vertex{ vec4{-0.5f, -0.5f, -0.5f, 1.0f}, vec3{ 0.0f, -1.0f,  0.0f}, vec2{0.0f, 1.0f},},
+		Vertex{ vec4{ 0.5f, -0.5f, -0.5f, 1.0f}, vec3{ 0.0f, -1.0f,  0.0f}, vec2{1.0f, 1.0f},},
+		Vertex{ vec4{ 0.5f, -0.5f,  0.5f, 1.0f}, vec3{ 0.0f, -1.0f,  0.0f}, vec2{1.0f, 0.0f},},
+		Vertex{ vec4{ 0.5f, -0.5f,  0.5f, 1.0f}, vec3{ 0.0f, -1.0f,  0.0f}, vec2{1.0f, 0.0f},},
+		Vertex{ vec4{-0.5f, -0.5f,  0.5f, 1.0f}, vec3{ 0.0f, -1.0f,  0.0f}, vec2{0.0f, 0.0f},},
+		Vertex{ vec4{-0.5f, -0.5f, -0.5f, 1.0f}, vec3{ 0.0f, -1.0f,  0.0f}, vec2{0.0f, 1.0f},},
+		Vertex{ vec4{-0.5f,  0.5f, -0.5f, 1.0f}, vec3{ 0.0f,  1.0f,  0.0f}, vec2{0.0f, 1.0f},},
+		Vertex{ vec4{ 0.5f,  0.5f, -0.5f, 1.0f}, vec3{ 0.0f,  1.0f,  0.0f}, vec2{1.0f, 1.0f},},
+		Vertex{ vec4{ 0.5f,  0.5f,  0.5f, 1.0f}, vec3{ 0.0f,  1.0f,  0.0f}, vec2{1.0f, 0.0f},},
+		Vertex{ vec4{ 0.5f,  0.5f,  0.5f, 1.0f}, vec3{ 0.0f,  1.0f,  0.0f}, vec2{1.0f, 0.0f},},
+		Vertex{ vec4{-0.5f,  0.5f,  0.5f, 1.0f}, vec3{ 0.0f,  1.0f,  0.0f}, vec2{0.0f, 0.0f},},
+		Vertex{ vec4{-0.5f,  0.5f, -0.5f, 1.0f}, vec3{ 0.0f,  1.0f,  0.0f}, vec2{0.0f, 1.0f},},
+	};
+	
+	std::vector<uint> indices;
+	indices.reserve(vertices.size());
+	std::generate_n(std::back_inserter(indices), vertices.size(), [n = 0]() mutable {
+		return n++;
+	});
+
+	Mesh mesh(std::move(vertices), std::move(indices), {});
+	Model res;
+	res.directory = "test_cube";
+	res.meshs.push_back(std::move(mesh));
+	return res;
+}
+
 Mesh Model::process_mesh(aiMesh *mesh, const aiScene *scene) {
 	std::vector<Vertex>	vertices;
 	for (size_t i = 0; i < mesh->mNumVertices; ++i) {		// º”‘ÿ∂•µ„

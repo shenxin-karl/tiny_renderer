@@ -21,5 +21,6 @@ public:
 	void frame_callback(int width, int height);
 	void poll_event();
 public:
+	void test_cube();
 	void normal_renderer();
 };

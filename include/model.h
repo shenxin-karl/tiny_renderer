@@ -16,6 +16,7 @@ public:
 	void draw(FrameBuffer &frame, ShaderBase &shader);
 
 	static Model load_obj(const std::string &path);
+	static Model create_test_cube_obj();
 private:
 	Model() = default;
 	Mesh process_mesh(aiMesh *mesh, const aiScene *scene);

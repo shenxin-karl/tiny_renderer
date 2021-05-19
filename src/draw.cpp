@@ -43,12 +43,12 @@ void Draw::triangle(FrameBuffer &frame, ShaderBase &shader, std::array<Vertex *,
 
 	int width = frame.get_width();
 	int height = frame.get_height();
-	int minx = std::clamp(static_cast<int>(std::floor(bboxmin.x())), 0, width);
-	int miny = std::clamp(static_cast<int>(std::floor(bboxmin.y())), 0, height);
-	int maxx = std::clamp(static_cast<int>(std::ceil(bboxmax.x())), 0, width);
-	int maxy = std::clamp(static_cast<int>(std::ceil(bboxmax.y())), 0, height);
-	for (int x = minx; x < maxx; ++x) {
-		for (int y = miny; y < maxy; ++y) {
+	int minx = std::clamp(static_cast<int>(std::floor(bboxmin.x())), 0, width-1);
+	int miny = std::clamp(static_cast<int>(std::floor(bboxmin.y())), 0, height-1);
+	int maxx = std::clamp(static_cast<int>(std::ceil(bboxmax.x())), 0, width-1);
+	int maxy = std::clamp(static_cast<int>(std::ceil(bboxmax.y())), 0, height-1);
+	for (int x = minx; x <= maxx; ++x) {
+		for (int y = miny; y <= maxy; ++y) {
 			const vec3 &v1 = vertice[0]->position.head<3>();
 			const vec3 &v2 = vertice[1]->position.head<3>();
 			const vec3 &v3 = vertice[2]->position.head<3>();
@@ -135,7 +135,7 @@ mat4 Draw::projection(float fov, float aspect, float n, float f) {
 	mat4 perspective = {
 		n,		0,		0,		0,
 		0,		n,		0,		0,
-		0,		0,		n-f,	-n*f,
+		0,		0,		f-n,	-n*f,
 		0,		0,		1,		0
 	};
 	return ortho(fov, aspect, n, f) * perspective;

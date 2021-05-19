@@ -32,6 +32,10 @@ void Mesh::process_triangle(FrameBuffer &frame, ShaderBase &shader, std::array<i
 		int index = our_indices[i];
 		const Vertex &vertex = vertices[index];
 		vec4 point = shader.vertex(vertex, i);
+		if (point.w() >= 0.f)
+			return;
+
+		point /= point.w();
 		out_vertices.push_back(Vertex{
 			point,
 			vertex.normal,
