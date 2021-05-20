@@ -172,13 +172,6 @@ bool Test::test_matrix() {
 bool Test::test_orhto() {
 	std::vector<vec3> vertices = { {2, 0, -2}, {0, 2, -2}, {-2, 0, -2} };
 	//auto viewport = Draw::viewport(600, 600);
-	auto view = Draw::view({ 0, 0, 5 }, { 0, 1, 0 }, { 0, 0, 0 });
-	auto ortho = Draw::ortho(45, 1, 0.1f, 50.f);
-	auto mvp = ortho;
-
-	for (auto &point : vertices) {
-		std::cout << (mvp * vec4(point, 1.f)) << std::endl;
-	}
 	return true;
 }
 

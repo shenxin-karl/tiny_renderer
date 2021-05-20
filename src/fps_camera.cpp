@@ -22,7 +22,7 @@ const vec3 &FpsCamera::get_look_at() const {
 }
 
 void FpsCamera::key_callback(Window::WindowKey key, float delta_time) {
-	float cur_speed = speek;
+	float cur_speed = speek * delta_time;
 	switch (key) {
 	case Window::WindowKey::Froward:
 		look_from += look_at * cur_speed;
@@ -60,7 +60,7 @@ void FpsCamera::mouse_callback(int x, int y) {
 }
 
 void FpsCamera::scroll_callback(float offset) {
-	fov = std::clamp(fov + offset, 0.1f, 45.f);
+	fov = std::clamp(fov + offset, 0.1f, 89.f);
 	std::cout << "fov " << fov << std::endl;
 	projection = Draw::projection(fov, aspect, near, far);
 }
@@ -87,8 +87,8 @@ void FpsCamera::update_base_vec() {
 	offset.y() = std::sin(Draw::radians(pitch));
 	offset.x() = std::cos(Draw::radians(pitch)) * std::cos(Draw::radians(yaw));
 	offset.z() = std::cos(Draw::radians(pitch)) * std::sin(Draw::radians(yaw));
-	look_at = normalized(-offset);
-	world_right = normalized(cross(world_up, look_at));
-	look_up = normalized(cross(look_at, world_right));
+	look_at = normalized(offset);
+	world_right = normalized(cross(look_at, world_up));
+	look_up = normalized(cross(world_right, look_at));
 	view = Draw::view(look_from, look_up, look_from + look_at);
 }
