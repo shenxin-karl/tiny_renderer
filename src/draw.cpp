@@ -112,20 +112,21 @@ mat4 Draw::viewport(int width, int height) {
 }
 
 mat4 Draw::ortho(float fov, float aspect, float n, float f) {
-	float t = std::tan(radians(fov / 2.f)) * (f-n);
+	float t = std::tan(radians(fov / 2.f)) * n;
 	float b = -t;
 	float r = t * aspect;
 	float l = -r;
 	mat4 scale = {
 		2.f/(r-l),	0,			0,			0,
 		0,			2.f/(t-b),	0,			0,
-		0,			0,			2.f/(f-n),	0,
+		0,			0,			2.f/(n-f),	0,
 		0,			0,			0,			1
 	};
+	return scale;
 	mat4 trans = {
-		1,	0,	0,	-2.f/(r-l),
-		0,	1,	0,	-2.f/(t-b),
-		0,	0,	1,	-2.f/(f-n),
+		1,	0,	0,	-(r+l)/2.f,
+		0,	1,	0,	-(t+b)/2.f,
+		0,	0,	1,	-(n+f)/2.f,
 		0,	0,	0,	1
 	};
 	return scale * trans;

@@ -1,7 +1,19 @@
 #pragma once
+#undef near
+#undef far
 
 class CameraBase {
+protected:
+	vec3  look_from;
+	vec3  look_at;
+	vec3  look_up;
+	float fov;
+	float aspect;
+	float near;
+	float far;
 public:
+	CameraBase(const vec3 &_look_from, const vec3 &_look_at, const vec3 &_look_up, 
+			   float _fov, float _aspect, float _near, float _far);
 	virtual ~CameraBase() = default;
 	virtual void key_callback(Window::WindowKey key, float delte_time) = 0;
 	virtual void mouse_callback(int x, int y) = 0;

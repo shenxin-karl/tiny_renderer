@@ -58,10 +58,8 @@ void SoftRenderer::poll_event() {
 
 
 void SoftRenderer::test_cube() {
-	//ShowCursor(false);
 	Texture2d diffuse_texture("resources/test_cube/container2.png");
 	shader_ptr->set_uniform("diffuse_texture", diffuse_texture);
-	shader_ptr->set_viewport(Draw::viewport(width, height));
 
 	while (!window.window_should_be_close()) {
 		frame.clear_color(vec3(0.1f, 0.3f, 0.1f));
@@ -80,13 +78,13 @@ void SoftRenderer::normal_renderer() {
 	Texture2d diffuse_texture("resources/obj/african_head_diffuse.tga");
 	shader_ptr->set_uniform("diffuse_texture", diffuse_texture);
 	shader_ptr->set_uniform("light_dir", normalized(vec3(0, 0, 2)));
-	shader_ptr->set_viewport(Draw::viewport(width, height));
 
 	while (!window.window_should_be_close()) {
 		frame.clear_color(vec3(0.1f, 0.3f, 0.1f));
 		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
 		shader_ptr->set_viewport(Draw::viewport(width, height));
 		shader_ptr->set_view(camera_ptr->get_view());
+		shader_ptr->set_projection(camera_ptr->get_projection());
 		model_ptr->draw(frame, *shader_ptr);
 		window.draw(frame);
 		poll_event();

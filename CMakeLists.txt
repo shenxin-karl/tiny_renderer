@@ -15,9 +15,10 @@ add_executable(tiny_renderer
 	"shader/shader_base.h"			"shader/shader_base.cpp"
 	"shader/light_shader.h"		"shader/light_shader.cpp"
 	"test/test.h"				"test/test.cpp"
-	"include/camera_base.h"
+	"include/camera_base.h"		"src/camera_base.cpp"
 	"include/fps_camera.h"		"src/fps_camera.cpp"
 	"include/soft_renderer.h"	"src/soft_renderer.cpp"
+	"include/fixed_camera.h"	"src/fixed_camera.cpp"
 )
 
 target_include_directories(tiny_renderer PUBLIC

@@ -43,4 +43,5 @@
 #include "light_shader.h"
 #include "camera_base.h"
 #include "fps_camera.h"
+#include "fixed_camera.h"
 #include "soft_renderer.h"

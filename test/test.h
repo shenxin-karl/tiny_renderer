@@ -11,4 +11,6 @@ public:
 	static bool test_texture2d();
 	static bool test_vec();
 	static bool test_matrix();
+	static bool test_orhto();
+	static bool test_projection();
 };

@@ -4,15 +4,8 @@
 #undef far
 
 class FpsCamera : public CameraBase {
-	vec3  look_from;
-	vec3  look_at;
-	vec3  look_up;
 	vec3  world_up;
 	vec3  world_right;
-	float fov;
-	float aspect;
-	float near;
-	float far;
 	float pitch;
 	float yaw;
 	float speek;

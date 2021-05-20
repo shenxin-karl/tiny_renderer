@@ -22,11 +22,12 @@ void test_cube() {
 	constexpr int width = 600;
 	constexpr int height = 600;
 	constexpr float aspect = static_cast<float>(width) / static_cast<float>(height);
-	constexpr float near = 0.001f;
-	constexpr float far = 100.f;
+	constexpr float near = 0.1f;
+	constexpr float far = 50.f;
+	constexpr float fov = 15.f;
 	std::shared_ptr<CameraBase> camera_ptr
-		= std::make_shared<FpsCamera>(vec3(-2, 0, 0), vec3(0, 1, 0), 1.f, aspect, near, far, 0.1f, 0.1f);
-	std::shared_ptr<LightShader> shader_ptr = std::make_shared<LightShader>();
+		= std::make_shared<FixedCamera>(vec3(0, 0, 2), vec3(0, 0, 0), vec3(0, 1, 0), fov, aspect, near, far);
+	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<LightShader>();
 	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Model::create_test_cube_obj());
 	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
 	renderer.test_cube();

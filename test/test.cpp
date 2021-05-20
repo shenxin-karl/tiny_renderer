@@ -8,6 +8,8 @@ std::pair<std::string_view, std::function<bool(void)>> Test::test_func[]{
 	DECLARE_TEST_FUNC(test_texture2d),
 	DECLARE_TEST_FUNC(test_vec),
 	DECLARE_TEST_FUNC(test_matrix),
+	DECLARE_TEST_FUNC(test_orhto),
+	DECLARE_TEST_FUNC(test_projection),
 };
 #undef DECLARE_TEST_FUNC
 
@@ -164,6 +166,70 @@ bool Test::test_matrix() {
 	res = model * p;
 	if (res.x() != 0.25f || res.y() != 0.25f || res.z() != 0.25f)
 		return false;
+	return true;
+}
+
+bool Test::test_orhto() {
+	std::vector<vec3> vertices = { {2, 0, -2}, {0, 2, -2}, {-2, 0, -2} };
+	//auto viewport = Draw::viewport(600, 600);
+	auto view = Draw::view({ 0, 0, 5 }, { 0, 1, 0 }, { 0, 0, 0 });
+	auto ortho = Draw::ortho(45, 1, 0.1f, 50.f);
+	auto mvp = ortho;
+
+	for (auto &point : vertices) {
+		std::cout << (mvp * vec4(point, 1.f)) << std::endl;
+	}
+	return true;
+}
+
+bool Test::test_projection() {
+	std::vector<Vertex> vertices = {
+		Vertex{ vec4{-0.5f, -0.5f, -0.5f, 1.0f}, vec3{0.0f,  0.0f, -1.0f},  vec2{ 0.0f, 0.0f}, },
+		Vertex{ vec4{ 0.5f, -0.5f, -0.5f, 1.0f}, vec3{0.0f,  0.0f, -1.0f},  vec2{ 1.0f, 0.0f}, },
+		Vertex{ vec4{ 0.5f,  0.5f, -0.5f, 1.0f}, vec3{0.0f,  0.0f, -1.0f},  vec2{ 1.0f, 1.0f}, },
+	};
+	constexpr int widht = 600;
+	constexpr int height = 600;
+	constexpr float aspect = static_cast<float>(widht) / static_cast<float>(height);
+	constexpr float near = 0.001f;
+	constexpr float far = 100.f;
+	vec3 look_from(0, 0, 0);
+	vec3 look_at(0, 0, -1);
+	vec3 look_up(0, 1, 0);
+
+	FrameBuffer frame(widht, height);
+	LightShader shader;
+	auto viewport(Draw::viewport(widht, height));
+	shader.set_viewport(Draw::viewport(widht, height));
+	shader.set_view(Draw::view(look_from, look_up, look_at));
+
+	for (int fov = 1; fov < 90; ++fov) {
+		shader.set_projection(Draw::projection(static_cast<float>(fov), aspect, near, far));
+		//shader.set_projection(Draw::ortho(fov, aspect, near, far));
+
+		std::vector<Vertex> out_vertices;
+		out_vertices.reserve(vertices.size());
+		for (int i = 0; i < vertices.size(); ++i) {
+			vec4 position = shader.vertex(vertices[i], i);
+			for (size_t idx = 0; idx < position.size()-1; ++idx)
+				position[idx] /= position.w();
+
+			out_vertices.push_back({
+				position,
+				vertices[i].normal,
+				vertices[i].texcoords,
+			});
+		}
+		//Draw::triangle(frame, shader, {
+		//	&out_vertices[0],
+		//	&out_vertices[1],
+		//	&out_vertices[2],
+		//});
+		std::cout << "fov: " << fov << "\tp1: " << out_vertices[0].position 
+				  << "\tp2: " << out_vertices[1].position
+				  << "\tp3: " << out_vertices[2].position
+				  << std::endl;
+	}
 	return true;
 }
 

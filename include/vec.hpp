@@ -116,6 +116,10 @@ public:
         };
     }
 
+    constexpr size_t size() const noexcept {
+        return N;
+    }
+
 #define VEC_GET_FUN(f, n)                   \
     constexpr T &f() noexcept {             \
         static_assert(n < N);               \
@@ -232,6 +236,7 @@ public:
     vec &operator-() noexcept {
         for (int i = 0; i < N; ++i) 
             data[i] = -data[i];
+        return *this;
     }
 
 private:

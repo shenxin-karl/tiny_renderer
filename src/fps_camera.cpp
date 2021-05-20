@@ -2,8 +2,10 @@
 
 FpsCamera::FpsCamera(vec3 _look_from, vec3 _look_up, float _fov, float _aspect, 
 			   float _near, float _far, float _speek, float _sensitivtiy) 
-: look_from(_look_from), world_up(_look_up), fov(_fov), aspect(_aspect)
-, near(_near), far(_far), pitch(0), yaw(0), speek(_speek), sensitivity(_sensitivtiy) {
+: CameraBase(_look_from, vec3(0), _look_up, _fov, _aspect, _near, _far)
+, world_up(_look_up), pitch(0), yaw(0), speek(_speek), sensitivity(_sensitivtiy) {
+
+	projection = Draw::projection(fov, aspect, near, far);
 	update_base_vec();
 }
 
@@ -37,6 +39,7 @@ void FpsCamera::key_callback(Window::WindowKey key, float delta_time) {
 	default:
 		return;
 	}
+	std::cout << "look_from: " << look_from << std::endl;
 	view = Draw::view(look_from, look_up, look_from + look_at);
 }
 
@@ -57,12 +60,14 @@ void FpsCamera::mouse_callback(int x, int y) {
 }
 
 void FpsCamera::scroll_callback(float offset) {
-	fov = std::clamp(fov - offset, 0.f, 89.9f);
+	fov = std::clamp(fov + offset, 0.1f, 45.f);
+	std::cout << "fov " << fov << std::endl;
 	projection = Draw::projection(fov, aspect, near, far);
 }
 
 void FpsCamera::frame_callback(int width, int height) {
 	aspect = static_cast<float>(width) / static_cast<float>(height);
+	std::cout << "aspect " << aspect << std::endl;
 	projection = Draw::projection(fov, aspect, near, far);
 }
 
@@ -72,17 +77,18 @@ const mat4 &FpsCamera::get_view() const {
 
 const mat4 &FpsCamera::get_projection() const {
 	return projection;
-	//return Draw::ortho(fov, aspect, near, far);
+	//static mat4 mat;
+	//mat = Draw::ortho(fov, aspect, near, far);
+	//return mat;
 }
 
 void FpsCamera::update_base_vec() {
-	constexpr float delta_offset = 0.0000001f;
 	vec3 offset;
 	offset.y() = std::sin(Draw::radians(pitch));
 	offset.x() = std::cos(Draw::radians(pitch)) * std::cos(Draw::radians(yaw));
 	offset.z() = std::cos(Draw::radians(pitch)) * std::sin(Draw::radians(yaw));
-	look_at = normalized(offset);
-	world_right = normalized(cross(look_at, world_up));
-	look_up = normalized(cross(world_right, look_at));
+	look_at = normalized(-offset);
+	world_right = normalized(cross(world_up, look_at));
+	look_up = normalized(cross(look_at, world_right));
 	view = Draw::view(look_from, look_up, look_from + look_at);
 }
