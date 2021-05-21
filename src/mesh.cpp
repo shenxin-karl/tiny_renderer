@@ -38,10 +38,11 @@ void Mesh::process_triangle(FrameBuffer &frame, ShaderBase &shader, std::array<i
 		for (size_t idx = 0; idx < point.size()-1; ++idx)
 			point[idx] /= point.w();
 
+		float z = point.z();
 		out_vertices.push_back(Vertex{
 			point,
-			vertex.normal,
-			vertex.texcoords
+			vertex.normal	 / z,
+			vertex.texcoords / z,
 		});
 		out_indices.push_back(i);
 	}

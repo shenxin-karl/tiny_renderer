@@ -73,3 +73,7 @@ int FrameBuffer::get_width() const {
 int FrameBuffer::get_height() const {
 	return height;
 }
+
+const float *FrameBuffer::get_frame_data() const noexcept {
+	return reinterpret_cast<const float *>(frame_buffer.data());
+}

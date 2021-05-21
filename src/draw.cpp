@@ -55,16 +55,13 @@ void Draw::triangle(FrameBuffer &frame, ShaderBase &shader, std::array<Vertex *,
 			vec3 coords = barycentric_coord(vec2(float(x), float(y)), v1, v2, v3);
 			if (!(coords[0] > 0.f) || !(coords[1] > 0.f) || !(coords[2] > 0.f))
 				continue;
-
-			float z1 = coords[0] * v1.z();
-			float z2 = coords[1] * v2.z();
-			float z3 = coords[2] * v3.z();
-			float depth = (z1 + z2 + z3);
+		
 			vec3 color;
-			shader.set_coords(coords);
-			if (shader.fragment(vertice, color)) {
+			float depth = shader.calc_depth(coords, vertice);
+			vec3 point = { float(x), float(y), depth };
+			if (shader.fragment(point, vertice, color))
 				frame.set_color(vec3(float(x), float(y), depth), color);
-			}
+			
 		}
 	}
 }
