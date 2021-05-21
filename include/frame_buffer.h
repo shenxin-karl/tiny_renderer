@@ -24,7 +24,7 @@ public:
 	FrameBuffer(int _width, int _height);
 	FrameBuffer(const FrameBuffer &) = delete;
 	void set_color(const vec3 &point, const vec3 &color);
-	void resize(int _width, int _height);
+	void resize(int _width, int _height, bool refresh_buffer = false);
 	void clear(FrameBufferType type);
 	void clear_color(const vec3 &color);
 	void save(const std::string &path, FrameBufferType flag) const;

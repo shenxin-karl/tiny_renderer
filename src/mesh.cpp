@@ -49,10 +49,10 @@ void Mesh::process_triangle(FrameBuffer &frame, ShaderBase &shader, std::array<i
 
 	int limit = static_cast<int>(out_indices.size()) - 2;
 	for (int i = 0; i < limit; i += 3) {
-		std::cout << "\t" << out_vertices[i].position 
-				  << "\t" << out_vertices[i+1].position
-				  << "\t" << out_vertices[i+2].position 
-				  << std::endl;
+		//std::cout << "\t" << out_vertices[i].position 
+		//		  << "\t" << out_vertices[i+1].position
+		//		  << "\t" << out_vertices[i+2].position 
+		//		  << std::endl;
 		Draw::triangle(frame, shader, {
 			&out_vertices[i],
 			&out_vertices[i+1],

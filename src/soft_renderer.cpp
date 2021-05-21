@@ -52,15 +52,14 @@ void SoftRenderer::frame_callback(int _width, int _height) {
 }
 
 void SoftRenderer::poll_event() {
-	last_time = window.get_time();
 	window.poll_event();
+	last_time = window.get_time();
 }
 
 
 void SoftRenderer::test_cube() {
 	Texture2d diffuse_texture("resources/test_cube/container2.png");
 	shader_ptr->set_uniform("diffuse_texture", diffuse_texture);
-
 	while (!window.window_should_be_close()) {
 		frame.clear_color(vec3(0.1f, 0.3f, 0.1f));
 		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);

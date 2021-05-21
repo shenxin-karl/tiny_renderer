@@ -16,14 +16,16 @@ void FrameBuffer::set_color(const vec3 &point, const vec3 &color) {
 	}
 }
 
-void FrameBuffer::resize(int _width, int _height) {
+void FrameBuffer::resize(int _width, int _height, bool refresh_buffer) {
 	assert(_width > 0);
 	assert(_height > 0);
 	width = _width;
 	height = _height;
-	frame_buffer.resize(width * height);
-	depth_buffer.resize(width * height);
-	clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
+	size_t new_size = static_cast<size_t>(width) * static_cast<size_t>(height);
+	frame_buffer.resize(new_size);
+	depth_buffer.resize(new_size);
+	if (refresh_buffer)
+		clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
 }
 
 void FrameBuffer::clear(FrameBufferType type) {

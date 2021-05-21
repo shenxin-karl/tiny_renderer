@@ -17,6 +17,7 @@ private:
 	int			width;
 	int			height;
 	bool		keys[window_key_size];
+	HDC			hdc;
 public:
 	std::function<void(Window *, WindowKey)> key_callback;			// 键盘回调
 	std::function<void(Window *, int, int)>  mouse_callback;		// 鼠标回调
