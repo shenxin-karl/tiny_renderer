@@ -30,6 +30,7 @@ public:
 	void save(const std::string &path, FrameBufferType flag) const;
 	int get_width() const;
 	int get_height() const;
+	const float *get_frame_data() const noexcept;
 	~FrameBuffer() = default;
 	friend class Window;
 };
