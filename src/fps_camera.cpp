@@ -3,26 +3,14 @@
 FpsCamera::FpsCamera(vec3 _look_from, vec3 _look_up, float _fov, float _aspect, 
 			   float _near, float _far, float _speek, float _sensitivtiy) 
 : CameraBase(_look_from, vec3(0), _look_up, _fov, _aspect, _near, _far)
-, world_up(_look_up), pitch(0), yaw(0), speek(_speek), sensitivity(_sensitivtiy) {
+, world_up(_look_up), pitch(0), yaw(0), speed(_speek), sensitivity(_sensitivtiy) {
 
 	projection = Draw::projection(fov, aspect, near, far);
 	update_base_vec();
 }
 
-const vec3 &FpsCamera::get_look_from() const {
-	return look_from;
-}
-
-const vec3 &FpsCamera::get_look_up() const {
-	return look_up;
-}
-
-const vec3 &FpsCamera::get_look_at() const {
-	return look_at;
-}
-
 void FpsCamera::key_callback(Window::WindowKey key, float delta_time) {
-	float cur_speed = speek * delta_time;
+	float cur_speed = speed * delta_time;
 	switch (key) {
 	case Window::WindowKey::Froward:
 		look_from += look_at * cur_speed;

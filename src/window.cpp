@@ -2,7 +2,7 @@
 
 Window::Window(int _width, int _height, const std::string &title) 
 : should_be_close(false), window_hwnd(0), width(_width), height(_height)
-, keys{false} {
+, keys{false}, hdc(nullptr) {
 
 	HINSTANCE hins = GetModuleHandle(0);
 	WNDCLASSEX wc;
@@ -51,6 +51,8 @@ Window::Window(int _width, int _height, const std::string &title)
 	hwnd_to_window.insert(std::make_pair(window_hwnd, this));
 	UpdateWindow(window_hwnd);
 	ShowWindow(window_hwnd, SW_SHOW);
+	hdc = GetDC(window_hwnd);
+	assert(hdc != nullptr);
 
 	key_callback = [](Window *, WindowKey) {};
 	mouse_callback = [](Window *, int, int) {};
@@ -91,7 +93,8 @@ void Window::draw(const FrameBuffer &frame_buff) {
 	if (frame_buff.width != width || frame_buff.height != height)
 		return;
 
-	std::unique_ptr<unsigned char[]> buffer(new unsigned char[width * height * 3]);
+	size_t size = size_t(width) * size_t(height) * 3ul;
+	std::unique_ptr<unsigned char[]> buffer(new unsigned char[size]);
 	for (size_t idx = 0; const vec3 &rgb : frame_buff.frame_buffer) {
 		buffer[idx  ] = static_cast<unsigned char>(rgb.b() * 255.f);
 		buffer[idx+1] = static_cast<unsigned char>(rgb.g() * 255.f);
@@ -114,7 +117,6 @@ void Window::draw(const FrameBuffer &frame_buff) {
 	bmi.bmiHeader.biCompression = BI_RGB; // BI_RGB = 0，表示压缩程度，0是无损耗，图像质量高
 	bmi.bmiHeader.biSizeImage = nx * ny * 3; // 图像的大小
 
-	HDC hdc = GetDC(window_hwnd);
 	StretchDIBits(hdc, 0, 0, bmi.bmiHeader.biWidth,
 		bmi.bmiHeader.biHeight, 0, 0, bmi.bmiHeader.biWidth,
 		bmi.bmiHeader.biHeight, buffer.get(), (BITMAPINFO *)&bmi.bmiHeader,
