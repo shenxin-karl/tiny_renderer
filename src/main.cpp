@@ -28,7 +28,7 @@ void test_cube() {
 	//std::shared_ptr<CameraBase> camera_ptr
 	//	= std::make_shared<FixedCamera>(vec3(0, 0, 2), vec3(0, 0, 0), vec3(0, 1, 0), fov, aspect, near, far);
 	std::shared_ptr<CameraBase> camera_ptr
-		= std::make_shared<FpsCamera>(vec3(-2, 0, 0), vec3(0, 1, 0), 45.f, aspect, near, far, 1000.f, 0.1f);
+		= std::make_shared<FpsCamera>(vec3(-2, 0, 0), vec3(0, 1, 0), 45.f, aspect, near, far, 1.f, 0.1f);
 	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<LightShader>();
 	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Model::create_test_cube_obj());
 	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);

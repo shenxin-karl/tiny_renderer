@@ -171,7 +171,17 @@ bool Test::test_matrix() {
 
 bool Test::test_orhto() {
 	std::vector<vec3> vertices = { {2, 0, -2}, {0, 2, -2}, {-2, 0, -2} };
-	//auto viewport = Draw::viewport(600, 600);
+	auto viewport = Draw::viewport(600, 600);
+	auto view = Draw::view({ 0, 0, -1 }, { 0, 1, 0 }, { 0, 0, -2 });
+#if 0
+	for (int fov = 15; fov < 80; ++fov) {
+		auto ortho = Draw::ortho(fov, 1, 15.f, 100.f);
+		auto mvp = viewport * ortho * view;
+		std::cout << "fov " << fov << std::endl;
+		for (const auto &v :vertices)
+			std::cout << (mvp *	vec4(v, 1.f)) << std::endl;
+	}
+#endif
 	return true;
 }
 
