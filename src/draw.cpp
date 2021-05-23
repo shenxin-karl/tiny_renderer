@@ -53,7 +53,7 @@ void Draw::triangle(FrameBuffer &frame, ShaderBase &shader, std::array<Vertex *,
 			const vec3 &v2 = vertice[1]->position.head<3>();
 			const vec3 &v3 = vertice[2]->position.head<3>();
 			vec3 coords = barycentric_coord(vec2(float(x), float(y)), v1, v2, v3);
-			if (!(coords[0] > 0.f) || !(coords[1] > 0.f) || !(coords[2] > 0.f))
+			if (!(coords[0] >= 0.f) || !(coords[1] >= 0.f) || !(coords[2] >= 0.f))
 				continue;
 		
 			vec3 color;
@@ -109,7 +109,7 @@ mat4 Draw::viewport(int width, int height) {
 }
 
 mat4 Draw::ortho(float fov, float aspect, float n, float f) {
-	float t = std::tan(radians(fov / 2.f)) * (n-f);
+	float t = std::tan(radians(fov / 2.f)) * n;
 	float b = -t;
 	float r = t * aspect;
 	float l = -r;
