@@ -158,3 +158,15 @@ mat4 Draw::view(vec3 look_from, vec3 look_up, vec3 look_at) {
 	auto transpose_rotate = transpose(rotate);
 	return transpose_rotate * trans;
 }
+
+mat4 Draw::rotate_y(float angle) {
+	float radian = Draw::radians(angle);
+	float coine = std::cos(radian);
+	float sine = std::sin(radian);
+	return {
+		coine,	0,		-sine,	0,
+		0,		1,		0,		0,
+		sine,	0,		coine,	0,
+		0,		0,		0,		1,
+	};
+}

@@ -105,9 +105,9 @@ void Window::draw(const FrameBuffer &frame_buff) {
 		}
 	} else {
 		for (size_t idx = 0; const vec3 &rgb : frame_buff.frame_buffer) {
-			buffer[idx] = static_cast<unsigned char>(rgb.b() * 255.f);
-			buffer[idx+1] = static_cast<unsigned char>(rgb.g() * 255.f);
-			buffer[idx+2] = static_cast<unsigned char>(rgb.r() * 255.f);
+			buffer[idx]   = static_cast<unsigned char>(std::clamp(rgb.b(), 0.f, 1.f) * 255.f);
+			buffer[idx+1] = static_cast<unsigned char>(std::clamp(rgb.g(), 0.f, 1.f) * 255.f);
+			buffer[idx+2] = static_cast<unsigned char>(std::clamp(rgb.r(), 0.f, 1.f) * 255.f);
 			idx += 3;
 		}
 	}

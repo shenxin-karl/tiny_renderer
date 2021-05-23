@@ -23,4 +23,5 @@ public:
 public:
 	void test_cube();
 	void light_renderer();
+	void blinn_phong();
 };

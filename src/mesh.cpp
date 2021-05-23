@@ -18,6 +18,7 @@ Mesh::Mesh(std::vector<Vertex> &&_vertices, std::vector<uint> &&_indices, std::v
 }
 
 void Mesh::draw(FrameBuffer &frame, ShaderBase &shader) const {
+	shader.initialize();
 	int limit = static_cast<int>(indices.size());
 	for (int i = 0; i < limit-2; i += 3) {
 		process_triangle(frame, shader, { i, i+1, i+2 });

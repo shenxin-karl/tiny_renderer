@@ -91,3 +91,29 @@ void SoftRenderer::light_renderer() {
 	}
 	return;
 }
+
+void SoftRenderer::blinn_phong() {
+	vec3 light_dir = normalized(vec3(0, 2, -2));
+	Texture2d diffuse_texture("resources/obj/african_head_diffuse.tga");
+	shader_ptr->set_uniform("diffuse_texture", diffuse_texture);
+	shader_ptr->set_uniform("specular_factor", 32.f);
+	shader_ptr->set_uniform("light_ambient", vec3(0.2f, 0.2f, 0.2f));
+	shader_ptr->set_uniform("light_diffuse", vec3(0.7f, 0.7f, 0.7f));
+	shader_ptr->set_uniform("light_specular", vec3(2.f, 2.f, 2.f));
+	
+	while (!window.window_should_be_close()) {
+		mat4 light_rotate_mat = Draw::rotate_y(window.get_time() * 30);
+		vec3 new_light_dir = normalized(light_rotate_mat * vec4(light_dir, 1.f));
+		shader_ptr->set_uniform("light_dir", new_light_dir);
+
+		frame.clear_color(vec3(0.f));
+		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
+		shader_ptr->set_viewport(Draw::viewport(width, height));
+		shader_ptr->set_view(camera_ptr->get_view());
+		shader_ptr->set_projection(camera_ptr->get_projection());
+		shader_ptr->set_uniform("eye_pos", camera_ptr->get_look_from());
+		model_ptr->draw(frame, *shader_ptr);
+		window.draw(frame);
+		poll_event();
+	}
+}

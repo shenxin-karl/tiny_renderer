@@ -19,7 +19,8 @@ add_executable(tiny_renderer
 	"include/fps_camera.h"		"src/fps_camera.cpp"
 	"include/soft_renderer.h"	"src/soft_renderer.cpp"
 	"include/fixed_camera.h"	"src/fixed_camera.cpp"
-)
+	"shader/blinn_phong.h"
+ "shader/blinn_phong.cpp")
 
 target_include_directories(tiny_renderer PUBLIC
 	${PROJECT_SOURCE_DIR}/include

@@ -45,3 +45,4 @@
 #include "fps_camera.h"
 #include "fixed_camera.h"
 #include "soft_renderer.h"
+#include "blinn_phong.h"

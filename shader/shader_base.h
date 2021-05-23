@@ -10,8 +10,9 @@ concept uniform_key_constraint = requires {
 
 struct ShaderBase {
 	virtual ~ShaderBase() = default;
-	virtual vec4 vertex(const Vertex &vertex, int idx) = 0;
-	virtual bool fragment(const vec3 &point, const std::array<Vertex *, 3> &vertices, vec3 &color) = 0;
+	virtual void initialize() noexcept {};
+	virtual vec4 vertex(const Vertex &vertex, int idx) noexcept = 0;
+	virtual bool fragment(const vec3 &point, const std::array<Vertex *, 3> &vertices, vec3 &color) noexcept = 0;
 
 	template<typename T>
 	constexpr T interp(const T &v1, const T &v2, const T &v3) const noexcept {
@@ -24,6 +25,11 @@ struct ShaderBase {
 	template<typename T>
 	constexpr T interp(const std::array<Vertex *, 3> &vertices, T Vertex:: *mem_ptr) const noexcept {
 		return interp(vertices[0]->*mem_ptr, vertices[1]->*mem_ptr, vertices[2]->*mem_ptr);
+	}
+
+	template<typename T>
+	constexpr T interp(const std::array<T, 3> &vertices) const noexcept {
+		return interp(vertices[0], vertices[1], vertices[2]);
 	}
 
 	void set_model(const mat4 &_model);
@@ -45,7 +51,6 @@ protected:
 	mat4 model;		
 	mat4 viewport;
 	mat4 mvp;
-	float inverse_z = 1.f;	// z µ¹Êý
 	float depth;
 	std::function<bool(float)> face_culling_func;		// ±³ÃæÌÞ³ýº¯Êý
 private:
@@ -54,14 +59,14 @@ private:
 	std::unordered_map<uniform_key_type, uniform_value_type> uniforms;
 public:
 	template<uniform_key_constraint T>
-	const T &get_uniform(const uniform_key_type &key) const {
+	const T &get_uniform(const uniform_key_type &key) const noexcept {
 		auto iter = uniforms.find(key);
 		assert(iter != uniforms.end());
 		return std::get<T>(iter->second);
 	}
 
 	template<uniform_key_constraint T>
-	void set_uniform(const uniform_key_type &key, const T &value) {
-		uniforms.emplace(key, uniform_value_type(value));
+	void set_uniform(const uniform_key_type &key, const T &value) noexcept {
+		uniforms[key] = uniform_value_type(value);
 	}
 };
