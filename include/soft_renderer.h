@@ -22,5 +22,5 @@ public:
 	void poll_event();
 public:
 	void test_cube();
-	void normal_renderer();
+	void light_renderer();
 };

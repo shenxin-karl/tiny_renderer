@@ -18,7 +18,7 @@ struct ShaderBase {
 		T res1 = v1 * coords[0];
 		T res2 = v2 * coords[1];
 		T res3 = v3 * coords[2];
-		return (res1 + res2 + res3) / inverse_z;
+		return (res1 + res2 + res3) * depth;
 	}
 
 	template<typename T>
@@ -31,6 +31,12 @@ struct ShaderBase {
 	void set_projection(const mat4 &_projection);
 	void set_viewport(const mat4 &_viewport);
 	float calc_depth(const vec3 &_coords, const std::array<Vertex *, 3> &vertices);
+	float get_depth() const noexcept;
+
+	// face_func accepts a value for the cosine of the sum normal, and returns true to eliminate triangles
+	void set_face_culling_func(const std::function<bool(float)> &face_func);
+	bool is_enable_face_culling() const noexcept;
+	const std::function<bool(float)> &get_face_culling_func() const noexcept;
 protected:
 	void update_mvp();
 	vec3 coords;			// 重心坐标
@@ -40,6 +46,8 @@ protected:
 	mat4 viewport;
 	mat4 mvp;
 	float inverse_z = 1.f;	// z 倒数
+	float depth;
+	std::function<bool(float)> face_culling_func;		// 背面剔除函数
 private:
 	using uniform_key_type = std::string;
 	using uniform_value_type = std::variant<bool, int, float, vec2, vec3, vec4, mat2, mat3, mat4, Texture2d>;

@@ -73,10 +73,11 @@ void SoftRenderer::test_cube() {
 	return;
 }
 
-void SoftRenderer::normal_renderer() {
+void SoftRenderer::light_renderer() {
 	Texture2d diffuse_texture("resources/obj/african_head_diffuse.tga");
 	shader_ptr->set_uniform("diffuse_texture", diffuse_texture);
 	shader_ptr->set_uniform("light_dir", normalized(vec3(0, 0, 2)));
+	shader_ptr->set_face_culling_func([](float cosine) { return cosine > 0.0f; });
 
 	while (!window.window_should_be_close()) {
 		frame.clear_color(vec3(0.1f, 0.3f, 0.1f));

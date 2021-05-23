@@ -1,16 +1,17 @@
 #include "common.h"
 
+constexpr float zbuffer_fill_value = -std::numeric_limits<float>::max();
 FrameBuffer::FrameBuffer(int _width, int _height) 
-: width(_width), height(_height), frame_buffer(_width * _height)
-, depth_buffer(_width * _height, std::numeric_limits<float>::max()), fill_color(0) {
+: width(_width), height(_height), frame_buffer(size_t(_width) * _height)
+, depth_buffer(size_t(_width) * _height, zbuffer_fill_value), fill_color(0) {
 
 }
 
 void FrameBuffer::set_color(const vec3 &point, const vec3 &color) {
-	int x = static_cast<int>(std::round(point.x()));
-	int y = static_cast<int>(std::round(point.y()));
+	int x = static_cast<int>(point.x());
+	int y = static_cast<int>(point.y());
 	int index = (y * width) + x;
-	if (point.z() < depth_buffer[index]) {
+	if (point.z() > depth_buffer[index]) {
 		depth_buffer[index] = point.z();
 		frame_buffer[index] = color;
 	}
@@ -32,7 +33,7 @@ void FrameBuffer::clear(FrameBufferType type) {
 	if (type & FrameBufferType::ColorBuffer)
 		std::fill(frame_buffer.begin(), frame_buffer.end(), fill_color);
 	if (type & FrameBufferType::DepthBuffer)
-		std::fill(depth_buffer.begin(), depth_buffer.end(), std::numeric_limits<float>::max());
+		std::fill(depth_buffer.begin(), depth_buffer.end(), zbuffer_fill_value);
 }
 
 void FrameBuffer::clear_color(const vec3 &color) {

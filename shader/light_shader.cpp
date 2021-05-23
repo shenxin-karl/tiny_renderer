@@ -5,8 +5,9 @@ vec4 LightShader::vertex(const Vertex &vertex, int idx) {
 }
 
 bool LightShader::fragment(const vec3 &point, const std::array<Vertex *, 3> &vertices, vec3 &color) {
-	vec2 texcoords = interp(vertices, &Vertex::texcoords);
-	const Texture2d &diffuse_texture = get_uniform<Texture2d>("diffuse_texture");
-	color = diffuse_texture.texture(texcoords);
+	vec3 normal = interp(vertices, &Vertex::normal);
+	const vec3 &light_dir = get_uniform<vec3>("light_dir");
+	float gray = std::max(dot(light_dir, normal), 0.f);
+	color = { gray, gray, gray };
 	return true;
 }

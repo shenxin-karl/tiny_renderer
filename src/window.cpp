@@ -76,7 +76,7 @@ void Window::set_window_should_be_close(bool flag) {
 
 void Window::poll_event() {
 	MSG msg;
-	if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) 	// 从消息队列中删除一条消息
+	while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) 	// 从消息队列中删除一条消息
 		DispatchMessage(&msg);
 
 	for (int i = 0; i < static_cast<int>(WindowKey::MaxCount); ++i) {

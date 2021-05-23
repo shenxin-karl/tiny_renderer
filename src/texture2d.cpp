@@ -25,8 +25,8 @@ vec3 Texture2d::texture(float s, float t) const {
 		return vec3(0);
 	}
 #endif // _DEBUG
-	int y = static_cast<int>(std::round((1-t) * height));
-	int x = static_cast<int>(std::round(s * width));
+	int y = static_cast<int>((1-t) * height);
+	int x = static_cast<int>(s * width);
 	int index = y * width * channel + x * channel;
 	constexpr float inverse_255 = 1.f / 255.f;
 	return vec3 {
