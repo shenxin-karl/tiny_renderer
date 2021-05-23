@@ -52,8 +52,14 @@ void SoftRenderer::frame_callback(int _width, int _height) {
 }
 
 void SoftRenderer::poll_event() {
+	fps++;
 	window.poll_event();
 	last_time = window.get_time();
+	if (last_time > now_time) {
+		std::cout << "fps: " << fps << std::endl;
+		now_time = static_cast<int>(last_time) + 1;
+		fps = 0;
+	}
 }
 
 
@@ -97,10 +103,11 @@ void SoftRenderer::blinn_phong() {
 	Texture2d diffuse_texture("resources/obj/african_head_diffuse.tga");
 	shader_ptr->set_uniform("diffuse_texture", diffuse_texture);
 	shader_ptr->set_uniform("specular_factor", 32.f);
-	shader_ptr->set_uniform("light_ambient", vec3(0.2f, 0.2f, 0.2f));
-	shader_ptr->set_uniform("light_diffuse", vec3(0.7f, 0.7f, 0.7f));
+	shader_ptr->set_uniform("light_ambient", vec3(0.4f, 0.4f, 0.4f));
+	shader_ptr->set_uniform("light_diffuse", vec3(0.8f, 0.8f, 0.8f));
 	shader_ptr->set_uniform("light_specular", vec3(2.f, 2.f, 2.f));
-	
+	shader_ptr->set_face_culling_func([](float cosine) { return cosine > 0.0f; });
+
 	while (!window.window_should_be_close()) {
 		mat4 light_rotate_mat = Draw::rotate_y(window.get_time() * 30);
 		vec3 new_light_dir = normalized(light_rotate_mat * vec4(light_dir, 1.f));

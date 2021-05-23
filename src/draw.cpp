@@ -52,15 +52,17 @@ void Draw::triangle(FrameBuffer &frame, ShaderBase &shader, std::array<Vertex *,
 			const vec3 &v1 = vertice[0]->position.head<3>();
 			const vec3 &v2 = vertice[1]->position.head<3>();
 			const vec3 &v3 = vertice[2]->position.head<3>();
-			vec3 coords = barycentric_coord(vec2(float(x), float(y)), v1, v2, v3);
+			float fx = static_cast<float>(x);
+			float fy = static_cast<float>(y);
+			vec3 coords = barycentric_coord({ fx, fy }, v1, v2, v3);
 			if (!(coords[0] >= 0.f) || !(coords[1] >= 0.f) || !(coords[2] >= 0.f))
 				continue;
 		
 			vec3 color;
 			float depth = shader.calc_depth(coords, vertice);
-			vec3 point = { float(x), float(y), depth };
+			vec3 point = { fx, fy, depth };
 			if (shader.fragment(point, vertice, color))
-				frame.set_color(vec3(float(x), float(y), depth), color);
+				frame.set_color(point, color);
 			
 		}
 	}
@@ -161,12 +163,25 @@ mat4 Draw::view(vec3 look_from, vec3 look_up, vec3 look_at) {
 
 mat4 Draw::rotate_y(float angle) {
 	float radian = Draw::radians(angle);
-	float coine = std::cos(radian);
+	float cosine = std::cos(radian);
 	float sine = std::sin(radian);
 	return {
-		coine,	0,		-sine,	0,
+		cosine,	0,		-sine,	0,
 		0,		1,		0,		0,
-		sine,	0,		coine,	0,
+		sine,	0,		cosine,	0,
 		0,		0,		0,		1,
 	};
 }
+
+mat4 Draw::rotate_x(float angle) {
+	float radian = Draw::radians(angle);
+	float cosine = std::cos(radian);
+	float sine = std::sin(radian);
+	return {
+		1,		0,		0,		0,
+		0,		cosine, -sine,	0,
+		0,		sine,	cosine, 0,
+		0,		0,		0,		1,
+	};
+}
+

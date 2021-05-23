@@ -14,4 +14,5 @@ public:
 	static mat4 projection(float fov, float aspect, float n, float f);
 	static mat4 view(vec3 look_from, vec3 look_up, vec3 look_at);
 	static mat4 rotate_y(float angle);
+	static mat4 rotate_x(float angle);
 };

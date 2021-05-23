@@ -9,6 +9,8 @@ class SoftRenderer {
 	int width;
 	int height;
 	float last_time = 0.f;
+	int now_time = 0;
+	int fps = 0;
 public:
 	SoftRenderer(int _width, int _height, std::shared_ptr<CameraBase> _camera_ptr, 
 				 std::shared_ptr<ShaderBase> _shader_ptr, std::shared_ptr<Model> _model_ptr);
