@@ -52,9 +52,11 @@ void SoftRenderer::frame_callback(int _width, int _height) {
 }
 
 void SoftRenderer::poll_event() {
-	fps++;
 	window.poll_event();
 	last_time = window.get_time();
+	process_input();
+
+	fps++;
 	if (last_time > now_time) {
 		std::cout << "fps: " << fps << std::endl;
 		now_time = static_cast<int>(last_time) + 1;
@@ -62,6 +64,23 @@ void SoftRenderer::poll_event() {
 	}
 }
 
+void SoftRenderer::process_input() {
+	while (is_input()) {
+		std::string line;
+		std::getline(std::cin, line);
+		std::stringstream sbuf(line);
+		if (line.compare("save") == 0) {
+			std::string file_name;
+			long type;
+			sbuf >> file_name >> type;
+			frame.save(file_name, static_cast<FrameBufferType>(type));
+		}
+	}
+}
+
+bool SoftRenderer::is_input() {
+	return _kbhit();
+}
 
 void SoftRenderer::test_cube() {
 	Texture2d diffuse_texture("resources/test_cube/container2.png");

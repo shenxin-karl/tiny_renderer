@@ -10,7 +10,7 @@ concept uniform_key_constraint = requires {
 
 struct ShaderBase {
 	virtual ~ShaderBase() = default;
-	virtual void initialize() noexcept {};
+	virtual void initialize() noexcept {};			// It is called once per frame
 	virtual vec4 vertex(const Vertex &vertex, int idx) noexcept = 0;
 	virtual bool fragment(const vec3 &point, const std::array<Vertex *, 3> &vertices, vec3 &color) noexcept = 0;
 

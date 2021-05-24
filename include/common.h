@@ -25,6 +25,7 @@
 #include <stb_image.h>
 
 #include <Windows.h>
+#include <conio.h>
 #undef max
 #undef min
 

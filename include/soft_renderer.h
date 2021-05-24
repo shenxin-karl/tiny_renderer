@@ -22,6 +22,8 @@ public:
 	void scroll_callback(float offset);
 	void frame_callback(int width, int height);
 	void poll_event();
+	void process_input();
+	bool is_input();
 public:
 	void test_cube();
 	void light_renderer();
