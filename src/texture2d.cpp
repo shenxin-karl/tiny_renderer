@@ -57,7 +57,9 @@ vec4 Texture2d::rgba(const vec2 &texcoord) const {
 }
 
 vec3 Texture2d::normal(const vec2 &texcoord) const {
-	return rgb(texcoord);
+	auto noraml = rgb(texcoord);
+	noraml = normalized(noraml * 2.f - 1.f); 
+	return noraml;
 }
 
 void Texture2d::RecycleBin::operator()(unsigned char *data) const noexcept {

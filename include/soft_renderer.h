@@ -28,4 +28,5 @@ public:
 	void test_cube();
 	void light_renderer();
 	void blinn_phong();
+	void normal_mapping();
 };

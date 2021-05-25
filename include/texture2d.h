@@ -13,8 +13,8 @@ public:
 	};
 
 	vec3 rgb(const vec2 &texcoord) const;
-	vec4 rgba(const vec2 & texcoord) const;
-	vec3 normal(const vec2 & texcoord) const;
+	vec4 rgba(const vec2 &texcoord) const;
+	vec3 normal(const vec2 &texcoord) const;
 private:
 	int width;
 	int	height;
