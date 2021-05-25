@@ -23,7 +23,7 @@ bool BlinnPhong::fragment(const vec3 &point, const std::array<Vertex *, 3> &vert
 
 	const Texture2d &diffuse_texture = *this->diffuse_texture_ptr;
 	vec2 texcoords = interp(vertices, &Vertex::texcoords);
-	vec3 diffuse_texture_color = diffuse_texture.texture(texcoords);
+	vec3 diffuse_texture_color = diffuse_texture.rgb(texcoords);
 
 	// ambient color
 	const vec3 &light_ambient = *this->light_ambient_ptr;

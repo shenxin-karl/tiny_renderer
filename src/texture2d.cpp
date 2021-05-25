@@ -13,11 +13,9 @@ Texture2d::Texture2d(const std::string &path) {
 #endif // _DEBUG
 }
 
-vec3 Texture2d::texture(vec2 texcoord) const {
-	return texture(texcoord.s(), texcoord.t());
-}
-
-vec3 Texture2d::texture(float s, float t) const {
+vec3 Texture2d::rgb(const vec2 &texcoord) const {
+	float s = texcoord.s();
+	float t = texcoord.t();
 	unsigned char *image_data = data.get();
 #ifdef _DEBUG
 	if (image_data == nullptr) {
@@ -27,13 +25,39 @@ vec3 Texture2d::texture(float s, float t) const {
 #endif // _DEBUG
 	int y = static_cast<int>((1-t) * height);
 	int x = static_cast<int>(s * width);
-	int index = y * width * channel + x * channel;
+	int index = y * width * 3 + x * 3;
 	constexpr float inverse_255 = 1.f / 255.f;
-	return vec3 {
+	return vec3{
 		image_data[index]	* inverse_255,
 		image_data[index+1] * inverse_255,
 		image_data[index+2] * inverse_255,
 	};
+}
+
+vec4 Texture2d::rgba(const vec2 &texcoord) const {
+	float s = texcoord.s();
+	float t = texcoord.t();
+	unsigned char *image_data = data.get();
+#ifdef _DEBUG
+	if (image_data == nullptr) {
+		std::cerr << texture_name << " texture: image_data is nullptr" << std::endl;
+		return vec4(0);
+	}
+#endif // _DEBUG
+	int y = static_cast<int>((1-t) * height);
+	int x = static_cast<int>(s * width);
+	int index = y * width * 4 + x * 4;
+	constexpr float inverse_255 = 1.f / 255.f;
+	return vec4 {
+		image_data[index]	* inverse_255,
+		image_data[index+1] * inverse_255,
+		image_data[index+2] * inverse_255,
+		image_data[index+3] * inverse_255,
+	};
+}
+
+vec3 Texture2d::normal(const vec2 &texcoord) const {
+	return rgb(texcoord);
 }
 
 void Texture2d::RecycleBin::operator()(unsigned char *data) const noexcept {

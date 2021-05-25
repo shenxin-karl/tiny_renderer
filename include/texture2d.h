@@ -12,8 +12,9 @@ public:
 		void operator()(unsigned char *data) const noexcept;
 	};
 
-	vec3 texture(vec2 texcoord) const;
-	vec3 texture(float s, float t) const;
+	vec3 rgb(const vec2 &texcoord) const;
+	vec4 rgba(const vec2 & texcoord) const;
+	vec3 normal(const vec2 & texcoord) const;
 private:
 	int width;
 	int	height;
