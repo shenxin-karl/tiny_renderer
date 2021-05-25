@@ -85,3 +85,37 @@ bool Mesh::backface_culling(ShaderBase &shader, const Vertex &v1, const Vertex &
 	return res;
 }
 
+void Mesh::plane_cutting(std::list<Vertex> &vertices, std::list<uint> &indices) {
+
+}
+
+bool Mesh::plane_cutting_triangle(std::list<Vertex> &vertices, 
+								  std::list<uint> &indices, std::array<Vertex *, 3> 
+								  triangle, 
+								  std::function<bool(float, float)> compare_func,
+								  size_t idx, 
+								  float limit) 
+{
+	int outside_indices[3] = { -1, -1, -1 };
+	int outside_size = 0;
+	for (int i = 0; i < 3; ++i) {
+		const Vertex *vertex_ptr = triangle[i];
+		auto res = outside(vertex_ptr->position, compare_func, idx, limit);
+		if (!res) {
+			outside_indices[outside_size] = i;
+			++outside_size;
+		}
+	}
+	if (outside_size == 3)		// 三个顶点都在外面
+		return false;
+
+	if (outside_size == 2) {
+		// 找到在内侧的顶点, 和另外两个顶点做插值. 然后替换这里的 Vertex 去写入到 list 里面
+	}
+}
+
+bool Mesh::outside(const vec4 &point, std::function<bool(float, float)> compare_func, size_t idx, float limit) {
+	return compare_func(point[idx], limit);
+}
+
+

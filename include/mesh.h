@@ -35,4 +35,12 @@ public:
 private:
 	void process_triangle(FrameBuffer &frame, ShaderBase &shader, std::array<int, 3> our_indices) const;
 	bool backface_culling(ShaderBase &shader, const Vertex &v1, const Vertex &v2, const Vertex &v3) const noexcept;
+	void plane_cutting(std::list<Vertex> &vertices, std::list<uint> &indices);
+	bool plane_cutting_triangle(std::list<Vertex> &vertices, 
+								std::list<uint> &indices, 
+								std::array<Vertex *, 3> triangle, 
+								std::function<bool(float, float)> compare_func,
+								size_t idx, 
+								float limit);
+	bool outside(const vec4 &point, std::function<bool(float, float)> compare_func, size_t idx, float limit);
 };
