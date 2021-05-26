@@ -17,6 +17,7 @@
 #include <tuple>
 #include <variant>
 #include <random>
+#include <span>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>

@@ -1,17 +1,33 @@
 #include "common.h"
 
+Vertex Vertex::operator*(float t) const noexcept {
+	return {
+		position	* t,
+		normal		* t,
+		texcoords	* t,
+	};
+}
+
+Vertex Vertex::operator+(const Vertex &other) const noexcept {
+	return {
+		position  + other.position,
+		normal	  + other.normal,
+		texcoords + other.texcoords,
+	};
+}
+
 Texture::Texture(const std::string &_var, const std::string &_path)
 : var(_var), texture(_path) {
 
 }
 
 
-Texture::Texture(const std::string &_var, const Texture2d &_texture) 
+Texture::Texture(const std::string &_var, const Texture2d &_texture)
 : var(_var), texture(_texture) {
 
 }
 
-Mesh::Mesh(std::vector<Vertex> &&_vertices, std::vector<uint> &&_indices, std::vector<Texture> &&_textures)
+Mesh::Mesh(std::vector<Vertex> &&_vertices, std::vector<int> &&_indices, std::vector<Texture> &&_textures)
 : vertices(std::move(_vertices)), indices(std::move(_indices))
 , textures(std::move(_textures)) {
 
@@ -19,46 +35,35 @@ Mesh::Mesh(std::vector<Vertex> &&_vertices, std::vector<uint> &&_indices, std::v
 
 void Mesh::draw(FrameBuffer &frame, ShaderBase &shader) const {
 	shader.initialize();
-	int limit = static_cast<int>(indices.size());
-	for (int i = 0; i < limit-2; i += 3) {
+	int limit = static_cast<int>(indices.size()) - 2;
+	for (int i = 0; i < limit; i += 3) {
 		process_triangle(frame, shader, { i, i+1, i+2 });
 	}
 }
 
 struct VertexResult {
 	vec4	position;
-	uint	index;
+	int		index;
 };
 void Mesh::process_triangle(FrameBuffer &frame, ShaderBase &shader, std::array<int, 3> our_indices) const {
 	std::array<VertexResult, 3> vertex_res;
 	for (int i = 0; i < 3; ++i) {
-		uint index = our_indices[i];
+		int index = our_indices[i];
 		const Vertex &vertex = vertices[index];
 		vec4 point = shader.vertex(vertex, i);
 		vertex_res[i] = { point, index };
 	}
 
 	std::vector<Vertex> out_vertices;
-	std::vector<uint>   out_indices;
-	out_vertices.reserve(6);
-	out_indices.reserve(6);
-	for (int i = 0; VertexResult & ver_res : vertex_res) {
-		if (ver_res.position.w() >= 0.f)
-			return;
+	std::vector<int>    out_indices;
+	out_vertices.reserve(3);
+	out_indices.reserve(3);
+	if (plane_cutting(out_vertices, out_indices) < 0)		// cutting
+		return;
 
-		float inverse_world_z = 1.f / ver_res.position.w();
-		for (size_t i = 0; i < ver_res.position.size()-1; ++i)
-			ver_res.position[i] *= inverse_world_z;
-
-		const Vertex &ver = vertices[ver_res.index];
-		out_indices.push_back(i++);
-		out_vertices.push_back(Vertex {
-			ver_res.position,
-			ver.normal    * inverse_world_z,
-			ver.texcoords * inverse_world_z,
-		});
-	}
-
+	for (auto &v : out_vertices)		
+		v.perspective_divide();
+	
 	int limit = static_cast<int>(out_indices.size()) - 2;
 	for (size_t i = 0; i < limit; i += 3u) {
 		if (backface_culling(shader, out_vertices[i], out_vertices[i+1], out_vertices[i+2]))
@@ -85,37 +90,91 @@ bool Mesh::backface_culling(ShaderBase &shader, const Vertex &v1, const Vertex &
 	return res;
 }
 
-void Mesh::plane_cutting(std::list<Vertex> &vertices, std::list<uint> &indices) {
+int Mesh::plane_cutting(std::vector<Vertex> &vertices, std::vector<int> &indices) const {
+	static std::pair<size_t, std::function<bool(float, float)>> planes[] = {
+		{ 0, std::less<float>()		},
+		{ 0, std::greater<float>(), },
+		{ 1, std::less<float>(),	},
+		{ 1, std::greater<float>(), },
+		{ 2, std::less<float>(),	},
+		{ 2, std::greater<float>(), },
+	};
+	int size = indices.size();
+	for (auto iter = std::begin(planes); iter != std::end(planes) && size > 0; ++iter) {
+		for (int i = 0; i < indices.size()-2 && size > 0; ++i) {
+			if (indices[i] < 0)
+				continue;
 
+			std::span<int, 3> view(&indices[i], 3);
+			size += plane_cutting_triangle(vertices, view, iter->first, iter->second);
+		}
+	}
+	return size;
 }
 
-bool Mesh::plane_cutting_triangle(std::list<Vertex> &vertices, 
-								  std::list<uint> &indices, std::array<Vertex *, 3> 
-								  triangle, 
-								  std::function<bool(float, float)> compare_func,
-								  size_t idx, 
-								  float limit) 
+int Mesh::plane_cutting_triangle(std::vector<Vertex> &vertices,
+								  std::span<int, 3> indices,
+								  size_t idx,
+								  std::function<bool(float, float)> compare_func) const noexcept
 {
-	int outside_indices[3] = { -1, -1, -1 };
+	std::array<bool, 3> outside_flag = { false };
+	std::array<int, 3> outside_indices = { -1 };
 	int outside_size = 0;
-	for (int i = 0; i < 3; ++i) {
-		const Vertex *vertex_ptr = triangle[i];
-		auto res = outside(vertex_ptr->position, compare_func, idx, limit);
-		if (!res) {
+	for (int i = 0; auto vertex_idx : indices) {
+		const Vertex &v = vertices[vertex_idx];
+		bool is_outside = outside(v.position, compare_func, idx, 1.f);
+		if (is_outside) {
+			outside_flag[i] = true;
 			outside_indices[outside_size] = i;
 			++outside_size;
 		}
+		++i;
 	}
-	if (outside_size == 3)		// 三个顶点都在外面
-		return false;
 
-	if (outside_size == 2) {
-		// 找到在内侧的顶点, 和另外两个顶点做插值. 然后替换这里的 Vertex 去写入到 list 里面
+	switch (outside_size) {
+	case 3:
+	{
+		std::fill(indices.begin(), indices.end(), -1);
+		return -3;
 	}
+	case 1:
+	{
+		// todo case1
+		return 3;
+	}
+	case 2:
+	{
+		const Vertex &outside_vertex1 = vertices[outside_indices[0]];
+		const Vertex &outside_vertex2 = vertices[outside_indices[1]];
+		auto iter = std::find(outside_flag.begin(), outside_flag.end(), true);
+		assert(iter != outside_flag.end());
+		int inside_idx = indices[static_cast<int>(iter - outside_flag.begin())];
+		const Vertex &inside_vertex = vertices[inside_idx];
+		// 插值第一个顶点
+		float t1 = get_plane_ratio(inside_vertex, outside_vertex1, idx);
+		vertices[outside_indices[0]] = interp_vertex(inside_vertex, outside_vertex1, t1);
+		// 插值第二个顶点
+		float t2 = get_plane_ratio(inside_vertex, outside_vertex2, idx);
+		vertices[outside_indices[1]] = interp_vertex(inside_vertex, outside_vertex1, t2);
+		return 0;
+	}
+	}
+	assert(false);
+	return 0;
 }
 
-bool Mesh::outside(const vec4 &point, std::function<bool(float, float)> compare_func, size_t idx, float limit) {
+bool Mesh::outside(const vec4 &point, std::function<bool(float, float)> compare_func, size_t idx, float limit) const noexcept {
 	return compare_func(point[idx], limit);
 }
 
+Vertex Mesh::interp_vertex(const Vertex &start, const Vertex &last, float t) const noexcept {
+	return (start * t) +  (last * (1.f-t));
+}
 
+float Mesh::get_plane_ratio(const Vertex &start, const Vertex &last, size_t idx) const noexcept {
+	float f1 = start.position[idx];
+	float f2 = last.position[idx];
+	float w1 = start.position.w();
+	float w2 = last.position.w();
+	return (f1 - w1) / ((w2 - w1) - (f2 - f1));
+}
