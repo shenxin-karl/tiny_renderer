@@ -95,7 +95,8 @@ void Window::draw(const FrameBuffer &frame_buff) {
 
 	size_t size = size_t(width) * size_t(height) * 3ul;
 	std::unique_ptr<unsigned char[]> buffer(new unsigned char[size]);
-	if constexpr (sizeof(vec3) == sizeof(float)*3) {						// 使用指针优化 
+	constexpr int v = sizeof(vec3);
+	if constexpr (sizeof(vec3) == (sizeof(float)*3)) {						// 使用指针优化 
 		unsigned char *bitmap_ptr = buffer.get();
 		const float *frame_ptr = frame_buff.get_frame_data();
 		for (size_t i = 0; i < size; ++i) {

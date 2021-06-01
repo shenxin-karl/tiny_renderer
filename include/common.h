@@ -49,3 +49,4 @@
 #include "soft_renderer.h"
 #include "blinn_phong.h"
 #include "normal_mapping.h"
+#include "depth_shader.h"

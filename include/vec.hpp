@@ -233,10 +233,11 @@ public:
     }
 
 
-    vec &operator-() noexcept {
+    vec operator-() noexcept {
+        auto res = *this;
         for (int i = 0; i < N; ++i) 
-            data[i] = -data[i];
-        return *this;
+            res.data[i] = -res.data[i];
+        return res;
     }
 
 private:

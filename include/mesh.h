@@ -10,7 +10,7 @@ struct Vertex {
 public:
 	Vertex operator*(float t) const noexcept;
 	Vertex operator+(const Vertex &other) const noexcept;
-	void perspective_divide();
+	void perspective_divide();	
 };
 
 struct Texture {
@@ -37,13 +37,4 @@ public:
 private:
 	void process_triangle(FrameBuffer &frame, ShaderBase &shader, std::array<int, 3> our_indices) const;
 	bool backface_culling(ShaderBase &shader, const Vertex &v1, const Vertex &v2, const Vertex &v3) const noexcept;
-	int plane_cutting(std::vector<Vertex> &vertices, std::vector<int> &indices) const noexcept;
-	int plane_cutting_triangle(std::vector<Vertex> &vertices,
-								std::span<int, 3> indices,
-								size_t idx,
-								std::function<bool(float, float)> compare_func) const noexcept;
-
-	bool outside(const vec4 &point, std::function<bool(float, float)> compare_func, size_t idx, float limit) const noexcept;
-	Vertex interp_vertex(const Vertex &start, const Vertex &last, float t) const noexcept;
-	float get_plane_ratio(const Vertex &start, const Vertex &last, size_t idx) const noexcept;
 };

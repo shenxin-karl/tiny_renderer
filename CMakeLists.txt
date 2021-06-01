@@ -21,6 +21,7 @@ add_executable(tiny_renderer
 	"include/fixed_camera.h"	"src/fixed_camera.cpp"
 	"shader/blinn_phong.h"		"shader/blinn_phong.cpp"
 	"shader/normal_mapping.h"	"shader/normal_mapping.cpp"
+	"shader/depth_shader.h"		"shader/depth_shader.cpp"
 )
 
 

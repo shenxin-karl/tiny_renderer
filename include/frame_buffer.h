@@ -24,6 +24,8 @@ public:
 	FrameBuffer(int _width, int _height);
 	FrameBuffer(const FrameBuffer &) = delete;
 	void set_color(const vec3 &point, const vec3 &color);
+	int get_index(const vec2 &point) const;
+	bool check_depth(const vec3 &point) const;
 	void resize(int _width, int _height, bool refresh_buffer = false);
 	void clear(FrameBufferType type);
 	void clear_color(const vec3 &color);

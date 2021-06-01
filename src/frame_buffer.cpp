@@ -8,13 +8,20 @@ FrameBuffer::FrameBuffer(int _width, int _height)
 }
 
 void FrameBuffer::set_color(const vec3 &point, const vec3 &color) {
+	int index = get_index(point.head<2>());
+	frame_buffer[index] = color;
+	depth_buffer[index] = point.z();
+}
+
+int FrameBuffer::get_index(const vec2 &point) const {
 	int x = static_cast<int>(point.x());
 	int y = static_cast<int>(point.y());
-	int index = (y * width) + x;
-	if (point.z() > depth_buffer[index]) {
-		depth_buffer[index] = point.z();
-		frame_buffer[index] = color;
-	}
+	return (y * width) + x;
+}
+
+bool FrameBuffer::check_depth(const vec3 &point) const {
+	int index = get_index(point.head<2>());
+	return point.z() > depth_buffer[index];
 }
 
 void FrameBuffer::resize(int _width, int _height, bool refresh_buffer) {

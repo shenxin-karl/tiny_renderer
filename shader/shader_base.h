@@ -35,7 +35,6 @@ struct ShaderBase {
 	void set_model(const mat4 &_model);
 	void set_view(const mat4 &_view);
 	void set_projection(const mat4 &_projection);
-	void set_viewport(const mat4 &_viewport);
 	float calc_depth(const vec3 &_coords, const std::array<Vertex *, 3> &vertices);
 	float get_depth() const noexcept;
 

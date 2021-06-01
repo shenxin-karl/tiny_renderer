@@ -23,7 +23,7 @@ Model Model::load_obj(const std::string &path) {
 		return {};
 
 	std::vector<Vertex> vertices;
-	std::vector<uint> indices;
+	std::vector<int> indices;
 	std::vector<vec4> all_vertices;
 	std::vector<vec3> all_normal;
 	std::vector<vec2> all_texcoords;
@@ -122,7 +122,7 @@ Model Model::create_test_cube_obj() {
 		Vertex{ vec4{-0.5f,  0.5f, -0.5f, 1.0f}, vec3{ 0.0f,  1.0f,  0.0f}, vec2{0.0f, 1.0f},},
 	};
 	
-	std::vector<uint> indices;
+	std::vector<int> indices;
 	indices.reserve(vertices.size());
 	std::generate_n(std::back_inserter(indices), vertices.size(), [n = 0]() mutable {
 		return n++;
@@ -153,7 +153,7 @@ Mesh Model::process_mesh(aiMesh *mesh, const aiScene *scene) {
 		vertices.emplace_back(std::move(vertex));
 	}
 
-	std::vector<uint> indices;
+	std::vector<int> indices;
 	for (size_t i = 0; i < mesh->mNumFaces; ++i) {		// ´¦ÀíË÷Òý
 		const aiFace &face = mesh->mFaces[i];
 		std::copy(face.mIndices, face.mIndices + face.mNumIndices, std::back_insert_iterator(indices));

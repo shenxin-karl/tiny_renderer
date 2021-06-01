@@ -25,7 +25,7 @@ public:
 	void process_input();
 	bool is_input();
 public:
-	void test_cube();
+	void test_cube(float near, float far);
 	void light_renderer();
 	void blinn_phong();
 	void normal_mapping();

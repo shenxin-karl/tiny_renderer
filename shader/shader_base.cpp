@@ -15,11 +15,6 @@ void ShaderBase::set_projection(const mat4 &_projection) {
 	update_mvp();
 }
 
-void ShaderBase::set_viewport(const mat4 &_viewport) {
-	viewport = _viewport;
-	update_mvp();
-}
-
 float ShaderBase::calc_depth(const vec3 &_coords, const std::array<Vertex *, 3> &vertices) {
 	coords = _coords;
 	float d1 = coords[0] / vertices[0]->position.w();
@@ -49,5 +44,5 @@ const std::function<bool(float)> &ShaderBase::get_face_culling_func() const noex
 }
 
 void ShaderBase::update_mvp() {
-	mvp = viewport * projection * view * model;
+	mvp = projection * view * model;
 }

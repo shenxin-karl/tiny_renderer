@@ -58,12 +58,14 @@ void Draw::triangle(FrameBuffer &frame, ShaderBase &shader, std::array<Vertex *,
 			if (!(coords[0] >= 0.f) || !(coords[1] >= 0.f) || !(coords[2] >= 0.f))
 				continue;
 		
-			vec3 color;
 			float depth = shader.calc_depth(coords, vertice);
 			vec3 point = { fx, fy, depth };
+			if (!frame.check_depth(point))
+				continue;
+
+			vec3 color;
 			if (shader.fragment(point, vertice, color))
 				frame.set_color(point, color);
-			
 		}
 	}
 }
@@ -101,17 +103,8 @@ float Draw::random() noexcept {
 	return dis(gen);
 }
 
-mat4 Draw::viewport(int width, int height) {
-	return mat4 {
-		width/2.f,	0,			0,			width/2.f,
-		0,			height/2.f,	0,			height/2.f,
-		0,			0,			1,			0,
-		0,			0,			0,			1,
-	};
-}
-
 mat4 Draw::ortho(float fov, float aspect, float n, float f) {
-	float t = std::tan(radians(fov / 2.f)) * n;
+	float t = std::tan(radians(fov / 2.f)) * std::abs(n);
 	float b = -t;
 	float r = t * aspect;
 	float l = -r;
@@ -127,7 +120,8 @@ mat4 Draw::ortho(float fov, float aspect, float n, float f) {
 		0,	0,	1,	-(n+f)/2.f,
 		0,	0,	0,	1
 	};
-	return scale * trans;
+	auto res = scale * trans;
+	return res;
 }
 
 mat4 Draw::projection(float fov, float aspect, float n, float f) {
@@ -185,3 +179,141 @@ mat4 Draw::rotate_x(float angle) {
 	};
 }
 
+int Draw::plane_cutting(std::vector<Vertex> &vertices, std::vector<int> &indices) {
+	static std::tuple<int, bool(*)(float, float), bool>  planes[] = {
+		{ 3,	outside_w_plane,		true  },		// w		butting
+		{ 0,	outside_right_plane,	true  },		// right	cutting
+		{ 0,	outside_left_plane,		false },		// left		cutting
+		{ 1,	outside_top_plane,		true  },		// top		cutting
+		{ 1,	outside_bottom_plane,	false },		// buttom	butting
+		{ 2,	outside_front_plane,	true  },		// front	butting
+		{ 2,	outside_back_plane,		false },		// back		butting
+	};
+
+	int size = static_cast<int>(indices.size());
+	for (auto iter = std::begin(planes); iter != std::end(planes) && size != 0; ++iter) {
+		int limit = static_cast<int>(indices.size()) - 2;
+		for (int i = 0; i < limit && size != 0; i += 3) {
+			if (indices[i] < 0)
+				continue;
+
+			std::span<int, 3> triangle_view(&indices[i], 3);
+			auto&&[plane_idx, callback, symbol] = *iter;
+			auto res = plane_cutting_triangle(vertices, indices, triangle_view, plane_idx, callback, symbol);
+			size += res;
+		}
+	}
+	return size;
+}
+
+int Draw::plane_cutting_triangle(std::vector<Vertex> &vertices, std::vector<int> &indices, 
+								 std::span<int, 3> triangle_view, size_t plane_idx,
+								 bool (*outside_func)(float, float), bool symobl) 
+{
+	std::array<bool, 3> flags = { false };
+	std::array<int, 3> outside_list = { -1 };
+	int outside_size = 0;
+	for (int i = 0; int idx : triangle_view) {
+		const Vertex &v = vertices[idx];
+		bool outside = outside_func(v.position[plane_idx], v.position.w());
+		if (outside) {
+			flags[i] = true;
+			outside_list[outside_size] = idx;
+			++outside_size;
+		}
+		++i;
+	}
+	
+	if (outside_size == 0) {
+		return 0;
+	} else if (outside_size == 1) {
+		auto iter = std::find(flags.begin(), flags.end(), true);
+		assert(iter != flags.end());
+		int outside_idx = static_cast<int>(iter - flags.begin());
+		int inside_idx1 = (outside_idx + 2) % 3;
+		int inside_idx2 = (outside_idx + 1) % 3;
+		int outside_ver_idx = triangle_view[outside_idx];
+		int inside_ver_idx1 = triangle_view[inside_idx1];
+		int inside_ver_idx2 = triangle_view[inside_idx2];
+		const Vertex &outside_vertex = vertices[outside_ver_idx];
+		const Vertex &inside_vertex1 = vertices[inside_ver_idx1];
+		const Vertex &inside_vertex2 = vertices[inside_ver_idx2];
+		const Vertex P = interp_vertex(inside_vertex1, outside_vertex, plane_idx, symobl);
+		const Vertex N = interp_vertex(inside_vertex2, outside_vertex, plane_idx, symobl);
+		vertices[indices[outside_idx]] = P;		// 第一个三角形
+
+		// 第二个三角形
+		vertices.push_back(N);
+		indices.push_back(inside_ver_idx2);
+		indices.push_back(outside_idx);
+		indices.push_back(static_cast<int>(vertices.size()-1));
+		return 3;
+	} else if (outside_size == 2) {
+		auto iter = std::find(flags.begin(), flags.end(), false);
+		assert(iter != flags.end());
+		int inside_idx = static_cast<int>(iter - flags.begin());
+		int outside_ver_idx1 = outside_list[0];
+		int outside_ver_idx2 = outside_list[1];
+		const Vertex &inside_vertex = vertices[triangle_view[inside_idx]];
+		const Vertex &outside_vertex1 = vertices[outside_ver_idx1];
+		const Vertex &outside_vertex2 = vertices[outside_ver_idx2];
+		vertices[outside_ver_idx1] = interp_vertex(inside_vertex, outside_vertex1, plane_idx, symobl);
+		vertices[outside_ver_idx2] = interp_vertex(inside_vertex, outside_vertex2, plane_idx, symobl);
+		return 0;
+	} else if (outside_size == 3) {
+		std::fill(triangle_view.begin(), triangle_view.end(), -1);
+		return -3;
+	}
+	assert(false);
+	return -1;
+}
+
+Vertex Draw::interp_vertex(const Vertex &start, const Vertex &last, size_t plane_idx, bool symbol) {
+	float t;
+	const vec4 &start_position = start.position;
+	const vec4 &last_position = last.position;
+	if (plane_idx == 3) {
+		t = (0.0001f - start_position.w()) / (last_position.w() - start_position.w());
+	} else {
+		if (symbol) {
+			float t1 = start_position[plane_idx] - start_position.w();
+			float t2 = last_position.w() - start_position.w();
+			float t3 = last_position[plane_idx] - start_position[plane_idx];
+			t = (t1) / (t2 - t3);
+		} else {
+			float t1 = start_position[plane_idx] + start_position.w();
+			float t2 = start_position.w() - last_position.w();
+			float t3 = last_position[plane_idx] - start_position[plane_idx];
+			t = (t1) / (t2 - t3);
+		}
+	}
+	return (start * (1.f-t)) + (last * t);
+}
+
+bool Draw::outside_left_plane(float x, float w) {
+	return x > -w;
+}
+
+bool Draw::outside_right_plane(float x, float w) {
+	return x < w;
+}
+
+bool Draw::outside_top_plane(float y, float w) {
+	return y < w;
+}
+
+bool Draw::outside_bottom_plane(float y, float w) {
+	return y > -w;
+}
+
+bool Draw::outside_back_plane(float z, float w) {
+	return z < w;
+}
+
+bool Draw::outside_front_plane(float z, float w) {
+	return z > -w;
+}
+
+bool Draw::outside_w_plane(float f, float w) {
+	return w >= 0.f;
+}

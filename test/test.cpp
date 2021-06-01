@@ -3,7 +3,6 @@
 #define DECLARE_TEST_FUNC(func) { #func, &func }
 std::pair<std::string_view, std::function<bool(void)>> Test::test_func[]{
 	DECLARE_TEST_FUNC(test_barycentric_coord),
-	DECLARE_TEST_FUNC(test_viewport),
 	DECLARE_TEST_FUNC(test_view),
 	DECLARE_TEST_FUNC(test_texture2d),
 	DECLARE_TEST_FUNC(test_vec),
@@ -14,7 +13,7 @@ std::pair<std::string_view, std::function<bool(void)>> Test::test_func[]{
 #undef DECLARE_TEST_FUNC
 
 
-void Test::check() {
+void Test::check_depth() {
 	using std::pair;
 	using std::function;
 	using std::string_view;
@@ -55,28 +54,8 @@ bool Test::test_barycentric_coord() {
 	return true;
 }
 
-bool Test::test_viewport() {
-	int width = 800;
-	int height = 600;
-	vec4 point(0, 0, 0, 1);
-	mat4 viewport = Draw::viewport(width, height);
-	auto res = viewport * point;			// 应该被映射到 屏幕中心
-	if (res.x() != (width / 2.f) || res.y() != (height / 2.f))
-		return false;
-
-	point = { 1, 1, 0, 1 };
-	res = viewport * point;		// 被映射到 [width, height]
-	if (res.x() != width || res.y() != height)
-		return false;
-
-	point = { -1, 1, 0, 1 };	// 映射到 [0, height]
-	res = viewport * point;
-	if (res.x() != 0 || res.y() != height)
-		return false;
-	return true;
-}
-
 bool Test::test_view() {
+#if 0
 	{
 		vec3 look_from = { 2, 2, 0 };
 		vec3 look_up = { 0, 1, 0 };
@@ -102,6 +81,8 @@ bool Test::test_view() {
 		if (point_res.x() != -1.f || point_res.y() != -2.f || point_res.z() != -2.f)
 			return false;
 	}
+	return true;
+#endif
 	return true;
 }
 
@@ -171,7 +152,6 @@ bool Test::test_matrix() {
 
 bool Test::test_orhto() {
 	std::vector<vec3> vertices = { {2, 0, -2}, {0, 2, -2}, {-2, 0, -2} };
-	auto viewport = Draw::viewport(600, 600);
 	auto view = Draw::view({ 0, 0, -1 }, { 0, 1, 0 }, { 0, 0, -2 });
 #if 0
 	for (int fov = 15; fov < 80; ++fov) {
@@ -182,6 +162,12 @@ bool Test::test_orhto() {
 			std::cout << (mvp *	vec4(v, 1.f)) << std::endl;
 	}
 #endif
+
+	constexpr float near = 15.f;
+	constexpr float far = 100.f;
+	vec4 point = { 1, 1, 50.f, 1.0 };
+	auto ortho = Draw::ortho(45.f, 1.f, near, far);
+	auto res = ortho * point;
 	return true;
 }
 
@@ -194,45 +180,33 @@ bool Test::test_projection() {
 	constexpr int widht = 600;
 	constexpr int height = 600;
 	constexpr float aspect = static_cast<float>(widht) / static_cast<float>(height);
-	constexpr float near = 0.001f;
-	constexpr float far = 100.f;
-	vec3 look_from(0, 0, 0);
+	constexpr float near = -0.1f;
+	constexpr float far = -100.f;
+	vec3 look_from(0, 0, 2);
 	vec3 look_at(0, 0, -1);
 	vec3 look_up(0, 1, 0);
 
-	FrameBuffer frame(widht, height);
-	LightShader shader;
-	auto viewport(Draw::viewport(widht, height));
-	shader.set_viewport(Draw::viewport(widht, height));
-	shader.set_view(Draw::view(look_from, look_up, look_at));
+	auto view = Draw::view(look_from, look_up, look_at);
+	// 在 near 的时候, z 是 1
+	auto projection = Draw::projection(45.f, 1.f, near, far);
+	vec4 point = { 0.f, 0.f, -near, 1.f };
+	auto res = projection * point;
 
-	for (int fov = 1; fov < 90; ++fov) {
-		shader.set_projection(Draw::projection(static_cast<float>(fov), aspect, near, far));
-		//shader.set_projection(Draw::ortho(fov, aspect, near, far));
+	// 在 far 的时候, z 是 -1
+	point = { 0.f, 0.f, far, 1.f };
+	res = projection * point;
 
-		std::vector<Vertex> out_vertices;
-		out_vertices.reserve(vertices.size());
-		for (int i = 0; i < vertices.size(); ++i) {
-			vec4 position = shader.vertex(vertices[i], i);
-			for (size_t idx = 0; idx < position.size()-1; ++idx)
-				position[idx] /= position.w();
+	point = { 0.f, 0.f, near+0.001f, 1.f };
+	res = projection * point;
 
-			out_vertices.push_back({
-				position,
-				vertices[i].normal,
-				vertices[i].texcoords,
-			});
-		}
-		//Draw::triangle(frame, shader, {
-		//	&out_vertices[0],
-		//	&out_vertices[1],
-		//	&out_vertices[2],
-		//});
-		std::cout << "fov: " << fov << "\tp1: " << out_vertices[0].position 
-				  << "\tp2: " << out_vertices[1].position
-				  << "\tp3: " << out_vertices[2].position
-				  << std::endl;
-	}
+	look_from = vec3(0, 0, near);
+	point = vec4(look_from + vec3(0, 0, far), 1.f);
+	view = Draw::view(look_from, vec3(0, 1, 0), vec3(0, 0, 0));
+	auto mvp = projection * view;
+	res = mvp * point;
+	point = { 1.f, 1.f, -0.1f, 1.f };
+	point = view * point;
+	res = projection * point;
 	return true;
 }
 

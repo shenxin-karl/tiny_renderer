@@ -65,9 +65,6 @@ const mat4 &FpsCamera::get_view() const {
 
 const mat4 &FpsCamera::get_projection() const {
 	return projection;
-	//static mat4 mat;
-	//mat = Draw::ortho(fov, aspect, near, far);
-	//return mat;
 }
 
 void FpsCamera::update_base_vec() {
@@ -76,7 +73,8 @@ void FpsCamera::update_base_vec() {
 	offset.x() = std::cos(Draw::radians(pitch)) * std::cos(Draw::radians(yaw));
 	offset.z() = std::cos(Draw::radians(pitch)) * std::sin(Draw::radians(yaw));
 	look_at = normalized(offset);
-	world_right = normalized(cross(world_up, look_at));
-	look_up = normalized(cross(look_at, world_right));
+	vec3 world_z = -look_at;
+	world_right = normalized(cross(world_up, world_z));
+	look_up = normalized(cross(world_z, world_right));
 	view = Draw::view(look_from, look_up, look_from + look_at);
 }

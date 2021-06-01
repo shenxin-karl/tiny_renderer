@@ -82,13 +82,13 @@ bool SoftRenderer::is_input() {
 	return _kbhit();
 }
 
-void SoftRenderer::test_cube() {
-	Texture2d diffuse_texture("resources/test_cube/container2.png");
-	shader_ptr->set_uniform("diffuse_texture", diffuse_texture);
+void SoftRenderer::test_cube(float near, float far) {
+	shader_ptr->set_uniform("near", near);
+	shader_ptr->set_uniform("far", far);
+	
 	while (!window.window_should_be_close()) {
 		frame.clear_color(vec3(0.1f, 0.3f, 0.1f));
 		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
-		shader_ptr->set_viewport(Draw::viewport(width, height));
 		shader_ptr->set_view(camera_ptr->get_view());
 		shader_ptr->set_projection(camera_ptr->get_projection());
 		model_ptr->draw(frame, *shader_ptr);
@@ -105,9 +105,8 @@ void SoftRenderer::light_renderer() {
 	shader_ptr->set_face_culling_func([](float cosine) { return cosine > 0.0f; });
 
 	while (!window.window_should_be_close()) {
-		frame.clear_color(vec3(0.1f, 0.3f, 0.1f));
+		frame.clear_color(vec3(0.1f, 0.2f, 0.3f));
 		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
-		shader_ptr->set_viewport(Draw::viewport(width, height));
 		shader_ptr->set_view(camera_ptr->get_view());
 		shader_ptr->set_projection(camera_ptr->get_projection());
 		model_ptr->draw(frame, *shader_ptr);
@@ -134,7 +133,6 @@ void SoftRenderer::blinn_phong() {
 
 		frame.clear_color(vec3(0.f));
 		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
-		shader_ptr->set_viewport(Draw::viewport(width, height));
 		shader_ptr->set_view(camera_ptr->get_view());
 		shader_ptr->set_projection(camera_ptr->get_projection());
 		shader_ptr->set_uniform("eye_pos", camera_ptr->get_look_from());
@@ -159,7 +157,6 @@ void SoftRenderer::normal_mapping() {
 	
 	while (!window.window_should_be_close()) {
 		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
-		shader_ptr->set_viewport(Draw::viewport(width, height));
 		shader_ptr->set_view(camera_ptr->get_view());
 		shader_ptr->set_projection(camera_ptr->get_projection());
 		shader_ptr->set_uniform("eye_pos", camera_ptr->get_look_from());
