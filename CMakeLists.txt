@@ -22,7 +22,7 @@ add_executable(tiny_renderer
 	"shader/blinn_phong.h"		"shader/blinn_phong.cpp"
 	"shader/normal_mapping.h"	"shader/normal_mapping.cpp"
 	"shader/depth_shader.h"		"shader/depth_shader.cpp"
-)
+ "include/loader.h" "src/loader.cpp")
 
 
 target_include_directories(tiny_renderer PUBLIC

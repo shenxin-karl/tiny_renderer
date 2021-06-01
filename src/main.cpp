@@ -1,8 +1,8 @@
 #include "common.h"
 #include <thread>
 
-constexpr int width = 600;
-constexpr int height = 600;
+constexpr int width = 400;
+constexpr int height = 400;
 constexpr float aspect = static_cast<float>(width) / static_cast<float>(height);
 
 void init();
@@ -46,7 +46,7 @@ void test_cube() {
 	std::shared_ptr<CameraBase> camera_ptr
 		= std::make_shared<FpsCamera>(vec3(2, 0, 0), vec3(0, 1, 0), 45.f, aspect, near, far, 1.f, 0.1f);
 	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<DepthShader>();
-	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Model::create_test_cube_obj());
+	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::create_test_cube_obj());
 	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
 	renderer.test_cube(near, far);
 }
@@ -62,7 +62,7 @@ void light_render() {
 		= std::make_shared<FixedCamera>(vec3(0, 0, 5), vec3(0, 0, 0), vec3(0, 1, 0), 45.f, aspect, near, far);
 #endif
 	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<LightShader>();
-	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Model::load_obj("resources/obj/african_head.obj"));
+	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::load_obj("resources/obj/african_head.obj"));
 	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
 	renderer.light_renderer();
 }
@@ -73,7 +73,7 @@ void blinn_phong() {
 	std::shared_ptr<CameraBase> camera_ptr
 		= std::make_shared<FpsCamera>(vec3(-2, 0, 0), vec3(0, 1, 0), 45.f, aspect, near, far, 1.f, 0.1f);
 	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<BlinnPhong>();
-	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Model::load_obj("resources/obj/african_head.obj"));
+	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::load_obj("resources/obj/african_head.obj"));
 	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
 	renderer.blinn_phong();
 }
@@ -84,7 +84,7 @@ void normal_mapping() {
 	std::shared_ptr<CameraBase> camera_ptr
 		= std::make_shared<FpsCamera>(vec3(-2, 0, 0), vec3(0, -1, 0), 45.f, aspect, near, far, 1.f, 0.1f);
 	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<NormalMapping>();
-	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Model::load_obj("resources/obj/african_head.obj"));
+	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::load_obj("resources/obj/african_head.obj"));
 	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
 	renderer.normal_mapping();
 }

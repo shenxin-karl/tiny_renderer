@@ -1,6 +1,7 @@
 #pragma once
 
 class FrameBuffer;
+class Loader;
 
 class Model {
 	std::vector<Mesh> meshs;
@@ -12,12 +13,9 @@ public:
 	Model(Model &&) noexcept = default;
 	Model &operator=(Model &&) noexcept = default;
 	~Model() = default;
-
 	void draw(FrameBuffer &frame, ShaderBase &shader);
-
-	static Model load_obj(const std::string &path);
-	static Model create_test_cube_obj();
 private:
+	friend class Loader;
 	Model() = default;
 	Mesh process_mesh(aiMesh *mesh, const aiScene *scene);
 	void process_node(aiNode *node, const aiScene *scene);
