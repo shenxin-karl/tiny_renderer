@@ -104,15 +104,22 @@ void Mesh::process_triangle(FrameBuffer &frame, ShaderBase &shader, std::array<i
 	}
 }
 
+#define USE_BACKFACE_CULLING_OPTIMIZE
 bool Mesh::backface_culling(ShaderBase &shader, const Vertex &v1, const Vertex &v2, const Vertex &v3) const noexcept {
 	if (!shader.is_enable_face_culling())
 		return false;
 
+#ifdef USE_BACKFACE_CULLING_OPTIMIZE
+	vec2 normal_vec1 = v2.position.head<2>() - v1.position.head<2>();
+	vec2 normal_vec2 = v3.position.head<2>() - v1.position.head<2>();
+	float cosine = -((normal_vec1.x() * normal_vec2.y()) - (normal_vec1.y() * normal_vec2.x()));
+#else
 	constexpr vec3 look_at = { 0, 0, -1 };
 	vec3 vec1 = v2.position - v1.position;
 	vec3 vec2 = v3.position - v1.position;
 	vec3 normal = cross(vec1, vec2);
 	float cosine = dot(normal, look_at);
+#endif // USE_BACKFACE_CULLING_OPTIMIZE
 	bool res = shader.get_face_culling_func()(cosine);
 	return res;
 }

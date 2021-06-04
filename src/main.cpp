@@ -96,7 +96,7 @@ void one_triangle() {
 	constexpr float far = -100.f;
 #if 1
 	vec3 look_from = vec3(-5, 0, 0);
-	vec3 look_at = vec3(0.857084f, 0.0139622f, -0.514988);
+	vec3 look_at = vec3(0.857084f, 0.0139622f, -0.514988f);
 	std::shared_ptr<CameraBase> camera_ptr
 		= std::make_shared<FixedCamera>(look_from, look_from + look_at, vec3(0, 1, 0), 45.f, aspect, near, far);
 #else

@@ -296,27 +296,27 @@ Vertex Draw::interp_vertex(const Vertex &start, const Vertex &last, size_t plane
 }
 
 bool Draw::outside_left_plane(float x, float w) {
-	return x >= -w;
+	return x > -w;
 }
 
 bool Draw::outside_right_plane(float x, float w) {
-	return x <= w;
+	return x < w;
 }
 
 bool Draw::outside_top_plane(float y, float w) {
-	return y <= w;
+	return y < w;
 }
 
 bool Draw::outside_bottom_plane(float y, float w) {
-	return y >= -w;
+	return y > -w;
 }
 
 bool Draw::outside_back_plane(float z, float w) {
-	return z <= w;
+	return z < w;
 }
 
 bool Draw::outside_front_plane(float z, float w) {
-	return z >= -w;
+	return z > -w;
 }
 
 bool Draw::outside_w_plane(float f, float w) {

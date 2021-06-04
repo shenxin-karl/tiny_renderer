@@ -134,3 +134,25 @@ Model Loader::cearte_one_triangle() {
 	res.meshs.push_back(std::move(mesh));
 	return res;
 }
+
+std::shared_ptr<ImageInfo> Loader::load_image(const std::string &path) {
+	if (auto iter = image_cache.find(path); iter != image_cache.end())
+		return iter->second;
+
+	ImageInfo image_info;
+	image_info.data = stbi_load(path.c_str(), &image_info.width, &image_info.height, &image_info.chnnell, 0);
+	if (image_info.data == nullptr) {
+		std::cerr << "Loader::load_image::load " << path << " error" << std::endl;
+		return nullptr;
+	}
+	std::shared_ptr<ImageInfo> res = std::make_shared<ImageInfo>(image_info);
+	image_cache.insert(std::make_pair(path, res));
+	return res;
+}
+
+Loader::ImageCacheRecycle::~ImageCacheRecycle() {
+	for (auto &&[_, image_info_ptr] : image_cache) {
+		if (image_info_ptr != nullptr && image_info_ptr->data != nullptr)
+			stbi_image_free(image_info_ptr->data);
+	}
+}

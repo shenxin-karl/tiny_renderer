@@ -51,3 +51,4 @@
 #include "normal_mapping.h"
 #include "depth_shader.h"
 #include "loader.h"
+#include "texture_cube.h"
