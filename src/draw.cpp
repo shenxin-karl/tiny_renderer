@@ -108,6 +108,8 @@ mat4 Draw::ortho(float fov, float aspect, float n, float f) {
 	float b = -t;
 	float r = t * aspect;
 	float l = -r;
+	n = -std::abs(n);
+	f = -std::abs(f);
 	mat4 scale = {
 		2.f/(r-l),	0,			0,			0,
 		0,			2.f/(t-b),	0,			0,
@@ -125,6 +127,8 @@ mat4 Draw::ortho(float fov, float aspect, float n, float f) {
 }
 
 mat4 Draw::projection(float fov, float aspect, float n, float f) {
+	n = -std::abs(n);
+	f = -std::abs(f);
 	mat4 perspective = {
 		n,		0,		0,		0,
 		0,		n,		0,		0,
@@ -182,16 +186,17 @@ mat4 Draw::rotate_x(float angle) {
 int Draw::plane_cutting(std::vector<Vertex> &vertices, std::vector<int> &indices) {
 	static std::tuple<int, bool(*)(float, float), bool>  planes[] = {
 		{ 3,	outside_w_plane,		true  },		// w		butting
-		{ 0,	outside_right_plane,	true  },		// right	cutting
-		{ 0,	outside_left_plane,		false },		// left		cutting
 		{ 1,	outside_top_plane,		true  },		// top		cutting
 		{ 1,	outside_bottom_plane,	false },		// buttom	butting
+		{ 0,	outside_right_plane,	true  },		// right	cutting
+		{ 0,	outside_left_plane,		false },		// left		cutting
 		{ 2,	outside_front_plane,	true  },		// front	butting
 		{ 2,	outside_back_plane,		false },		// back		butting
 	};
 
 	int size = static_cast<int>(indices.size());
 	for (auto iter = std::begin(planes); iter != std::end(planes) && size != 0; ++iter) {
+		assert(indices.size() % 3 == 0);
 		int limit = static_cast<int>(indices.size()) - 2;
 		for (int i = 0; i < limit && size != 0; i += 3) {
 			if (indices[i] < 0)
@@ -205,8 +210,8 @@ int Draw::plane_cutting(std::vector<Vertex> &vertices, std::vector<int> &indices
 	}
 	return size;
 }
-
 int Draw::plane_cutting_triangle(std::vector<Vertex> &vertices, std::vector<int> &indices, 
+
 								 std::span<int, 3> triangle_view, size_t plane_idx,
 								 bool (*outside_func)(float, float), bool symobl) 
 {
@@ -240,14 +245,15 @@ int Draw::plane_cutting_triangle(std::vector<Vertex> &vertices, std::vector<int>
 		const Vertex &inside_vertex2 = vertices[inside_ver_idx2];
 		const Vertex P = interp_vertex(inside_vertex1, outside_vertex, plane_idx, symobl);
 		const Vertex N = interp_vertex(inside_vertex2, outside_vertex, plane_idx, symobl);
-		vertices[indices[outside_idx]] = P;		// 第一个三角形
+		vertices[outside_ver_idx] = P;		// 第一个三角形
 
 		// 第二个三角形
 		vertices.push_back(N);
 		indices.push_back(inside_ver_idx2);
-		indices.push_back(outside_idx);
-		indices.push_back(static_cast<int>(vertices.size()-1));
+		indices.push_back(outside_ver_idx);
+		indices.push_back(static_cast<int>(vertices.size())-1);
 		return 3;
+
 	} else if (outside_size == 2) {
 		auto iter = std::find(flags.begin(), flags.end(), false);
 		assert(iter != flags.end());
@@ -273,47 +279,46 @@ Vertex Draw::interp_vertex(const Vertex &start, const Vertex &last, size_t plane
 	const vec4 &start_position = start.position;
 	const vec4 &last_position = last.position;
 	if (plane_idx == 3) {
-		t = (0.0001f - start_position.w()) / (last_position.w() - start_position.w());
+		t = (plane_w_limit - start_position.w()) / (last_position.w() - start_position.w());
 	} else {
 		if (symbol) {
-			float t1 = start_position[plane_idx] - start_position.w();
-			float t2 = last_position.w() - start_position.w();
-			float t3 = last_position[plane_idx] - start_position[plane_idx];
-			t = (t1) / (t2 - t3);
+			float t1 = start_position.w() - start_position[plane_idx];
+			float t2 = last_position.w() - last_position[plane_idx];
+			t = t1 / (t1 - t2);
 		} else {
-			float t1 = start_position[plane_idx] + start_position.w();
-			float t2 = start_position.w() - last_position.w();
-			float t3 = last_position[plane_idx] - start_position[plane_idx];
-			t = (t1) / (t2 - t3);
+			float t1 = start_position.w() + start_position[plane_idx];
+			float t2 = last_position.w() + last_position[plane_idx];
+			t = t1 / (t1 - t2);
 		}
 	}
-	return (start * (1.f-t)) + (last * t);
+	auto offset = last - start;
+	return start + (offset * t);
 }
 
 bool Draw::outside_left_plane(float x, float w) {
-	return x > -w;
+	return x >= -w;
 }
 
 bool Draw::outside_right_plane(float x, float w) {
-	return x < w;
+	return x <= w;
 }
 
 bool Draw::outside_top_plane(float y, float w) {
-	return y < w;
+	return y <= w;
 }
 
 bool Draw::outside_bottom_plane(float y, float w) {
-	return y > -w;
+	return y >= -w;
 }
 
 bool Draw::outside_back_plane(float z, float w) {
-	return z < w;
+	return z <= w;
 }
 
 bool Draw::outside_front_plane(float z, float w) {
-	return z > -w;
+	return z >= -w;
 }
 
 bool Draw::outside_w_plane(float f, float w) {
-	return w >= 0.f;
+	return w >= plane_w_limit;
 }

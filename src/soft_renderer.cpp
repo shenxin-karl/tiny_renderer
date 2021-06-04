@@ -101,7 +101,7 @@ void SoftRenderer::test_cube(float near, float far) {
 void SoftRenderer::light_renderer() {
 	Texture2d diffuse_texture("resources/obj/african_head_diffuse.tga");
 	shader_ptr->set_uniform("diffuse_texture", diffuse_texture);
-	shader_ptr->set_uniform("light_dir", normalized(vec3(0, 0, 2)));
+	shader_ptr->set_uniform("light_dir", normalized(vec3(0, 0, -2)));
 	shader_ptr->set_face_culling_func([](float cosine) { return cosine > 0.0f; });
 
 	while (!window.window_should_be_close()) {
@@ -122,7 +122,7 @@ void SoftRenderer::blinn_phong() {
 	shader_ptr->set_uniform("diffuse_texture", diffuse_texture);
 	shader_ptr->set_uniform("specular_factor", 32.f);
 	shader_ptr->set_uniform("light_ambient", vec3(0.4f, 0.4f, 0.4f));
-	shader_ptr->set_uniform("light_diffuse", vec3(0.8f, 0.8f, 0.8f));
+	shader_ptr->set_uniform("light_diffuse", vec3(0.9f, 0.9f, 0.9f));
 	shader_ptr->set_uniform("light_specular", vec3(2.f, 2.f, 2.f));
 	shader_ptr->set_face_culling_func([](float cosine) { return cosine > 0.0f; });
 
@@ -153,7 +153,7 @@ void SoftRenderer::normal_mapping() {
 	shader_ptr->set_uniform("light_diffuse", vec3(0.5f, 0.5f, 0.5f));
 	shader_ptr->set_uniform("light_specular", vec3(1.f, 1.f, 1.f));
 	shader_ptr->set_uniform("light_dir", light_dir);
-	shader_ptr->set_face_culling_func([](float cosine) { return cosine > 0.f; });
+	shader_ptr->set_face_culling_func([](float cosine) { return cosine >= 0.f; });
 	
 	while (!window.window_should_be_close()) {
 		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);

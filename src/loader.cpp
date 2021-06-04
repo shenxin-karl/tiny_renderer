@@ -116,3 +116,21 @@ Model Loader::create_test_cube_obj() {
 	res.meshs.push_back(std::move(mesh));
 	return res;
 }
+
+Model Loader::cearte_one_triangle() {
+	std::vector<Vertex> vertices = {
+		Vertex{ vec4{ 0, 0,  2, 1 }, vec3{ -1, 0, 0 }, vec2{ 0, 0    } },
+		Vertex{ vec4{ 0, 0, -2, 1 }, vec3{ -1, 0, 0 }, vec2{ 1, 0    } },
+		Vertex{ vec4{ 0, 2,  0, 1 }, vec3{ -1, 0, 0 }, vec2{ 0.5f, 1 } },
+	};
+	std::vector<int> indices;
+	indices.reserve(vertices.size());
+	std::generate_n(std::back_inserter(indices), vertices.size(), [n = 0]() mutable {
+		return n++;
+	});
+	Mesh mesh(std::move(vertices), std::move(indices), {});
+	Model res;
+	res.directory = "one_triangle";
+	res.meshs.push_back(std::move(mesh));
+	return res;
+}

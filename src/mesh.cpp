@@ -17,6 +17,14 @@ Vertex Vertex::operator+(const Vertex &other) const noexcept {
 }
 
 
+Vertex Vertex::operator-(const Vertex &other) const noexcept {
+	return {
+		position  - other.position,
+		normal    - other.normal,
+		texcoords - other.texcoords,
+	};
+}
+
 void Vertex::perspective_divide() {
 	float inverse_w = 1 / position.w();
 	for (int i = 0; i < position.size() - 1; ++i)
@@ -56,8 +64,6 @@ void Mesh::process_triangle(FrameBuffer &frame, ShaderBase &shader, std::array<i
 	std::vector<int>    out_indices;
 	out_vertices.reserve(12);
 	out_indices.reserve(12); 
-	float miny = 10000000000.f;
-	float maxy = -miny;
 	for (int i = 0; i < 3; ++i) {
 		int index = our_indices[i];
 		const Vertex &vertex = vertices[index];
@@ -82,7 +88,7 @@ void Mesh::process_triangle(FrameBuffer &frame, ShaderBase &shader, std::array<i
 	}
 	
 	int limit = static_cast<int>(out_indices.size()) - 2;
-	for (size_t i = 0; i < limit; i += 3u) {
+	for (size_t i = 0; i < limit; i += 3) {
 		int idx1 = out_indices[i];
 		int idx2 = out_indices[i+1];
 		int idx3 = out_indices[i+2];

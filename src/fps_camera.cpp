@@ -76,5 +76,6 @@ void FpsCamera::update_base_vec() {
 	vec3 world_z = -look_at;
 	world_right = normalized(cross(world_up, world_z));
 	look_up = normalized(cross(world_z, world_right));
+//	std::cout << "look_at: " << look_at << std::endl;
 	view = Draw::view(look_from, look_up, look_from + look_at);
 }

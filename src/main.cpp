@@ -10,6 +10,7 @@ void test_cube();
 void light_render();
 void blinn_phong();
 void normal_mapping();
+void one_triangle();
 
 int main(void) {
 	init();
@@ -17,6 +18,7 @@ int main(void) {
 	//test_cube();
 	blinn_phong();
 	//normal_mapping();
+	//one_triangle();
 	return 0;
 }
 
@@ -68,7 +70,7 @@ void light_render() {
 }
 
 void blinn_phong() {
-	constexpr float near = -0.1f;
+	constexpr float near = -0.001f;
 	constexpr float far = -100.f;
 	std::shared_ptr<CameraBase> camera_ptr
 		= std::make_shared<FpsCamera>(vec3(-2, 0, 0), vec3(0, 1, 0), 45.f, aspect, near, far, 1.f, 0.1f);
@@ -87,4 +89,22 @@ void normal_mapping() {
 	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::load_obj("resources/obj/african_head.obj"));
 	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
 	renderer.normal_mapping();
+}
+
+void one_triangle() {
+	constexpr float near = -0.0001f;
+	constexpr float far = -100.f;
+#if 1
+	vec3 look_from = vec3(-5, 0, 0);
+	vec3 look_at = vec3(0.857084f, 0.0139622f, -0.514988);
+	std::shared_ptr<CameraBase> camera_ptr
+		= std::make_shared<FixedCamera>(look_from, look_from + look_at, vec3(0, 1, 0), 45.f, aspect, near, far);
+#else
+	std::shared_ptr<CameraBase> camera_ptr
+		= std::make_shared<FpsCamera>(vec3(-5, 0, 0), vec3(0, 1, 0), 45.f, aspect, near, far, 1.f, 0.1f);
+#endif
+	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<LightShader>();
+	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::cearte_one_triangle());
+	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
+	renderer.light_renderer();
 }

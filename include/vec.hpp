@@ -97,14 +97,22 @@ public:
     }
 
     void normalize() noexcept {
-        if (auto len2 = length2(); len2 != 0) 
-            *this /= std::sqrt(len2);
+        if (auto len2 = length2(); len2 != 0) {
+            float inverse_len = static_cast<T>(1) / std::sqrt(len2);
+            *this *= inverse_len;
+        }
     }
 
     vec normalized() const noexcept {
+        T len2 = length2();
         auto res = *this;
-        res.normalize();
-        return res;
+        if (len2 != 0) {
+            T invserse_len = static_cast<T>(1) / std::sqrt(len2);
+            res *= invserse_len;
+            return res;
+        } else {
+            return res;
+        }
     }
 
     vec cross(const vec &other) const noexcept {
@@ -223,8 +231,9 @@ public:
         res /= rhs;                                                                
         return res;                                                                 
     }                                                                               
-    friend vec &operator/=(vec &vec, const T &f) noexcept {                 
-        return vec.transfrom<std::divides<T>>(f);                                          
+    friend vec &operator/=(vec &vec, const T &f) noexcept {   
+        T inverse_f = static_cast<T>(1) / f;
+        return vec.transfrom<std::multiplies<T>>(inverse_f);                                          
     }                                                                               
     friend vec operator/(const vec &vec, const T &f) noexcept {             
         auto res = vec;                                                             

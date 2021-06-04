@@ -28,4 +28,5 @@ private:
 	static bool outside_back_plane(float z, float w);
 	static bool outside_front_plane(float z, float w);
 	static bool outside_w_plane(float f, float w);
+	constexpr static float plane_w_limit = -0.000001f;
 };

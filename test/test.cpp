@@ -128,6 +128,28 @@ bool Test::test_vec() {
 	v4 -= v5;
 	if (v4[0] != 5.f || v4[1] != 5.f || v4[2] != 5.f)
 		return false;
+
+	vec3 v6 = { 12, 23, 33 };
+	v6.normalize();
+	auto len = v6.length();
+	if (len != 1.f)
+		return false;
+
+	vec3 v7 = { 11, 22, 33 };
+	vec3 v8 = normalized(v7);
+	if (v8.length() != 1.f)
+		return false;
+
+	vec4 v9[] = { 
+		{ -4.67090368, -2.90522814, 4.48005438, -4.67090368 },
+		{ -4.65656519, 0.154681727, 4.46568680, -4.65656471 } 
+	};
+
+	for (auto &vec : v9) {
+		for (int i = 0; i < vec.size()-1; ++i)
+			vec[i] /= vec.w();
+	}
+	
 	return true;
 }
 
