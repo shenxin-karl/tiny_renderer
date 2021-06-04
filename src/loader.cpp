@@ -135,12 +135,64 @@ Model Loader::cearte_one_triangle() {
 	return res;
 }
 
+
+Model Loader::create_skybox_obj() {
+	std::vector<Vertex> vertices = {
+		Vertex{ vec4{-1.0f,  1.0f, -1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{-1.0f, -1.0f, -1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{ 1.0f, -1.0f, -1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{ 1.0f, -1.0f, -1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{ 1.0f,  1.0f, -1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{-1.0f,  1.0f, -1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{-1.0f, -1.0f,  1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{-1.0f, -1.0f, -1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{-1.0f,  1.0f, -1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{-1.0f,  1.0f, -1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{-1.0f,  1.0f,  1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{-1.0f, -1.0f,  1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{ 1.0f, -1.0f, -1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{ 1.0f, -1.0f,  1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{ 1.0f,  1.0f,  1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{ 1.0f,  1.0f,  1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{ 1.0f,  1.0f, -1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{ 1.0f, -1.0f, -1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{-1.0f, -1.0f,  1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{-1.0f,  1.0f,  1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{ 1.0f,  1.0f,  1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{ 1.0f,  1.0f,  1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{ 1.0f, -1.0f,  1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{-1.0f, -1.0f,  1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{-1.0f,  1.0f, -1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{ 1.0f,  1.0f, -1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{ 1.0f,  1.0f,  1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{ 1.0f,  1.0f,  1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{-1.0f,  1.0f,  1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{-1.0f,  1.0f, -1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{-1.0f, -1.0f, -1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{-1.0f, -1.0f,  1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{ 1.0f, -1.0f, -1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{ 1.0f, -1.0f, -1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{-1.0f, -1.0f,  1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+		Vertex{ vec4{ 1.0f, -1.0f,  1.0f, 1.f}, vec3{0.f}, vec2{0.f}, },
+	};
+	std::vector<int> indices;
+	indices.reserve(vertices.size());
+	std::generate_n(std::back_inserter(indices), vertices.size(), [n = 0]() mutable {
+		return n++;
+	});
+	Mesh mesh(std::move(vertices), std::move(indices), {});
+	Model res;
+	res.directory = "create_skybox_obj";
+	res.meshs.push_back(std::move(mesh));
+	return res;
+}
+
 std::shared_ptr<ImageInfo> Loader::load_image(const std::string &path) {
 	if (auto iter = image_cache.find(path); iter != image_cache.end())
 		return iter->second;
 
 	ImageInfo image_info;
-	image_info.data = stbi_load(path.c_str(), &image_info.width, &image_info.height, &image_info.chnnell, 0);
+	image_info.data = stbi_load(path.c_str(), &image_info.width, &image_info.height, &image_info.channel, 0);
 	if (image_info.data == nullptr) {
 		std::cerr << "Loader::load_image::load " << path << " error" << std::endl;
 		return nullptr;

@@ -85,10 +85,13 @@ bool SoftRenderer::is_input() {
 void SoftRenderer::test_cube(float near, float far) {
 	shader_ptr->set_uniform("near", near);
 	shader_ptr->set_uniform("far", far);
+	Texture2d texture("resources/test_cube/container2.png");
+	shader_ptr->set_uniform("texture", texture);
 	
 	while (!window.window_should_be_close()) {
-		frame.clear_color(vec3(0.1f, 0.3f, 0.1f));
+		//frame.clear_color(vec3(0.1f, 0.3f, 0.1f));
 		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
+		shader_ptr->set_model(Draw::rotate_y(window.get_time() * 30.f));
 		shader_ptr->set_view(camera_ptr->get_view());
 		shader_ptr->set_projection(camera_ptr->get_projection());
 		model_ptr->draw(frame, *shader_ptr);
@@ -117,22 +120,23 @@ void SoftRenderer::light_renderer() {
 }
 
 void SoftRenderer::blinn_phong() {
-	vec3 light_dir = normalized(vec3(0, 2, -2));
+	vec3 light_dir = normalized(vec3(0, 1.5, -2));
 	Texture2d diffuse_texture("resources/obj/african_head_diffuse.tga");
 	shader_ptr->set_uniform("diffuse_texture", diffuse_texture);
 	shader_ptr->set_uniform("specular_factor", 32.f);
 	shader_ptr->set_uniform("light_ambient", vec3(0.4f, 0.4f, 0.4f));
-	shader_ptr->set_uniform("light_diffuse", vec3(0.9f, 0.9f, 0.9f));
-	shader_ptr->set_uniform("light_specular", vec3(2.f, 2.f, 2.f));
+	shader_ptr->set_uniform("light_diffuse", vec3(1.f, 1.f, 1.f));
+	shader_ptr->set_uniform("light_specular", vec3(1.f, 1.f, 1.f));
 	shader_ptr->set_face_culling_func([](float cosine) { return cosine > 0.0f; });
 
+	frame.clear_color(vec3(0.1f, 0.1f, 0.15f));
 	while (!window.window_should_be_close()) {
-		mat4 light_rotate_mat = Draw::rotate_y(window.get_time() * 30);
+		mat4 light_rotate_mat = Draw::rotate_y(window.get_time() * 77.f);
 		vec3 new_light_dir = normalized(light_rotate_mat * vec4(light_dir, 1.f));
 		shader_ptr->set_uniform("light_dir", new_light_dir);
 
-		frame.clear_color(vec3(0.f));
 		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
+		shader_ptr->set_model(Draw::rotate_y(window.get_time() * 30.f));
 		shader_ptr->set_view(camera_ptr->get_view());
 		shader_ptr->set_projection(camera_ptr->get_projection());
 		shader_ptr->set_uniform("eye_pos", camera_ptr->get_look_from());
@@ -161,6 +165,42 @@ void SoftRenderer::normal_mapping() {
 		shader_ptr->set_projection(camera_ptr->get_projection());
 		shader_ptr->set_uniform("eye_pos", camera_ptr->get_look_from());
 		model_ptr->draw(frame, *shader_ptr);
+		window.draw(frame);
+		poll_event();
+	}
+}
+
+void SoftRenderer::skybox() {
+	std::shared_ptr<ShaderBase> skybox_shader_ptr = std::make_shared<SkyboxShader>();
+	std::shared_ptr<Model> skybox_model = std::make_shared<Model>(Loader::create_skybox_obj());
+	shader_ptr->set_face_culling_func([](float conse) { return conse > 0.f; });
+	Texture2d diffuse_texture("resources/obj/african_head_diffuse.tga");
+	shader_ptr->set_uniform("texture", diffuse_texture);
+	
+	std::array<std::string, 6> faces = {
+		"resources/skybox/right.jpg",
+		"resources/skybox/left.jpg",
+		"resources/skybox/top.jpg",
+		"resources/skybox/bottom.jpg",
+		"resources/skybox/front.jpg",
+		"resources/skybox/back.jpg",
+	};
+	TextureCube skybox_texture(faces);
+
+	while (!window.window_should_be_close()) {
+		frame.clear_color(vec3(0));
+		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
+		//shader_ptr->set_view(camera_ptr->get_view());
+		//shader_ptr->set_projection(camera_ptr->get_projection());
+		//model_ptr->draw(frame, *shader_ptr);
+
+		// draw skybox
+		skybox_shader_ptr->set_model(Draw::rotate_y(window.get_time() * 10.f));
+		skybox_shader_ptr->set_view(camera_ptr->get_view());
+		skybox_shader_ptr->set_projection(camera_ptr->get_projection());
+		skybox_shader_ptr->set_uniform("skybox_texture", skybox_texture);
+		skybox_model->draw(frame, *skybox_shader_ptr);
+
 		window.draw(frame);
 		poll_event();
 	}

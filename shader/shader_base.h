@@ -1,5 +1,7 @@
 #pragma once
 
+class TextureCube;
+
 template<typename T>
 concept uniform_key_constraint = requires {
 	std::is_same_v<T, bool> || std::is_same_v<T, int> || std::is_same_v<T, float> ||
@@ -54,7 +56,7 @@ protected:
 	std::function<bool(float)> face_culling_func;		// ±³ÃæÌÞ³ýº¯Êý
 private:
 	using uniform_key_type = std::string;
-	using uniform_value_type = std::variant<bool, int, float, vec2, vec3, vec4, mat2, mat3, mat4, Texture2d>;
+	using uniform_value_type = std::variant<bool, int, float, vec2, vec3, vec4, mat2, mat3, mat4, Texture2d, TextureCube>;
 	std::unordered_map<uniform_key_type, uniform_value_type> uniforms;
 public:
 	template<uniform_key_constraint T>

@@ -24,7 +24,6 @@ float ShaderBase::calc_depth(const vec3 &_coords, const std::array<Vertex *, 3> 
 	return depth;
 }
 
-
 float ShaderBase::get_depth() const noexcept {
 	return depth;
 }

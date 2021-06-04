@@ -4,7 +4,7 @@ struct ImageInfo {
 	unsigned char *data;
 	int width;
 	int height;
-	int chnnell;
+	int channel;
 };
 
 class Loader {
@@ -12,6 +12,7 @@ public:
 	static Model load_obj(const std::string &path);
 	static Model create_test_cube_obj();
 	static Model cearte_one_triangle();
+	static Model create_skybox_obj();
 	static std::shared_ptr<ImageInfo> load_image(const std::string &path);
 private:
 	struct ImageCacheRecycle {

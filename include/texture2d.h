@@ -11,6 +11,7 @@ public:
 	vec3 rgb(const vec2 &texcoord) const;
 	vec4 rgba(const vec2 &texcoord) const;
 	vec3 normal(const vec2 &texcoord) const;
+	explicit operator bool() const noexcept;
 private:
 	std::shared_ptr<ImageInfo> image_info_ptr;
 #ifdef _DEBUG

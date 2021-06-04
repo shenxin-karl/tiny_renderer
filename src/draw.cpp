@@ -186,12 +186,12 @@ mat4 Draw::rotate_x(float angle) {
 int Draw::plane_cutting(std::vector<Vertex> &vertices, std::vector<int> &indices) {
 	static std::tuple<int, bool(*)(float, float), bool>  planes[] = {
 		{ 3,	outside_w_plane,		true  },		// w		butting
-		{ 1,	outside_top_plane,		true  },		// top		cutting
-		{ 1,	outside_bottom_plane,	false },		// buttom	butting
-		{ 0,	outside_right_plane,	true  },		// right	cutting
-		{ 0,	outside_left_plane,		false },		// left		cutting
-		{ 2,	outside_front_plane,	true  },		// front	butting
-		{ 2,	outside_back_plane,		false },		// back		butting
+		//{ 1,	outside_top_plane,		true  },		// top		cutting
+		//{ 1,	outside_bottom_plane,	false },		// buttom	butting
+		//{ 0,	outside_right_plane,	true  },		// right	cutting
+		//{ 0,	outside_left_plane,		false },		// left		cutting
+		//{ 2,	outside_front_plane,	true  },		// front	butting
+		//{ 2,	outside_back_plane,		false },		// back		butting
 	};
 
 	int size = static_cast<int>(indices.size());

@@ -21,9 +21,10 @@ vec3 Texture2d::rgb(const vec2 &texcoord) const {
 	unsigned char *data = image_info_ptr->data;
 	int width = image_info_ptr->width;
 	int height = image_info_ptr->height;
-	int y = static_cast<int>((1-t) * height);
-	int x = static_cast<int>(s *width);
-	int index = y * height * 3 + x * 3;
+	int channel = image_info_ptr->channel;
+	int y = std::clamp(static_cast<int>((1 - t) * height), 0, height-1);
+	int x = std::clamp(static_cast<int>(s * width), 0, width-1);
+	int index = y * height * channel + x * channel;
 	return vec3{
 		data[index]	* inverse_255,
 		data[index+1] * inverse_255,
@@ -44,9 +45,10 @@ vec4 Texture2d::rgba(const vec2 &texcoord) const {
 	unsigned char *data = image_info_ptr->data;
 	int width = image_info_ptr->width;
 	int height = image_info_ptr->height;
-	int y = static_cast<int>((1-t) * height);
-	int x = static_cast<int>(s *width);
-	int index = y * height * 4 + x * 4;
+	int channel = image_info_ptr->channel;
+	int y = std::clamp(static_cast<int>((1 - t) * height), 0, height - 1);
+	int x = std::clamp(static_cast<int>(s * width), 0, width - 1);
+	int index = y * height * channel + x * channel;
 	return vec4 {
 		data[index]	* inverse_255,
 		data[index+1] * inverse_255,
@@ -59,4 +61,8 @@ vec3 Texture2d::normal(const vec2 &texcoord) const {
 	auto noraml = rgb(texcoord);
 	noraml = normalized(noraml * 2.f - 1.f); 
 	return noraml;
+}
+
+Texture2d::operator bool() const noexcept {
+	return image_info_ptr != nullptr;
 }

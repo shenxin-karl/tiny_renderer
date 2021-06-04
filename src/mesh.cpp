@@ -26,8 +26,8 @@ Vertex Vertex::operator-(const Vertex &other) const noexcept {
 }
 
 void Vertex::perspective_divide() {
-	float inverse_w = 1 / position.w();
-	for (int i = 0; i < position.size() - 1; ++i)
+	float inverse_w = 1.f / position.w();
+	for (size_t i = 0; i < position.size() - 1; ++i)
 		position[i] *= inverse_w;
 
 	normal *= inverse_w;

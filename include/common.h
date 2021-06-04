@@ -37,6 +37,7 @@
 
 #include "texture2d.h"
 #include "mesh.h"
+#include "texture_cube.h"
 #include "shader_base.h"
 #include "window.h"
 #include "frame_buffer.h"
@@ -51,4 +52,5 @@
 #include "normal_mapping.h"
 #include "depth_shader.h"
 #include "loader.h"
-#include "texture_cube.h"
+#include "texture_mapping.h"
+#include "skybox_shader.h"

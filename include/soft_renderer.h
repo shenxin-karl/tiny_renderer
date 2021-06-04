@@ -29,4 +29,5 @@ public:
 	void light_renderer();
 	void blinn_phong();
 	void normal_mapping();
+	void skybox();
 };

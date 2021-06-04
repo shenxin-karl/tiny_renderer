@@ -11,14 +11,16 @@ void BlinnPhong::initialize() noexcept {
 }
 
 vec4 BlinnPhong::vertex(const Vertex &vertex, int idx) noexcept {
-	our_world_pos[idx] = model * vertex.position;
-	our_normal[idx] = vertex.normal;
-	return mvp * vertex.position;
+	auto res = mvp * vertex.position;
+	float inverse_z = 1.f / res.w();
+	our_world_pos[idx] = model * vertex.position * inverse_z;
+	our_normal[idx] = vertex.normal * inverse_z;
+	return res;
 }
 
 bool BlinnPhong::fragment(const vec3 &point, const std::array<Vertex *, 3> &vertices, vec3 &color) noexcept {
 	vec3 world_pos = interp(our_world_pos);
-	vec3 world_normal = normalized(interp(our_normal));
+	vec3 world_normal = interp(our_normal);
 	const vec3 &light_dir = *this->light_dir_ptr;
 
 	const Texture2d &diffuse_texture = *this->diffuse_texture_ptr;

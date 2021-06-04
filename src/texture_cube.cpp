@@ -2,6 +2,12 @@
 
 TextureCube::TextureCube(const std::array<std::string, 6> &faces)
 : textures{ faces[0], faces[1], faces[2], faces[3], faces[4], faces[5] }  {
+	assert(static_cast<bool>(textures[0]));
+	assert(static_cast<bool>(textures[1]));
+	assert(static_cast<bool>(textures[2]));
+	assert(static_cast<bool>(textures[3]));
+	assert(static_cast<bool>(textures[4]));
+	assert(static_cast<bool>(textures[5]));
 }
 
 vec3 TextureCube::rgb(const vec3 &direction) const noexcept {
@@ -24,7 +30,7 @@ std::tuple<int, vec2> TextureCube::calc_texture_index(const vec3 &direction) con
 	int index;
 	vec2 texcoord;
 	if (abs_x > abs_y && abs_x > abs_z) {	// use left or right 
-		if (direction.x() > 0.f) {
+		if (direction.x() >= 0.f) {
 			sc = -direction.z();
 			index = 0;
 		} else {
@@ -32,9 +38,9 @@ std::tuple<int, vec2> TextureCube::calc_texture_index(const vec3 &direction) con
 			index = 1;
 		}
 		tc = -direction.y();
-		ma = direction.x();
+		ma = abs_x;
 	} else if (abs_y > abs_z) {				// use top or bottom
-		if (direction.y() > 0.f) {
+		if (direction.y() >= 0.f) {
 			tc = direction.z();
 			index = 2;
 		} else {
@@ -42,9 +48,9 @@ std::tuple<int, vec2> TextureCube::calc_texture_index(const vec3 &direction) con
 			index = 3;
 		}
 		sc = direction.x();
-		ma = direction.y();
+		ma = abs_y;
 	} else {								// use front or back
-		if (direction.z() > 0.f) {
+		if (direction.z() >= 0.f) {
 			index = 4;
 			sc = direction.x();
 		} else {
@@ -52,11 +58,10 @@ std::tuple<int, vec2> TextureCube::calc_texture_index(const vec3 &direction) con
 			sc = -direction.x();
 		}
 		tc = -direction.y();
-		ma = direction.z();
+		ma = abs_z;
 	}
 	constexpr float inverse_two = 1.f / 2.f;
-	float abs_ma = std::abs(ma);
-	texcoord.s() = (sc / abs_ma + 1) * inverse_two;
-	texcoord.t() = (tc / abs_ma + 1) * inverse_two;
+	texcoord.s() = (sc / ma + 1) * inverse_two;
+	texcoord.t() = (tc / ma + 1) * inverse_two;
 	return { index, texcoord };
 }
