@@ -64,7 +64,7 @@ void Draw::triangle(FrameBuffer &frame, ShaderBase &shader, std::array<Vertex *,
 				continue;
 
 			vec3 color;
-			if (shader.fragment(point, vertice, color))
+			if (shader.fragment(point, color))
 				frame.set_color(point, color);
 		}
 	}
@@ -203,7 +203,7 @@ int Draw::plane_cutting(std::vector<Vertex> &vertices, std::vector<int> &indices
 				continue;
 
 			std::span<int, 3> triangle_view(&indices[i], 3);
-			auto&&[plane_idx, callback, symbol] = *iter;
+			auto &&[plane_idx, callback, symbol] = *iter;
 			auto res = plane_cutting_triangle(vertices, indices, triangle_view, plane_idx, callback, symbol);
 			size += res;
 		}

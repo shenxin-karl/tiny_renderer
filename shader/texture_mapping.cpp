@@ -5,11 +5,13 @@ void TextrueShader::initialize() noexcept {
 }
 
 vec4 TextrueShader::vertex(const Vertex &vertex, int idx) noexcept {
-	return mvp * vertex.position;
+	auto res = mvp * vertex.position;
+	our_texcoords[idx] = vertex.texcoords / res.w();
+	return res;
 }
 
-bool TextrueShader::fragment(const vec3 &point, const std::array<Vertex *, 3> &vertices, vec3 &color) noexcept {
-	vec2 texcoord = interp(vertices, &Vertex::texcoords);
+bool TextrueShader::fragment(const vec3 &point, vec3 &color) noexcept {
+	vec2 texcoord = interp(our_texcoords);
 	color = uniform_texture_ptr->rgb(texcoord);
 	return true;
 }

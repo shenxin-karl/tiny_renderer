@@ -16,7 +16,7 @@ vec4 SkyboxShader::vertex(const Vertex &vertex, int idx) noexcept {
 	return res;
 }
 
-bool SkyboxShader::fragment(const vec3 &point, const std::array<Vertex *, 3> &vertices, vec3 &color) noexcept {
+bool SkyboxShader::fragment(const vec3 &point, vec3 &color) noexcept {
 	vec3 texcoord = interp(our_world_position);
 	color = uniform_skybox_texture->rgb(texcoord);
 	return true;

@@ -104,12 +104,17 @@ void SoftRenderer::test_cube(float near, float far) {
 void SoftRenderer::light_renderer() {
 	Texture2d diffuse_texture("resources/obj/african_head_diffuse.tga");
 	shader_ptr->set_uniform("diffuse_texture", diffuse_texture);
-	shader_ptr->set_uniform("light_dir", normalized(vec3(0, 0, -2)));
+	//shader_ptr->set_uniform("light_dir", normalized(vec3(0, 0, -2)));
 	shader_ptr->set_face_culling_func([](float cosine) { return cosine > 0.0f; });
 
+	vec3 light_dir = normalized(vec3(0, 0, -2));
+	frame.clear_color(vec3(0.1f, 0.2f, 0.3f));
 	while (!window.window_should_be_close()) {
-		frame.clear_color(vec3(0.1f, 0.2f, 0.3f));
 		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
+		mat4 light_rotate_matrix = Draw::rotate_y(window.get_time() * 10.f);
+		vec3 new_light_dir = light_rotate_matrix * vec4(light_dir, 1.f);
+
+		shader_ptr->set_uniform("light_dir", new_light_dir);
 		shader_ptr->set_view(camera_ptr->get_view());
 		shader_ptr->set_projection(camera_ptr->get_projection());
 		model_ptr->draw(frame, *shader_ptr);

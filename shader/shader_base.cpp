@@ -32,11 +32,9 @@ void ShaderBase::set_face_culling_func(const std::function<bool(float)> &func) {
 	face_culling_func = func;
 }
 
-
 bool ShaderBase::is_enable_face_culling() const noexcept {
 	return face_culling_func != nullptr;
 }
-
 
 const std::function<bool(float)> &ShaderBase::get_face_culling_func() const noexcept {
 	return face_culling_func;

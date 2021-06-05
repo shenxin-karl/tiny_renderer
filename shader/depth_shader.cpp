@@ -10,7 +10,7 @@ vec4 DepthShader::vertex(const Vertex &vertex, int idx) noexcept {
 	return mvp * vertex.position;
 }
 
-bool DepthShader::fragment(const vec3 &point, const std::array<Vertex *, 3> &vertices, vec3 &color) noexcept {
+bool DepthShader::fragment(const vec3 &point, vec3 &color) noexcept {
 	float depth = point.z();
 	float gray = (depth - this->near) / this->denominator;
 	color = { gray, gray, gray };

@@ -15,16 +15,17 @@ vec4 BlinnPhong::vertex(const Vertex &vertex, int idx) noexcept {
 	float inverse_z = 1.f / res.w();
 	our_world_pos[idx] = model * vertex.position * inverse_z;
 	our_normal[idx] = vertex.normal * inverse_z;
+	our_texcoords[idx] = vertex.texcoords * inverse_z;
 	return res;
 }
 
-bool BlinnPhong::fragment(const vec3 &point, const std::array<Vertex *, 3> &vertices, vec3 &color) noexcept {
+bool BlinnPhong::fragment(const vec3 &point, vec3 &color) noexcept {
 	vec3 world_pos = interp(our_world_pos);
 	vec3 world_normal = interp(our_normal);
 	const vec3 &light_dir = *this->light_dir_ptr;
 
 	const Texture2d &diffuse_texture = *this->diffuse_texture_ptr;
-	vec2 texcoords = interp(vertices, &Vertex::texcoords);
+	vec2 texcoords = interp(our_texcoords);
 	vec3 diffuse_texture_color = diffuse_texture.rgb(texcoords);
 
 	// ambient color

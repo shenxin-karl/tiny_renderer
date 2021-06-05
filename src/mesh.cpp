@@ -16,7 +16,6 @@ Vertex Vertex::operator+(const Vertex &other) const noexcept {
 	};
 }
 
-
 Vertex Vertex::operator-(const Vertex &other) const noexcept {
 	return {
 		position  - other.position,
@@ -25,20 +24,10 @@ Vertex Vertex::operator-(const Vertex &other) const noexcept {
 	};
 }
 
-void Vertex::perspective_divide() {
-	float inverse_w = 1.f / position.w();
-	for (size_t i = 0; i < position.size() - 1; ++i)
-		position[i] *= inverse_w;
-
-	normal *= inverse_w;
-	texcoords *= inverse_w;
-}
-
 Texture::Texture(const std::string &_var, const std::string &_path)
 : var(_var), texture(_path) {
 
 }
-
 
 Texture::Texture(const std::string &_var, const Texture2d &_texture)
 : var(_var), texture(_texture) {
@@ -82,7 +71,7 @@ void Mesh::process_triangle(FrameBuffer &frame, ShaderBase &shader, std::array<i
 	int half_width = frame.get_width() / 2;
 	int half_height = frame.get_height() / 2;
 	for (auto &v : out_vertices) {
-		v.perspective_divide();
+		v.position.head<3>() /= v.position.w();
 		v.position.x() = v.position.x() * half_width + half_width;
 		v.position.y() = v.position.y() * half_height + half_height;
 	}

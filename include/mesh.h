@@ -11,7 +11,6 @@ public:
 	Vertex operator*(float t) const noexcept;
 	Vertex operator+(const Vertex &other) const noexcept;
 	Vertex operator-(const Vertex &other) const noexcept;
-	void perspective_divide();	
 };
 
 struct Texture {

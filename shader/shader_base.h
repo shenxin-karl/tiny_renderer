@@ -14,7 +14,7 @@ struct ShaderBase {
 	virtual ~ShaderBase() = default;
 	virtual void initialize() noexcept {};			// It is called once per frame
 	virtual vec4 vertex(const Vertex &vertex, int idx) noexcept = 0;
-	virtual bool fragment(const vec3 &point, const std::array<Vertex *, 3> &vertices, vec3 &color) noexcept = 0;
+	virtual bool fragment(const vec3 &point, vec3 &color) noexcept = 0;
 
 	template<typename T>
 	constexpr T interp(const T &v1, const T &v2, const T &v3) const noexcept {
@@ -22,11 +22,6 @@ struct ShaderBase {
 		T res2 = v2 * coords[1];
 		T res3 = v3 * coords[2];
 		return (res1 + res2 + res3) * depth;
-	}
-
-	template<typename T>
-	constexpr T interp(const std::array<Vertex *, 3> &vertices, T Vertex:: *mem_ptr) const noexcept {
-		return interp(vertices[0]->*mem_ptr, vertices[1]->*mem_ptr, vertices[2]->*mem_ptr);
 	}
 
 	template<typename T>

@@ -15,9 +15,9 @@ void skybox();
 
 int main(void) {
 	init();
-	//light_render();
+	light_render();
 	//test_cube();
-	blinn_phong();
+	//blinn_phong();
 	//normal_mapping();
 	//one_triangle();
 	//skybox();

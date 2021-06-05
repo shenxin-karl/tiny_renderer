@@ -67,7 +67,13 @@ public:
     template<size_t UN> 
     constexpr const vec<T, UN> &head() const noexcept {
         static_assert(UN <= N, "vec head: out of range!");
-        return this->operator const vec<T, UN>();
+		return reinterpret_cast<const vec<T, UN> &>(*this);
+    }
+
+    template<size_t UN>
+    constexpr vec<T, UN> &head() noexcept {
+        static_assert(UN <= N, "vec head: out of range!");
+		return reinterpret_cast<vec<T, UN> &>(*this);
     }
 
     template<size_t UN, typename USeq> 
@@ -263,11 +269,6 @@ private:
             data[i] = OPF()(data[i], f);
         return *this;
     }
-
-	template<size_t UN>
-	constexpr explicit operator const vec<T, UN> &() const noexcept {
-		return reinterpret_cast<const vec<T, UN> &>(*this);
-	}
 };
 
 template<typename T, size_t N, typename Seq>

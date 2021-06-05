@@ -12,11 +12,15 @@ void NormalMapping::initialize() noexcept {
 }
 
 vec4 NormalMapping::vertex(const Vertex &vertex, int idx) noexcept {
-	return mvp * vertex.position;
+	auto res = mvp * vertex.position;
+	float inverse_z = 1.f / res.w();
+	our_texcoords[idx] = vertex.texcoords * inverse_z;
+	our_world_vertex[idx] = (model * vertex.position).head<3>() * inverse_z;
+	return res;
 }
 
-bool NormalMapping::fragment(const vec3 &point, const std::array<Vertex *, 3> &vertices, vec3 &color) noexcept {
-	vec2 texcoords = interp(vertices, &Vertex::texcoords);
+bool NormalMapping::fragment(const vec3 &point, vec3 &color) noexcept {
+	vec2 texcoords = interp(our_texcoords);
 	vec3 normal = this->normal_texture_ptr->normal(texcoords);
 	float gray = std::clamp(dot(*this->light_dir_ptr, normal), 0.f, 1.f);
 	vec3 diffuse_texture_color = this->diffuse_texture_ptr->rgb(texcoords);
