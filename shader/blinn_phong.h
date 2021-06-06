@@ -1,5 +1,17 @@
 #pragma once
 
+struct BlinnPhongShaderArgs : public ShaderArgsBase {
+	vec3	our_normal;
+	vec3	our_world_pos;
+	vec3	our_texcoord;
+public:
+	
+	virtual SArgsPtr interp(const SArgsPtr & other, float t) const noexcept override;
+	virtual SArgsPtr interp(const SArgsPtr & v1, const SArgsPtr & v2, const SArgsPtr & v3,
+		const vec3 & coord, float depth) const noexcept override;
+	virtual void perspective_divide(float inverse_z) noexcept override;
+};
+
 class BlinnPhong : public ShaderBase {
 	std::array<vec3, 3>	our_normal;
 	std::array<vec3, 3> our_world_pos;

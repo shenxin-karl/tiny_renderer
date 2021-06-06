@@ -25,7 +25,9 @@ add_executable(tiny_renderer
 	"include/loader.h"			"src/loader.cpp" 
 	"include/texture_cube.h"	"src/texture_cube.cpp"
 	"shader/texture_mapping.h"  "shader/texture_mapping.cpp"
- "shader/skybox_shader.h" "shader/skybox_shader.cpp")
+	"shader/skybox_shader.h"	"shader/skybox_shader.cpp" 
+	"shader/shader_args.h"
+)
 
 
 target_include_directories(tiny_renderer PUBLIC

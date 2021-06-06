@@ -38,6 +38,7 @@
 #include "texture2d.h"
 #include "mesh.h"
 #include "texture_cube.h"
+#include "shader_args.h"
 #include "shader_base.h"
 #include "window.h"
 #include "frame_buffer.h"

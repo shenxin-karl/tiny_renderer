@@ -1,5 +1,34 @@
 #include "common.h"
 
+SArgsPtr BlinnPhongShaderArgs::interp(const SArgsPtr &other, float t) const noexcept {
+	const auto *rhs = SArgsPtr_cast(other);
+	return Make_ArgsPtr(
+		common_interp(this, rhs, &BlinnPhongShaderArgs::our_normal, t),
+		common_interp(this, rhs, &BlinnPhongShaderArgs::our_world_pos, t),
+		common_interp(this, rhs, &BlinnPhongShaderArgs::our_texcoord, t)
+	);
+}
+
+SArgsPtr BlinnPhongShaderArgs::interp(const SArgsPtr &v1, const SArgsPtr &v2, const SArgsPtr &v3,
+	const vec3 &coord, float depth) const noexcept 
+{
+	const auto *v1_ptr = SArgsPtr_cast(v1);
+	const auto *v2_ptr = SArgsPtr_cast(v2);
+	const auto *v3_ptr = SArgsPtr_cast(v3);
+	return Make_ArgsPtr(
+		common_interp(v1_ptr, v2_ptr, v3_ptr, &BlinnPhongShaderArgs::our_normal, coord, depth),
+		common_interp(v1_ptr, v2_ptr, v3_ptr, &BlinnPhongShaderArgs::our_world_pos, coord, depth),
+		common_interp(v1_ptr, v2_ptr, v3_ptr, &BlinnPhongShaderArgs::our_texcoord, coord, depth)
+	);
+};
+	
+void BlinnPhongShaderArgs::perspective_divide(float inverse_z) noexcept {
+	our_normal *= inverse_z;
+	our_world_pos *= inverse_z;
+	our_texcoord *= inverse_z;
+}
+
+
 void BlinnPhong::initialize() noexcept {
 	light_dir_ptr = &get_uniform<vec3>("light_dir");
 	diffuse_texture_ptr = &get_uniform<Texture2d>("diffuse_texture");
