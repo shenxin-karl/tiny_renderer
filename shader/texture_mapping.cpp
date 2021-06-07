@@ -1,5 +1,6 @@
 #include "common.h"
 
+#if 0
 void TextrueShader::initialize() noexcept {
 	uniform_texture_ptr = &get_uniform<Texture2d>("texture");
 }
@@ -15,3 +16,4 @@ bool TextrueShader::fragment(const vec3 &point, vec3 &color) noexcept {
 	color = uniform_texture_ptr->rgb(texcoord);
 	return true;
 }
+#endif

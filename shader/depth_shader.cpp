@@ -1,5 +1,5 @@
 #include "common.h"
-
+#if 0
 void DepthShader::initialize() noexcept {
 	near =  get_uniform<float>("near");
 	float far =  get_uniform<float>("far");
@@ -16,3 +16,4 @@ bool DepthShader::fragment(const vec3 &point, vec3 &color) noexcept {
 	color = { gray, gray, gray };
 	return true;
 }
+#endif

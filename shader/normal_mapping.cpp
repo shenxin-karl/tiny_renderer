@@ -1,5 +1,6 @@
 #include "common.h"
 
+#if 0
 void NormalMapping::initialize() noexcept {
 	normal_texture_ptr = &get_uniform<Texture2d>("normal_texture");
 	diffuse_texture_ptr = &get_uniform<Texture2d>("diffuse_texture");
@@ -42,3 +43,4 @@ bool NormalMapping::fragment(const vec3 &point, vec3 &color) noexcept {
 	color = ambient + diffuse + specular;
 	return true;
 }
+#endif

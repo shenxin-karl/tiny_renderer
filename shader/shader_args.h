@@ -1,17 +1,16 @@
 #pragma once
 
 struct ShaderArgsBase;
-using SArgsPtr = std::unique_ptr<ShaderArgsBase>;
+using SArgsPtr = std::shared_ptr<ShaderArgsBase>;
 struct ShaderArgsBase {
 	virtual ~ShaderArgsBase() = default;
 	virtual SArgsPtr interp(const SArgsPtr &other, float t) const noexcept;
-	virtual SArgsPtr interp(const SArgsPtr &v1, const SArgsPtr &v2, const SArgsPtr &v3,
-		const vec3 &coord, float depth) const noexcept;
+	virtual SArgsPtr interp(const SArgsPtr &v2, const SArgsPtr &v3, const vec3 &coord, float depth) const noexcept;
 	virtual void perspective_divide(float inverse_z) noexcept;
 };
 
 template<typename T>
-using _rm_const_point_t = std::remove_pointer_t<std::remove_const_t<T>>;
+using _rm_const_point_t = std::remove_const_t<std::remove_pointer_t<T>>;
 
 template<typename T>
 constexpr std::remove_const_t<T> _sargs_ptr_cast(SArgsPtr &other) noexcept {
@@ -23,10 +22,11 @@ constexpr std::add_const_t<T> _sargs_ptr_cast(const SArgsPtr &other) noexcept {
 	return static_cast<std::add_const_t<T>>(other.get());
 }
 
+struct LightShaderArgs;
 template<typename T, typename... Args>
 constexpr SArgsPtr _make_sargs_ptr(Args&&... args) {
 	using type = _rm_const_point_t<T>;
-	return std::make_unique<type>(type{ std::forward<Args>(args)... });
+	return std::make_shared<type>(std::forward<Args>(args)...);
 }
 
 template<typename T1, typename T2>

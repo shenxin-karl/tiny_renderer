@@ -3,12 +3,20 @@
 class TextureCube;
 
 template<typename T>
-concept uniform_key_constraint = requires {
-	std::is_same_v<T, bool> || std::is_same_v<T, int> || std::is_same_v<T, float> ||
-	std::is_same_v<T, vec2> || std::is_same_v<T, vec3> || std::is_same_v<T, vec4> ||
-	std::is_same_v<T, mat2> || std::is_same_v<T, mat3> || std::is_same_v<T, mat4>;
-};
+concept uniform_key_constraint = (
+	std::same_as<T, bool> || std::same_as<T, int> || std::same_as<T, float> ||
+	std::same_as<T, vec2> || std::same_as<T, vec3> || std::same_as<T, vec4> ||
+	std::same_as<T, mat2> || std::same_as<T, mat3> || std::same_as<T, mat4> ||
+	std::same_as<T, Texture2d> || std::same_as<T, TextureCube>
+);
 
+
+struct VertexRes {
+	vec4		position;
+	SArgsPtr	args;
+public:
+
+};
 
 struct ShaderBase {
 	virtual ~ShaderBase() = default;
@@ -32,7 +40,7 @@ struct ShaderBase {
 	void set_model(const mat4 &_model);
 	void set_view(const mat4 &_view);
 	void set_projection(const mat4 &_projection);
-	float calc_depth(const vec3 &_coords, const std::array<Vertex *, 3> &vertices);
+	float calc_depth(const vec3 &_coords, const std::array<VertexRes *, 3> &vertices);
 	float get_depth() const noexcept;
 
 	// face_func accepts a value for the cosine of the sum normal, and returns true to eliminate triangles

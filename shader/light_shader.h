@@ -5,8 +5,7 @@ struct LightShaderArgs : public ShaderArgsBase {
 public:
 	LightShaderArgs(const vec3 &normal);
 	virtual SArgsPtr interp(const SArgsPtr &other, float t) const noexcept override;
-	virtual SArgsPtr interp(const SArgsPtr &v1, const SArgsPtr &v2, const SArgsPtr &v3, 
-							const vec3 &coords, float depth) const noexcept override;
+	virtual SArgsPtr interp(const SArgsPtr &v2, const SArgsPtr &v3, const vec3 &coords, float depth) const noexcept override;
 	virtual void perspective_divide(float inverse_z) noexcept override;
 };
 

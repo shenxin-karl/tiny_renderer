@@ -1,5 +1,6 @@
 #pragma once
 
+#if 0
 class TextrueShader : public ShaderBase {
 	const Texture2d *uniform_texture_ptr;
 private:
@@ -9,3 +10,4 @@ public:
 	vec4 vertex(const Vertex &vertex, int idx) noexcept;
 	bool fragment(const vec3 &point, vec3 &color) noexcept;
 };
+#endif

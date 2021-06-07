@@ -1,5 +1,6 @@
 #pragma once
 
+#if 0
 class NormalMapping : public ShaderBase {
 	std::array<vec3, 3> our_world_vertex;
 	std::array<vec2, 3> our_texcoords;
@@ -17,3 +18,4 @@ public:
 	virtual vec4 vertex(const Vertex &vertex, int idx) noexcept override;
 	virtual bool fragment(const vec3 &point, vec3 &color) noexcept override;
 };
+#endif

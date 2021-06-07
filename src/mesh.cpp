@@ -49,52 +49,42 @@ void Mesh::draw(FrameBuffer &frame, ShaderBase &shader) const {
 }
 
 void Mesh::process_triangle(FrameBuffer &frame, ShaderBase &shader, std::array<int, 3> our_indices) const {
-	std::vector<Vertex> out_vertices;
-	std::vector<int>    out_indices;
-	out_vertices.reserve(12);
-	out_indices.reserve(12); 
+	std::vector<VertexRes> out_vertices;
+	out_vertices.reserve(3);
 	for (int i = 0; i < 3; ++i) {
 		int index = our_indices[i];
 		const Vertex &vertex = vertices[index];
-		vec4 point = shader.vertex(vertex, i);
-		out_vertices.push_back(Vertex {
-			point,
-			vertex.normal,
-			vertex.texcoords,
-		});
-		out_indices.push_back(i);
+		SArgsPtr args = std::make_shared<ShaderArgsBase>();
+		vec4 point = shader.vertex(vertex, args);
+		out_vertices.push_back({ point, std::move(args) });
 	}
-
-	if (Draw::plane_cutting(out_vertices, out_indices) == 0)		// cutting
+	
+	if (!Draw::plane_cutting(out_vertices))
 		return;
-		
+
 	int half_width = frame.get_width() / 2;
 	int half_height = frame.get_height() / 2;
 	for (auto &v : out_vertices) {
-		v.position.head<3>() /= v.position.w();
+		float inverse_z = 1.f / v.position.w();
+		v.position.head<3>() *= inverse_z;
 		v.position.x() = v.position.x() * half_width + half_width;
 		v.position.y() = v.position.y() * half_height + half_height;
+		v.args->perspective_divide(inverse_z);
 	}
 	
-	int limit = static_cast<int>(out_indices.size()) - 2;
-	for (size_t i = 0; i < limit; i += 3) {
-		int idx1 = out_indices[i];
-		int idx2 = out_indices[i+1];
-		int idx3 = out_indices[i+2];
-		if (idx1 < 0)
+	size_t limit = out_vertices.size() - 2;
+	for (size_t i = 0; i < limit; ++i) {
+		VertexRes &v1 = out_vertices[0];
+		VertexRes &v2 = out_vertices[i+1];
+		VertexRes &v3 = out_vertices[i+2];
+		if (backface_culling(shader, v1, v2, v3))
 			continue;
-		if (backface_culling(shader, out_vertices[idx1], out_vertices[idx2], out_vertices[idx3]))
-			continue;
-		Draw::triangle(frame, shader, {
-			&out_vertices[idx1],
-			&out_vertices[idx2],
-			&out_vertices[idx3],
-		});
+		Draw::triangle(frame, shader, { &v1, &v2, &v3 });
 	}
 }
 
 #define USE_BACKFACE_CULLING_OPTIMIZE
-bool Mesh::backface_culling(ShaderBase &shader, const Vertex &v1, const Vertex &v2, const Vertex &v3) const noexcept {
+bool Mesh::backface_culling(ShaderBase &shader, const VertexRes &v1, const VertexRes &v2, const VertexRes &v3) const noexcept {
 	if (!shader.is_enable_face_culling())
 		return false;
 

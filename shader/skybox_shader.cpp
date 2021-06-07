@@ -1,5 +1,5 @@
 #include "common.h"
-
+#if 0
 void SkyboxShader::initialize() noexcept {
 	uniform_skybox_texture = &get_uniform<TextureCube>("skybox_texture");
 	auto trans = view;
@@ -21,3 +21,4 @@ bool SkyboxShader::fragment(const vec3 &point, vec3 &color) noexcept {
 	color = uniform_skybox_texture->rgb(texcoord);
 	return true;
 }
+#endif

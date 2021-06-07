@@ -1,8 +1,8 @@
 #include "common.h"
 #include <thread>
 
-constexpr int width = 600;
-constexpr int height = 600;
+constexpr int width = 400;
+constexpr int height = 400;
 constexpr float aspect = static_cast<float>(width) / static_cast<float>(height);
 
 void init();
@@ -43,6 +43,7 @@ void init() {
 #endif // _DEBUG
 }
 
+#if 0
 void test_cube() {
 	constexpr float near = 0.1f;
 	constexpr float far = 100.f;
@@ -54,6 +55,7 @@ void test_cube() {
 	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
 	renderer.test_cube(near, far);
 }
+#endif
 
 void light_render() {
 	constexpr float near = -0.1f;
@@ -71,6 +73,7 @@ void light_render() {
 	renderer.light_renderer();
 }
 
+#if 0
 void blinn_phong() {
 	constexpr float near = -0.001f;
 	constexpr float far = -100.f;
@@ -92,13 +95,13 @@ void normal_mapping() {
 	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
 	renderer.normal_mapping();
 }
-
+#endif
 void one_triangle() {
 	constexpr float near = -0.0001f;
 	constexpr float far = -100.f;
-#if 1
+#if 0
 	vec3 look_from = vec3(-5, 0, 0);
-	vec3 look_at = vec3(0.857084f, 0.0139622f, -0.514988f);
+	vec3 look_at = vec3(0.976895f, 0.0505929f, -0.207645f);
 	std::shared_ptr<CameraBase> camera_ptr
 		= std::make_shared<FixedCamera>(look_from, look_from + look_at, vec3(0, 1, 0), 45.f, aspect, near, far);
 #else
@@ -111,6 +114,7 @@ void one_triangle() {
 	renderer.light_renderer();
 }
 
+#if 0
 void skybox() {
 	constexpr float near = -0.0001f;
 	constexpr float far = 100.f;
@@ -122,3 +126,4 @@ void skybox() {
 	renderer.skybox();
 }
 
+#endif

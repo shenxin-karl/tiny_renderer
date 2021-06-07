@@ -1,5 +1,6 @@
 #pragma once
 
+#if 0
 struct BlinnPhongShaderArgs : public ShaderArgsBase {
 	vec3	our_normal;
 	vec3	our_world_pos;
@@ -29,3 +30,4 @@ public:
 	virtual vec4 vertex(const Vertex &vertex, int idx) noexcept override;
 	virtual bool fragment(const vec3 &point, vec3 &color) noexcept override;
 };
+#endif

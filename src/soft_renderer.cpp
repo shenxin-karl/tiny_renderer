@@ -175,6 +175,7 @@ void SoftRenderer::normal_mapping() {
 	}
 }
 
+#if 0
 void SoftRenderer::skybox() {
 	std::shared_ptr<ShaderBase> skybox_shader_ptr = std::make_shared<SkyboxShader>();
 	std::shared_ptr<Model> skybox_model = std::make_shared<Model>(Loader::create_skybox_obj());
@@ -210,3 +211,4 @@ void SoftRenderer::skybox() {
 		poll_event();
 	}
 }
+#endif

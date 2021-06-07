@@ -1,5 +1,6 @@
 #include "common.h"
 
+#if 0
 SArgsPtr BlinnPhongShaderArgs::interp(const SArgsPtr &other, float t) const noexcept {
 	const auto *rhs = SArgsPtr_cast(other);
 	return Make_ArgsPtr(
@@ -78,3 +79,4 @@ bool BlinnPhong::fragment(const vec3 &point, vec3 &color) noexcept {
 	color = ambient + diffuse + specular;
 	return true;
 }
+#endif

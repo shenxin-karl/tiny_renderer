@@ -10,8 +10,8 @@ SArgsPtr LightShaderArgs::interp(const SArgsPtr &other, float t) const noexcept 
 	);
 }
 
-SArgsPtr LightShaderArgs::interp(const SArgsPtr &v1, const SArgsPtr &v2, const SArgsPtr &v3, const vec3 &coords, float depth) const noexcept {
-	const auto *v1_ptr = SArgsPtr_cast(v1);
+SArgsPtr LightShaderArgs::interp(const SArgsPtr &v2, const SArgsPtr &v3, const vec3 &coords, float depth) const noexcept {
+	const auto *v1_ptr = this;
 	const auto *v2_ptr = SArgsPtr_cast(v2);
 	const auto *v3_ptr = SArgsPtr_cast(v3);
 	return Make_ArgsPtr(
@@ -22,6 +22,7 @@ SArgsPtr LightShaderArgs::interp(const SArgsPtr &v1, const SArgsPtr &v2, const S
 void LightShaderArgs::perspective_divide(float inverse_z) noexcept {
 	our_normal *= inverse_z;
 }
+
 
 vec4 LightShader::vertex(const Vertex &vertex, SArgsPtr &args) noexcept {
 	args = std::make_unique<LightShaderArgs>(vertex.normal);

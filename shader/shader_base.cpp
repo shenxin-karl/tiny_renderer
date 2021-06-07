@@ -1,20 +1,5 @@
 #include "common.h"
 
-SArgsPtr ShaderArgsBase::interp(const SArgsPtr &other, float t) const noexcept {
-	return std::make_unique<ShaderArgsBase>();
-}
-
-
-SArgsPtr ShaderArgsBase::interp(const SArgsPtr &v1, const SArgsPtr &v2, const SArgsPtr &v3, 
-								const vec3 &coord, float depth) const noexcept 
-{
-	return std::make_unique<ShaderArgsBase>();
-}
-
-void ShaderArgsBase::perspective_divide(float inverse_z) noexcept {
-}
-
-
 void ShaderBase::set_model(const mat4 &_model) {
 	model = _model;
 	update_mvp();
@@ -30,7 +15,7 @@ void ShaderBase::set_projection(const mat4 &_projection) {
 	update_mvp();
 }
 
-float ShaderBase::calc_depth(const vec3 &_coords, const std::array<Vertex *, 3> &vertices) {
+float ShaderBase::calc_depth(const vec3 &_coords, const std::array<VertexRes *, 3> &vertices) {
 	coords = _coords;
 	float d1 = coords[0] / vertices[0]->position.w();
 	float d2 = coords[1] / vertices[1]->position.w();

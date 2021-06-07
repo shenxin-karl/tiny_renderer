@@ -2,6 +2,7 @@
 
 class FrameBuffer;
 struct ShaderBase;
+struct VertexRes;
 
 struct Vertex {
 	vec4	position;
@@ -36,5 +37,5 @@ public:
 	~Mesh() = default;
 private:
 	void process_triangle(FrameBuffer &frame, ShaderBase &shader, std::array<int, 3> our_indices) const;
-	bool backface_culling(ShaderBase &shader, const Vertex &v1, const Vertex &v2, const Vertex &v3) const noexcept;
+	bool backface_culling(ShaderBase &shader, const VertexRes &v1, const VertexRes &v2, const VertexRes &v3) const noexcept;
 };

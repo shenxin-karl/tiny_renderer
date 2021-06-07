@@ -1,5 +1,6 @@
 #pragma once
 
+#if 0
 class DepthShader : public ShaderBase {
 	float near;
 	float denominator;
@@ -8,3 +9,4 @@ public:
 	virtual vec4 vertex(const Vertex &vertex, int idx) noexcept override;
 	virtual bool fragment(const vec3 &point, vec3 &color) noexcept override;
 };
+#endif
