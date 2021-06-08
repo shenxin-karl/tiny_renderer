@@ -15,6 +15,9 @@ public:
 	static mat4 rotate_y(float angle);
 	static mat4 rotate_x(float angle);
 	static bool plane_cutting(std::vector<VertexRes> &out_vertices);
+	// vec I started at Shading Point
+	static vec3 reflect(const vec3 &I, const vec3 &N);
+	static vec3 refract(const vec3 &I, const vec3 &N, float ratio);
 private:
 	constexpr static float plane_w_limit = -0.000001f;
 	static bool outside_left_plane(float x, float w);

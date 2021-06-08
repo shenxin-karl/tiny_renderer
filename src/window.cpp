@@ -196,11 +196,14 @@ LRESULT CALLBACK Window::wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpa
 	return DefWindowProc(hwnd, msg, wparam, lparam);
 }
 
+// for virtual-key codes, see
+// https://docs.microsoft.com/en-us/windows/desktop/inputdev/virtual-key-codes
 std::map<WPARAM, Window::WindowKey> Window::standard_key_to_window_key = {
 	std::make_pair<WPARAM, WindowKey>(0x57, WindowKey::Froward),	// 'W'
 	std::make_pair<WPARAM, WindowKey>(0x53, WindowKey::Backward),	// 'S'
 	std::make_pair<WPARAM, WindowKey>(0x41, WindowKey::Left),		// 'A'
 	std::make_pair<WPARAM, WindowKey>(0x44, WindowKey::Right),		// 'D'
+	std::make_pair<WPARAM, WindowKey>(VK_SPACE, WindowKey::Space),	// space
 };
 
 void Window::process_key_input(WPARAM param, bool pressed) {

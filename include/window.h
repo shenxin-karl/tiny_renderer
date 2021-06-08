@@ -8,6 +8,7 @@ public:
 		Backward,
 		Left,
 		Right,
+		Space,
 		MaxCount,
 	};
 	constexpr static int window_key_size = static_cast<int>(WindowKey::MaxCount);

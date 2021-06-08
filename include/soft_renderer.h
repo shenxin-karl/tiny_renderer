@@ -17,6 +17,8 @@ public:
 	SoftRenderer(const SoftRenderer &) = delete;
 	~SoftRenderer() = default;
 public:
+	std::function<void(Window::WindowKey)>	on_key_input;
+public:
 	void key_callback(Window::WindowKey key);
 	void mouse_callback(int x, int y);
 	void scroll_callback(float offset);

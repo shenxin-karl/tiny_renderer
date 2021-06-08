@@ -24,19 +24,6 @@ struct ShaderBase {
 	virtual vec4 vertex(const Vertex &vertex, SArgsPtr &args) noexcept = 0;
 	virtual bool fragment(const vec3 &point, const SArgsPtr &args, vec3 &color) noexcept = 0;
 
-	template<typename T>
-	constexpr T interp(const T &v1, const T &v2, const T &v3) const noexcept {
-		T res1 = v1 * coords[0];
-		T res2 = v2 * coords[1];
-		T res3 = v3 * coords[2];
-		return (res1 + res2 + res3) * depth;
-	}
-
-	template<typename T>
-	constexpr T interp(const std::array<T, 3> &vertices) const noexcept {
-		return interp(vertices[0], vertices[1], vertices[2]);
-	}
-
 	void set_model(const mat4 &_model);
 	void set_view(const mat4 &_view);
 	void set_projection(const mat4 &_projection);

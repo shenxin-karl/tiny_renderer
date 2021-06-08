@@ -1,8 +1,8 @@
 #include "common.h"
 #include <thread>
 
-constexpr int width = 400;
-constexpr int height = 400;
+constexpr int width = 500;
+constexpr int height = 500;
 constexpr float aspect = static_cast<float>(width) / static_cast<float>(height);
 
 void init();
@@ -17,10 +17,10 @@ int main(void) {
 	init();
 	//light_render();
 	//test_cube();
-	//blinn_phong();
+	blinn_phong();
 	//normal_mapping();
 	//one_triangle();
-	skybox();
+	//skybox();
 	return 0;
 }
 
@@ -121,6 +121,7 @@ void skybox() {
 		= std::make_shared<FpsCamera>(vec3(-5, 0, 0), vec3(0, 1, 0), 45.f, aspect, near, far, 5.f, 0.1f);
 	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<TextrueShader>();
 	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::load_obj("resources/obj/african_head.obj"));
+	//std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::create_test_cube_obj());
 	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
 	renderer.skybox();
 }

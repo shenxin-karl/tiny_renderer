@@ -27,6 +27,7 @@ add_executable(tiny_renderer
 	"shader/texture_mapping.h"  "shader/texture_mapping.cpp"
 	"shader/skybox_shader.h"	"shader/skybox_shader.cpp" 
 	"shader/shader_args.h"		"shader/shader_args.cpp"
+	"shader/skybox_reflect.h"   "shader/skybox_reflect.cpp"
 )
 
 

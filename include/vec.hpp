@@ -247,8 +247,7 @@ public:
         return res;                                                                 
     }
 
-
-    vec operator-() noexcept {
+    vec operator-() const noexcept {
         auto res = *this;
         for (int i = 0; i < N; ++i) 
             res.data[i] = -res.data[i];

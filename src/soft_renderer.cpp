@@ -31,6 +31,8 @@ void SoftRenderer::key_callback(Window::WindowKey key) {
 	auto curr_time = window.get_time();
 	auto delta_time = curr_time - last_time;
 	camera_ptr->key_callback(key, delta_time);
+	if (on_key_input != nullptr)
+		on_key_input(key);
 }
 
 void SoftRenderer::mouse_callback(int x, int y) {
@@ -178,7 +180,9 @@ void SoftRenderer::normal_mapping() {
 void SoftRenderer::skybox() {
 	std::shared_ptr<ShaderBase> skybox_shader_ptr = std::make_shared<SkyboxShader>();
 	std::shared_ptr<Model> skybox_model = std::make_shared<Model>(Loader::create_skybox_obj());
-	shader_ptr->set_face_culling_func([](float conse) { return conse > 0.f; });
+
+	auto backface_func = [](float conse) { return conse > 0.f; };
+	shader_ptr->set_face_culling_func(backface_func);
 	Texture2d diffuse_texture("resources/obj/african_head_diffuse.tga");
 	shader_ptr->set_uniform("texture", diffuse_texture);
 	
@@ -191,14 +195,36 @@ void SoftRenderer::skybox() {
 		"resources/skybox/back.jpg",
 	};
 	TextureCube skybox_texture(faces);
+	
+	int type = 1;
+	on_key_input = [&](Window::WindowKey key) {
+		if (key == Window::WindowKey::Space)
+			type = (type + 1) % 2;
+	};
+
+	std::shared_ptr<ShaderBase> reflect_shader = std::make_shared<SkyboxReflect>();
+	reflect_shader->set_face_culling_func(backface_func);
+	std::shared_ptr<ShaderBase> curr_shader = nullptr;
+	reflect_shader->set_uniform("skybox_texture", skybox_texture);
 
 	while (!window.window_should_be_close()) {
 		frame.clear_color(vec3(0));
 		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
+
+		switch (type) {
+		case 0:
+			curr_shader = reflect_shader;
+			break;
+		default:
+			curr_shader = shader_ptr;
+			break;
+		}
+
 		// draw model
-		shader_ptr->set_view(camera_ptr->get_view());
-		shader_ptr->set_projection(camera_ptr->get_projection());
-		model_ptr->draw(frame, *shader_ptr);
+		curr_shader->set_uniform("eye_pos", camera_ptr->get_look_from());
+		curr_shader->set_view(camera_ptr->get_view());
+		curr_shader->set_projection(camera_ptr->get_projection());
+		model_ptr->draw(frame, *curr_shader);
 		// draw skybox
 		skybox_shader_ptr->set_model(Draw::rotate_y(window.get_time() * 10.f));
 		skybox_shader_ptr->set_view(camera_ptr->get_view());

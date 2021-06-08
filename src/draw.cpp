@@ -229,6 +229,21 @@ bool Draw::plane_cutting(std::vector<VertexRes> &out_vertices) {
 	return out_vertices.size() >= 3;
 }
 
+vec3 Draw::reflect(const vec3 &I, const vec3 &N) {
+	float cosine = dot(I, N);
+	return cosine * N * 2 - I;
+}
+
+vec3 Draw::refract(const vec3 &I, const vec3 &N, float ratio) {
+	float cosine = dot(-I, N);
+	float discriminant = 1.f - (ratio * ratio) * (1.f - cosine * cosine);
+	if (discriminant < 0.f)		// 发生全内反射, 所有的能量都是反射出去
+		return reflect(I, N);
+
+	vec3 res = (ratio * (I + cosine * N)) - (std::sqrt(discriminant) * N);
+	return res;
+}
+
 bool Draw::outside_left_plane(float x, float w) {
 	return x > -w;
 }
