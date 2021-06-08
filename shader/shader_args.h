@@ -38,10 +38,10 @@ template<typename T1, typename T2>
 constexpr T2 common_interp(const T1 &v1, const T1 &v2, const T1 &v3, T2 (_rm_const_point_t<T1>::*mem_ptr),
 						   const vec3 &coord, float depth) 
 {
-	auto t1 = v1->*mem_ptr * coord[0];
-	auto t2 = v2->*mem_ptr * coord[1];
-	auto t3 = v3->*mem_ptr * coord[2];
-	return (t1 + t2 + t3) * depth;
+	auto t1 = v1->*mem_ptr * (coord[0] * depth);
+	auto t2 = v2->*mem_ptr * (coord[1] * depth);
+	auto t3 = v3->*mem_ptr * (coord[2] * depth);
+	return t1 + t2 + t3;
 }
 
 #define SArgsPtr_cast(ptr) _sargs_ptr_cast<decltype(this)>(ptr)

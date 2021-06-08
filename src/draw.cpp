@@ -202,6 +202,7 @@ bool Draw::plane_cutting(std::vector<VertexRes> &out_vertices) {
 
 	for (auto iter = std::begin(plane_args); iter != std::end(plane_args); ++iter) {
 		std::vector<VertexRes> input(std::move(out_vertices));
+		out_vertices.reserve(12);
 		auto &&[check_func, index, get_radio] = *iter;
 		size_t input_size = input.size();
 		for (size_t i = 0; i < input_size; ++i) {
