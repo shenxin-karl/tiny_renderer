@@ -30,7 +30,7 @@ std::tuple<int, vec2> TextureCube::calc_texture_index(const vec3 &direction) con
 	int index;
 	vec2 texcoord;
 	if (abs_x > abs_y && abs_x > abs_z) {	// use left or right 
-		if (direction.x() >= 0.f) {
+		if (direction.x() > 0.f) {
 			sc = -direction.z();
 			index = 0;
 		} else {
@@ -40,7 +40,7 @@ std::tuple<int, vec2> TextureCube::calc_texture_index(const vec3 &direction) con
 		tc = -direction.y();
 		ma = abs_x;
 	} else if (abs_y > abs_z) {				// use top or bottom
-		if (direction.y() >= 0.f) {
+		if (direction.y() > 0.f) {
 			tc = direction.z();
 			index = 2;
 		} else {
@@ -50,7 +50,7 @@ std::tuple<int, vec2> TextureCube::calc_texture_index(const vec3 &direction) con
 		sc = direction.x();
 		ma = abs_y;
 	} else {								// use front or back
-		if (direction.z() >= 0.f) {
+		if (direction.z() > 0.f) {
 			index = 4;
 			sc = direction.x();
 		} else {
@@ -62,6 +62,6 @@ std::tuple<int, vec2> TextureCube::calc_texture_index(const vec3 &direction) con
 	}
 	constexpr float inverse_two = 1.f / 2.f;
 	texcoord.s() = (sc / ma + 1) * inverse_two;
-	texcoord.t() = (tc / ma + 1) * inverse_two;
+	texcoord.t() = 1.f - (tc / ma + 1) * inverse_two;
 	return { index, texcoord };
 }

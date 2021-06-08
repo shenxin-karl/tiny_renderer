@@ -25,7 +25,7 @@ void LightShaderArgs::perspective_divide(float inverse_z) noexcept {
 
 
 vec4 LightShader::vertex(const Vertex &vertex, SArgsPtr &args) noexcept {
-	args = std::make_unique<LightShaderArgs>(vertex.normal);
+	args = std::make_shared<LightShaderArgs>(vertex.normal);
 	return mvp * vertex.position;
 }
 

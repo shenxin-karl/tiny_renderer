@@ -15,12 +15,12 @@ void skybox();
 
 int main(void) {
 	init();
-	light_render();
+	//light_render();
 	//test_cube();
 	//blinn_phong();
 	//normal_mapping();
 	//one_triangle();
-	//skybox();
+	skybox();
 	return 0;
 }
 
@@ -73,7 +73,6 @@ void light_render() {
 	renderer.light_renderer();
 }
 
-#if 0
 void blinn_phong() {
 	constexpr float near = -0.001f;
 	constexpr float far = -100.f;
@@ -85,6 +84,7 @@ void blinn_phong() {
 	renderer.blinn_phong();
 }
 
+#if 0
 void normal_mapping() {
 	constexpr float near = 0.1f;
 	constexpr float far = 100.f;
@@ -114,10 +114,9 @@ void one_triangle() {
 	renderer.light_renderer();
 }
 
-#if 0
 void skybox() {
 	constexpr float near = -0.0001f;
-	constexpr float far = 100.f;
+	constexpr float far = -100.f;
 	std::shared_ptr<CameraBase> camera_ptr
 		= std::make_shared<FpsCamera>(vec3(-5, 0, 0), vec3(0, 1, 0), 45.f, aspect, near, far, 5.f, 0.1f);
 	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<TextrueShader>();
@@ -125,5 +124,3 @@ void skybox() {
 	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
 	renderer.skybox();
 }
-
-#endif

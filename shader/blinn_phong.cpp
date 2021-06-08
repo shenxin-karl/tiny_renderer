@@ -1,6 +1,9 @@
 #include "common.h"
 
-#if 0
+BlinnPhongShaderArgs::BlinnPhongShaderArgs(const vec3 &normal, const vec3 &position, const vec2 texcoord)
+: our_normal(normal), our_world_pos(position), our_texcoord(texcoord) {
+}
+
 SArgsPtr BlinnPhongShaderArgs::interp(const SArgsPtr &other, float t) const noexcept {
 	const auto *rhs = SArgsPtr_cast(other);
 	return Make_ArgsPtr(
@@ -10,10 +13,10 @@ SArgsPtr BlinnPhongShaderArgs::interp(const SArgsPtr &other, float t) const noex
 	);
 }
 
-SArgsPtr BlinnPhongShaderArgs::interp(const SArgsPtr &v1, const SArgsPtr &v2, const SArgsPtr &v3,
+SArgsPtr BlinnPhongShaderArgs::interp(const SArgsPtr &v2, const SArgsPtr &v3, 
 	const vec3 &coord, float depth) const noexcept 
 {
-	const auto *v1_ptr = SArgsPtr_cast(v1);
+	const auto *v1_ptr = this;
 	const auto *v2_ptr = SArgsPtr_cast(v2);
 	const auto *v3_ptr = SArgsPtr_cast(v3);
 	return Make_ArgsPtr(
@@ -29,54 +32,44 @@ void BlinnPhongShaderArgs::perspective_divide(float inverse_z) noexcept {
 	our_texcoord *= inverse_z;
 }
 
-
 void BlinnPhong::initialize() noexcept {
-	light_dir_ptr = &get_uniform<vec3>("light_dir");
-	diffuse_texture_ptr = &get_uniform<Texture2d>("diffuse_texture");
-	light_ambient_ptr = &get_uniform<vec3>("light_ambient");
-	light_diffuse_ptr = &get_uniform<vec3>("light_diffuse");
-	light_specular_ptr = &get_uniform<vec3>("light_specular");
-	eye_pos_ptr = &get_uniform<vec3>("eye_pos");
-	factor_ptr = &get_uniform<float>("specular_factor");
+	uniform_light_dir = get_uniform<vec3>("light_dir");
+	uniform_eye_pos = get_uniform<vec3>("eye_pos");
+	uniform_diffuse_texture = get_uniform<Texture2d>("diffuse_texture");
+	uniform_specular_factor = get_uniform<float>("specular_factor");
+	uniform_light_ambient = get_uniform<vec3>("light_ambient");
+	uniform_light_diffuse = get_uniform<vec3>("light_diffuse");
+	uniform_light_specular = get_uniform<vec3>("light_specular");
 }
 
-vec4 BlinnPhong::vertex(const Vertex &vertex, int idx) noexcept {
-	auto res = mvp * vertex.position;
-	float inverse_z = 1.f / res.w();
-	our_world_pos[idx] = model * vertex.position * inverse_z;
-	our_normal[idx] = vertex.normal * inverse_z;
-	our_texcoords[idx] = vertex.texcoords * inverse_z;
-	return res;
+vec4 BlinnPhong::vertex(const Vertex &vertex, SArgsPtr &args) noexcept {
+	args = std::make_shared<BlinnPhongShaderArgs>(BlinnPhongShaderArgs {
+		vertex.normal,
+		model * vertex.position,
+		vertex.texcoords,
+	});
+	return mvp * vertex.position;
 }
 
-bool BlinnPhong::fragment(const vec3 &point, vec3 &color) noexcept {
-	vec3 world_pos = interp(our_world_pos);
-	vec3 world_normal = interp(our_normal);
-	const vec3 &light_dir = *this->light_dir_ptr;
+bool BlinnPhong::fragment(const vec3 &point, const SArgsPtr &args, vec3 &color) noexcept {
+	const BlinnPhongShaderArgs *args_ptr = static_cast<const BlinnPhongShaderArgs *>(args.get());
+	vec3 our_normal = args_ptr->our_normal;
+	vec3 our_position = args_ptr->our_world_pos;
+	vec2 our_texcoord = args_ptr->our_texcoord;
 
-	const Texture2d &diffuse_texture = *this->diffuse_texture_ptr;
-	vec2 texcoords = interp(our_texcoords);
-	vec3 diffuse_texture_color = diffuse_texture.rgb(texcoords);
+	// ambient
+	vec3 ambient = uniform_light_ambient * uniform_diffuse_texture.rgb(our_texcoord);
+	
+	// diffuse
+	float diff = std::max(dot(uniform_light_dir, our_normal), 0.f);
+	vec3 diffuse = diff * uniform_light_diffuse * uniform_diffuse_texture.rgb(our_texcoord);
 
-	// ambient color
-	const vec3 &light_ambient = *this->light_ambient_ptr;
-	vec3 ambient = light_ambient * diffuse_texture_color;
-
-	 // diffuse color
-	const vec3 &light_diffuse = *this->light_diffuse_ptr;
-	float diff = std::max(dot(world_normal, light_dir), 0.f);
-	vec3 diffuse = diff * diffuse_texture_color * light_diffuse;
-
-	// specular color
-	const vec3 &light_specular = *this->light_specular_ptr;
-	const vec3 &eye_pos = *this->eye_pos_ptr;
-	vec3 eye_dir = normalized(eye_pos - world_pos);
-	vec3 half_vec = normalized(eye_dir + light_dir);
-	float factor = *this->factor_ptr;
-	float spec = std::pow(std::max(dot(world_normal, half_vec), 0.f), factor);
-	vec3 specular = spec * diffuse_texture_color * light_specular;
+	// specular
+	vec3 eye_dir = normalized(uniform_eye_pos - our_position);
+	vec3 half_vec = normalized(eye_dir + uniform_light_diffuse);
+	float spec = std::pow(std::max(dot(half_vec, our_normal), 0.f), uniform_specular_factor);
+	vec3 specular = spec * uniform_light_specular * uniform_diffuse_texture.rgb(our_texcoord);
 
 	color = ambient + diffuse + specular;
 	return true;
 }
-#endif

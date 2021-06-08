@@ -175,7 +175,6 @@ void SoftRenderer::normal_mapping() {
 	}
 }
 
-#if 0
 void SoftRenderer::skybox() {
 	std::shared_ptr<ShaderBase> skybox_shader_ptr = std::make_shared<SkyboxShader>();
 	std::shared_ptr<Model> skybox_model = std::make_shared<Model>(Loader::create_skybox_obj());
@@ -196,19 +195,17 @@ void SoftRenderer::skybox() {
 	while (!window.window_should_be_close()) {
 		frame.clear_color(vec3(0));
 		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
-		//shader_ptr->set_view(camera_ptr->get_view());
-		//shader_ptr->set_projection(camera_ptr->get_projection());
-		//model_ptr->draw(frame, *shader_ptr);
-
+		// draw model
+		shader_ptr->set_view(camera_ptr->get_view());
+		shader_ptr->set_projection(camera_ptr->get_projection());
+		model_ptr->draw(frame, *shader_ptr);
 		// draw skybox
 		skybox_shader_ptr->set_model(Draw::rotate_y(window.get_time() * 10.f));
 		skybox_shader_ptr->set_view(camera_ptr->get_view());
 		skybox_shader_ptr->set_projection(camera_ptr->get_projection());
 		skybox_shader_ptr->set_uniform("skybox_texture", skybox_texture);
 		skybox_model->draw(frame, *skybox_shader_ptr);
-
 		window.draw(frame);
 		poll_event();
 	}
 }
-#endif

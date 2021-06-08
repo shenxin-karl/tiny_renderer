@@ -61,12 +61,13 @@ void Draw::triangle(FrameBuffer &frame, ShaderBase &shader, std::array<VertexRes
 			if (!(coords[0] >= 0.f) || !(coords[1] >= 0.f) || !(coords[2] >= 0.f))
 				continue;
 		
-			float depth = shader.calc_depth(coords, vertice);
-			vec3 point = { fx, fy, depth };
+			float ndc_z = v1_point.z() * coords[0] + v2_point.z() * coords[1] + v3_point.z() * coords[2];
+			vec3 point = { fx, fy, ndc_z };
 			if (!frame.check_depth(point))
 				continue;
 
 			vec3 color;
+			float depth = shader.calc_depth(coords, vertice);
 			auto args = v1->args->interp(v2->args, v3->args, coords, depth);
 			if (shader.fragment(point, args, color))
 				frame.set_color(point, color);
@@ -80,8 +81,11 @@ vec3 Draw::barycentric_coord(vec2 point, const vec3 &v1, const vec3 &v2, const v
 		float x1 = p2.x();
 		float y0 = p1.y();
 		float y1 = p2.y();
+		float t1 = (y0-y1);
+		float t2 = (x1-x0);
+		float t3 = x0 * y1 - x1 * y0;
 		return [=](const vec2 &p) {
-			return (y0-y1)*p.x() + (x1-x0)*p.y() + x0*y1 - x1*y0;
+			return t1*p.x() + t2*p.y() + t3;
 		};
 	};
 	

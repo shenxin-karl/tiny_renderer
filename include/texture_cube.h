@@ -15,6 +15,10 @@ public:
 	TextureCube(const std::array<std::string, 6> &faces);
 	vec3 rgb(const vec3 &direction) const noexcept;
 	vec4 rgba(const vec3 &direction) const noexcept;
+	TextureCube &operator=(const TextureCube &other) = default;
 private:
 	std::tuple<int, vec2> calc_texture_index(const vec3 &direction) const noexcept;
+private:
+	friend class SkyboxShader;
+	TextureCube() = default;
 };

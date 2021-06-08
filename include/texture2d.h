@@ -3,6 +3,7 @@
 struct ImageInfo;
 class Texture2d {
 public:
+	Texture2d() = default;
 	Texture2d(const std::string &path);
 	Texture2d(const Texture2d &) = default;
 	Texture2d(Texture2d &&) = default;
