@@ -1,8 +1,8 @@
 #include "common.h"
 #include <thread>
 
-constexpr int width = 500;
-constexpr int height = 500;
+constexpr int width = 300;
+constexpr int height = 300;
 constexpr float aspect = static_cast<float>(width) / static_cast<float>(height);
 
 void init();

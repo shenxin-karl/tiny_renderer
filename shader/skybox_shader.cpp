@@ -38,12 +38,8 @@ vec4 SkyboxShader::vertex(const Vertex &vertex, SArgsPtr &args) noexcept {
 		vertex.position
 	});
 	auto res = uniform_vp * vertex.position;
-	return {
-		res.x(),
-		res.y(),
-		-res.w(),
-		res.w(),
-	};
+	res.z() = -res.w();			// 欺骗深度测试, 让天空盒的深度永远保持 -1. 最远处
+	return res;
 }
 
 bool SkyboxShader::fragment(const vec3 &point, const SArgsPtr &args, vec3 &color) noexcept {
