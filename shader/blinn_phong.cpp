@@ -40,11 +40,12 @@ void BlinnPhong::initialize() noexcept {
 	uniform_light_ambient = get_uniform<vec3>("light_ambient");
 	uniform_light_diffuse = get_uniform<vec3>("light_diffuse");
 	uniform_light_specular = get_uniform<vec3>("light_specular");
+	uniform_normal_matrix = transpose(inverse(mat3(model)));
 }
 
 vec4 BlinnPhong::vertex(const Vertex &vertex, SArgsPtr &args) noexcept {
 	args = std::make_shared<BlinnPhongShaderArgs>(BlinnPhongShaderArgs {
-		vertex.normal,
+		uniform_normal_matrix * vertex.normal,
 		model * vertex.position,
 		vertex.texcoords,
 	});

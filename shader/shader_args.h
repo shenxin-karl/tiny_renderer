@@ -12,12 +12,12 @@ struct ShaderArgsBase {
 template<typename T>
 using _rm_const_point_t = std::remove_const_t<std::remove_pointer_t<T>>;
 
-template<typename T>
+template<typename T> requires std::is_base_of_v<ShaderArgsBase, _rm_const_point_t<T>>
 constexpr std::remove_const_t<T> _sargs_ptr_cast(SArgsPtr &other) noexcept {
 	return static_cast<T>(other.get());
 }
 
-template<typename T>
+template<typename T> requires std::is_base_of_v<ShaderArgsBase, _rm_const_point_t<T>>
 constexpr std::add_const_t<T> _sargs_ptr_cast(const SArgsPtr &other) noexcept {
 	return static_cast<std::add_const_t<T>>(other.get());
 }
@@ -29,12 +29,14 @@ constexpr SArgsPtr _make_sargs_ptr(Args&&... args) {
 	return std::make_shared<type>(std::forward<Args>(args)...);
 }
 
-template<typename T1, typename T2>
+template<typename T1, typename T2> 
+requires std::is_pointer_v<T1> && std::is_base_of_v<ShaderArgsBase, _rm_const_point_t<T1>>
 constexpr T2 common_interp(const T1 &v1, const T1 &v2, T2 (_rm_const_point_t<T1>::*mem_ptr), float t) {
 	return v1->*mem_ptr + ((v2->*mem_ptr - v1->*mem_ptr) * t);
 }
 
 template<typename T1, typename T2>
+requires std::is_pointer_v<T1> && std::is_base_of_v<ShaderArgsBase, _rm_const_point_t<T1>>
 constexpr T2 common_interp(const T1 &v1, const T1 &v2, const T1 &v3, T2 (_rm_const_point_t<T1>::*mem_ptr),
 						   const vec3 &coord, float depth) 
 {

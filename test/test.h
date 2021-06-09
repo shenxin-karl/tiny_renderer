@@ -12,4 +12,5 @@ public:
 	static bool test_matrix();
 	static bool test_orhto();
 	static bool test_projection();
+	static bool test_matrix_inverse();
 };

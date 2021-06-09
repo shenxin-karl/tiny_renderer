@@ -46,9 +46,8 @@ public:
     constexpr vec(vec &&) noexcept = default;
     constexpr vec &operator=(const vec &) = default;
 
-    template<size_t UN, typename USeq> 
+    template<size_t UN, typename USeq> requires (UN > N)
     constexpr vec(const vec<T, UN, USeq> &other) noexcept {
-        static_assert(UN >= N, "vec copy constructor: other vec too low!");
         *this = other;
     }
 
@@ -64,21 +63,18 @@ public:
 		return data[i];
     }
 
-    template<size_t UN> 
+    template<size_t UN> requires (UN <= N)
     constexpr const vec<T, UN> &head() const noexcept {
-        static_assert(UN <= N, "vec head: out of range!");
 		return reinterpret_cast<const vec<T, UN> &>(*this);
     }
 
-    template<size_t UN>
+    template<size_t UN> requires (UN <= N)
     constexpr vec<T, UN> &head() noexcept {
-        static_assert(UN <= N, "vec head: out of range!");
 		return reinterpret_cast<vec<T, UN> &>(*this);
     }
 
-    template<size_t UN, typename USeq> 
+    template<size_t UN, typename USeq> requires (UN >= N)
     vec &operator=(const vec<T, UN, USeq> &other) noexcept {
-        static_assert(UN >= N, "vec &operator=: other vec too low!");
         std::memcpy(data, other.data, sizeof(data));
         return *this;
     }

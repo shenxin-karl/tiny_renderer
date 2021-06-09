@@ -24,8 +24,12 @@ void LightShaderArgs::perspective_divide(float inverse_z) noexcept {
 }
 
 
+void LightShader::initialize() noexcept {
+	uniform_normal_matrix = transpose(inverse(mat3(model)));
+}
+
 vec4 LightShader::vertex(const Vertex &vertex, SArgsPtr &args) noexcept {
-	args = std::make_shared<LightShaderArgs>(vertex.normal);
+	args = std::make_shared<LightShaderArgs>(uniform_normal_matrix * vertex.normal);
 	return mvp * vertex.position;
 }
 

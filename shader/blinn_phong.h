@@ -19,6 +19,7 @@ class BlinnPhong : public ShaderBase {
 	vec3		uniform_light_ambient;
 	vec3		uniform_light_diffuse;
 	vec3		uniform_light_specular;
+	mat3		uniform_normal_matrix;
 public:
 	virtual void initialize() noexcept override;
 	virtual vec4 vertex(const Vertex &vertex, SArgsPtr &args) noexcept override;

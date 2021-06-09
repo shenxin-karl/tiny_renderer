@@ -10,7 +10,9 @@ public:
 };
 
 struct LightShader : public ShaderBase {
+	mat3 uniform_normal_matrix;
 public:
+	virtual void initialize() noexcept override;
 	virtual vec4 vertex(const Vertex &vertex, SArgsPtr &args) noexcept override;
 	virtual bool fragment(const vec3 &point, const SArgsPtr &args, vec3 &color) noexcept override;
 };

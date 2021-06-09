@@ -12,6 +12,7 @@ public:
 
 struct SkyboxReflect : public ShaderBase {
 	TextureCube	 uniform_skybox_texture;
+	mat3		 uniform_normal_matrix;
 	vec3		 uniform_eye_pos;
 public:
 	virtual void initialize() noexcept override;		

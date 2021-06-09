@@ -9,6 +9,7 @@ std::pair<std::string_view, std::function<bool(void)>> Test::test_func[]{
 	DECLARE_TEST_FUNC(test_matrix),
 	DECLARE_TEST_FUNC(test_orhto),
 	DECLARE_TEST_FUNC(test_projection),
+	DECLARE_TEST_FUNC(test_matrix_inverse),
 };
 #undef DECLARE_TEST_FUNC
 
@@ -229,6 +230,26 @@ bool Test::test_projection() {
 	point = { 1.f, 1.f, -0.1f, 1.f };
 	point = view * point;
 	res = projection * point;
+	return true;
+}
+
+bool Test::test_matrix_inverse() {
+	using namespace matrix;
+	mat3 m1 = {
+		0.5f, 0, 0,
+		0, 0.5f, 0,
+		0, 0, 0.5f,
+	};
+	auto m2 = inverse(m1);
+	auto m3 = m1 * m2;
+
+	mat3 m4 = {
+		1.f, -5.f, 1.f,
+		-1.f, 5.f, -5.f,
+		5.f, 1.f, 1.f,
+	};
+	auto m5 = inverse(m4);
+	auto m6 = m4 * m5;
 	return true;
 }
 

@@ -18,6 +18,8 @@
 #include <variant>
 #include <random>
 #include <span>
+#include <optional>
+#include <utility>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
