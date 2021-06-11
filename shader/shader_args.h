@@ -22,7 +22,6 @@ constexpr std::add_const_t<T> _sargs_ptr_cast(const SArgsPtr &other) noexcept {
 	return static_cast<std::add_const_t<T>>(other.get());
 }
 
-struct LightShaderArgs;
 template<typename T, typename... Args>
 constexpr SArgsPtr _make_sargs_ptr(Args&&... args) {
 	using type = _rm_const_point_t<T>;

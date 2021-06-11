@@ -30,7 +30,7 @@ public:
     template<size_t UN, typename TSeq> requires (UN > N)
     constexpr Matrix(const Matrix<T, UN, TSeq> &mat) {
         for (size_t i = 0; i < N; ++i) {
-            for (int j = 0; j < N; ++j)
+            for (size_t j = 0; j < N; ++j)
                 data[i][j] = mat.data[i][j];
         }
     }
@@ -191,24 +191,24 @@ private:
 //	auto &&[i, j, k, l] = mat.data[2];
 //	auto &&[m, n, o, p] = mat.data[3];
 //
-//    using MatrixDelType = MatrixDet<T, 3>;
+//    using MatrixDetType = MatrixDet<T, 3>;
 //    Matrix<T, 4, TSeq> res;
-//    res(0, 0) = MatrixDelType(f, g, h, j, k, l, n, o, p).value();
-//    res(0, 1) = MatrixDelType(e, g, h, i, k, l, m, o, p).value();
-//    res(0, 2) = MatrixDelType(e, f, h, i, j, l, m, n, p).value();
-//    res(0, 3) = MatrixDelType(e, f, g, i, j, k, m, n, o).value();
-//    res(1, 0) = MatrixDelType(b, c, d, j, k, l, n, o, p).value();
-//    res(1, 1) = MatrixDelType(a, c, d, i, k, l, m, o, p).value();
-//    res(1, 2) = MatrixDelType(a, b, d, i, j, l, m, n, p).value();
-//    res(1, 3) = MatrixDelType(a, b, c, i, j, k, m, n, o).value();
-//    res(2, 0) = MatrixDelType(b, c, d, f, g, h, n, o, p).value();
-//    res(2, 1) = MatrixDelType(a, c, d, e, g, h, m, o, p).value();
-//    res(2, 2) = MatrixDelType(a, b, d, e, f, h, m, n, p).value();
-//    res(2, 3) = MatrixDelType(a, b, c, e, f, g, m, n, o).value();
-//    res(3, 0) = MatrixDelType(b, c, d, f, g, h, j, k, l).value();
-//    res(3, 1) = MatrixDelType(a, c, d, e, g, h, i, k, l).value();
-//    res(3, 2) = MatrixDelType(a, b, d, e, f, h, i, j, l).value();
-//    res(3, 3) = MatrixDelType(a, b, c, e, f, g, i, j, k).value();
+//    res(0, 0) = MatrixDetType(f, g, h, j, k, l, n, o, p).value();
+//    res(0, 1) = MatrixDetType(e, g, h, i, k, l, m, o, p).value();
+//    res(0, 2) = MatrixDetType(e, f, h, i, j, l, m, n, p).value();
+//    res(0, 3) = MatrixDetType(e, f, g, i, j, k, m, n, o).value();
+//    res(1, 0) = MatrixDetType(b, c, d, j, k, l, n, o, p).value();
+//    res(1, 1) = MatrixDetType(a, c, d, i, k, l, m, o, p).value();
+//    res(1, 2) = MatrixDetType(a, b, d, i, j, l, m, n, p).value();
+//    res(1, 3) = MatrixDetType(a, b, c, i, j, k, m, n, o).value();
+//    res(2, 0) = MatrixDetType(b, c, d, f, g, h, n, o, p).value();
+//    res(2, 1) = MatrixDetType(a, c, d, e, g, h, m, o, p).value();
+//    res(2, 2) = MatrixDetType(a, b, d, e, f, h, m, n, p).value();
+//    res(2, 3) = MatrixDetType(a, b, c, e, f, g, m, n, o).value();
+//    res(3, 0) = MatrixDetType(b, c, d, f, g, h, j, k, l).value();
+//    res(3, 1) = MatrixDetType(a, c, d, e, g, h, i, k, l).value();
+//    res(3, 2) = MatrixDetType(a, b, d, e, f, h, i, j, l).value();
+//    res(3, 3) = MatrixDetType(a, b, c, e, f, g, i, j, k).value();
 //    return transpose(res);
 //}
 
@@ -218,17 +218,17 @@ constexpr Matrix<T, 3, TSeq> adj_matrix(const Matrix<T, 3, TSeq> &mat) {
     auto &&[d, e, f] = mat.data[1];
     auto &&[g, h, i] = mat.data[2];
 
-	using MatrixDelType = MatrixDet<T, 2>;
+	using MatrixDetType = MatrixDet<T, 2>;
     Matrix<T, 3, TSeq> res;
-    res(0, 0) = +MatrixDelType(e, f, h, i).value();
-    res(0, 1) = -MatrixDelType(d, f, g, i).value();
-    res(0, 2) = +MatrixDelType(d, e, g, h).value();
-    res(1, 0) = -MatrixDelType(b, c, h, i).value();
-    res(1, 1) = +MatrixDelType(a, c, g, i).value();
-    res(1, 2) = -MatrixDelType(a, b, g, h).value();
-    res(2, 0) = +MatrixDelType(b, c, e, f).value();
-    res(2, 1) = -MatrixDelType(a, c, d, f).value();
-    res(2, 2) = +MatrixDelType(a, b, d, e).value();
+    res(0, 0) = +MatrixDetType(e, f, h, i).value();
+    res(0, 1) = -MatrixDetType(d, f, g, i).value();
+    res(0, 2) = +MatrixDetType(d, e, g, h).value();
+    res(1, 0) = -MatrixDetType(b, c, h, i).value();
+    res(1, 1) = +MatrixDetType(a, c, g, i).value();
+    res(1, 2) = -MatrixDetType(a, b, g, h).value();
+    res(2, 0) = +MatrixDetType(b, c, e, f).value();
+    res(2, 1) = -MatrixDetType(a, c, d, f).value();
+    res(2, 2) = +MatrixDetType(a, b, d, e).value();
     return transpose(res);
 }
 

@@ -45,7 +45,6 @@ void Mesh::draw(FrameBuffer &frame, ShaderBase &shader) const {
 	int limit = static_cast<int>(indices.size()) - 2;
 	for (int i = 0; i < limit; i += 3)
 		process_triangle(frame, shader, { i, i+1, i+2 });
-	
 }
 
 void Mesh::process_triangle(FrameBuffer &frame, ShaderBase &shader, std::array<int, 3> our_indices) const {

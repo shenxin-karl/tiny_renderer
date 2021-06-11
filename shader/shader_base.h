@@ -1,7 +1,6 @@
 #pragma once
 
 class TextureCube;
-
 template<typename T>
 concept uniform_key_constraint = (
 	std::same_as<T, bool> || std::same_as<T, int> || std::same_as<T, float> ||
@@ -10,12 +9,9 @@ concept uniform_key_constraint = (
 	std::same_as<T, Texture2d> || std::same_as<T, TextureCube>
 );
 
-
 struct VertexRes {
 	vec4		position;
 	SArgsPtr	args;
-public:
-
 };
 
 struct ShaderBase {
@@ -36,7 +32,6 @@ struct ShaderBase {
 	const std::function<bool(float)> &get_face_culling_func() const noexcept;
 protected:
 	void update_mvp();
-	vec3 coords;			// ÖØÐÄ×ø±ê
 	mat4 view;			
 	mat4 projection;	
 	mat4 model;		
