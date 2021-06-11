@@ -23,7 +23,7 @@ struct ShaderBase {
 	void set_model(const mat4 &_model);
 	void set_view(const mat4 &_view);
 	void set_projection(const mat4 &_projection);
-	float calc_depth(const vec3 &_coords, const std::array<VertexRes *, 3> &vertices);
+	float calc_depth(const vec3 &coords, const std::array<VertexRes *, 3> &vertices);
 	float get_depth() const noexcept;
 
 	// face_func accepts a value for the cosine of the sum normal, and returns true to eliminate triangles

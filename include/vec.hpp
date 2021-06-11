@@ -1,8 +1,10 @@
 #pragma once
-#include <iostream>
-#include <array>
-#include <type_traits>
-#include <cstring>
+
+#ifdef _MSC_VER
+#define NSVC_ECBO __declspec(empty_bases) 
+#else
+#define NSVC_ECBO
+#endif // _MSC_VER
 
 
 
@@ -10,15 +12,15 @@ template<typename T, size_t I>
 using identity_t = T;
 
 template<typename T, size_t N, typename Seq = std::make_index_sequence<N>, bool = (N > 1)>
-struct vec;
+struct NSVC_ECBO vec;
 
 template<typename T, size_t N, size_t NV, typename Seq1, typename Seq2, bool = (NV > 0 && NV != N)>
-struct VecBaseImpl {
+struct NSVC_ECBO VecBaseImpl {
     // empty
 };
 
 template<typename T, size_t N, size_t NV, size_t...I1, size_t...I2>
-struct VecBaseImpl<T, N, NV, std::index_sequence<I1...>, std::index_sequence<I2...>, true> {
+struct NSVC_ECBO VecBaseImpl<T, N, NV, std::index_sequence<I1...>, std::index_sequence<I2...>, true> {
 public:
     constexpr VecBaseImpl() = default;
     constexpr VecBaseImpl(const vec<T, NV> &v, identity_t<T, I2>... scalar) noexcept {
@@ -27,17 +29,18 @@ public:
 };
 
 template<typename T, size_t N, typename Seq>
-struct VecBase;
+struct NSVC_ECBO VecBase;
 
 template<typename T, size_t N, size_t ...I>
-struct VecBase<T, N, std::index_sequence<I...>> 
+struct NSVC_ECBO VecBase<T, N, std::index_sequence<I...>> 
     : public VecBaseImpl<T, N, I, std::make_index_sequence<I>, std::make_index_sequence<N-I>>... {
+
     using VecBaseImpl<T, N, I, std::make_index_sequence<I>, std::make_index_sequence<N-I>>::VecBaseImpl...;
 };
 
 
 template<typename T, size_t N, size_t ...I>
-struct vec<T, N, std::index_sequence<I...>, true> : public VecBase<T, N, std::make_index_sequence<N>> {
+struct NSVC_ECBO vec<T, N, std::index_sequence<I...>, true> : public VecBase<T, N, std::make_index_sequence<N>> {
     T data[N];
 public:
     constexpr explicit vec(T scalar = T{}) noexcept : data{ identity_t<T, I>(scalar)... } {}
@@ -290,6 +293,10 @@ using vec2 = vec<float, 2>;
 using vec3 = vec<float, 3>;
 using vec4 = vec<float, 4>;
 
+static_assert(sizeof(vec2) == (sizeof(float) * 2), "vec2 has no empty accumulation optimization");
+static_assert(sizeof(vec3) == (sizeof(float) * 3), "vec3 has no empty accumulation optimization");
+static_assert(sizeof(vec4) == (sizeof(float) * 4), "vec4 has no empty accumulation optimization");
+
 
 template<typename T, size_t N, typename Seq>
 inline std::ostream &operator<<(std::ostream &os, const vec<T, N, Seq> &v) {
@@ -304,3 +311,4 @@ inline std::istream &operator>>(std::istream &is, vec<T, N, Seq> &v) {
         is >> f;
     return is;
 }
+

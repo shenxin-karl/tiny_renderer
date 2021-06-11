@@ -20,6 +20,8 @@
 #include <span>
 #include <optional>
 #include <utility>
+#include <cstring>
+#include <type_traits>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>

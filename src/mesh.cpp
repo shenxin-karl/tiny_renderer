@@ -1,29 +1,5 @@
 #include "common.h"
 
-Vertex Vertex::operator*(float t) const noexcept {
-	return {
-		position	* t,
-		normal		* t,
-		texcoords	* t,
-	};
-}
-
-Vertex Vertex::operator+(const Vertex &other) const noexcept {
-	return {
-		position  + other.position,
-		normal	  + other.normal,
-		texcoords + other.texcoords,
-	};
-}
-
-Vertex Vertex::operator-(const Vertex &other) const noexcept {
-	return {
-		position  - other.position,
-		normal    - other.normal,
-		texcoords - other.texcoords,
-	};
-}
-
 Texture::Texture(const std::string &_var, const std::string &_path)
 : var(_var), texture(_path) {
 

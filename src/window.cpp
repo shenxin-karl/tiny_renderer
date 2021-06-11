@@ -95,22 +95,11 @@ void Window::draw(const FrameBuffer &frame_buff) {
 
 	size_t size = size_t(width) * size_t(height) * 3ul;
 	std::unique_ptr<unsigned char[]> buffer(new unsigned char[size]);
-	constexpr int v = sizeof(vec3);
-	if constexpr (sizeof(vec3) == (sizeof(float)*3)) {						// 使用指针优化 
-		unsigned char *bitmap_ptr = buffer.get();
-		const float *frame_ptr = frame_buff.get_frame_data();
-		for (size_t i = 0; i < size; ++i) {
-			*bitmap_ptr = static_cast<unsigned char>(*frame_ptr * 255.f);
-			++bitmap_ptr;
-			++frame_ptr;
-		}
-	} else {
-		for (size_t idx = 0; const vec3 &rgb : frame_buff.frame_buffer) {
-			buffer[idx]   = static_cast<unsigned char>(std::clamp(rgb.b(), 0.f, 1.f) * 255.f);
-			buffer[idx+1] = static_cast<unsigned char>(std::clamp(rgb.g(), 0.f, 1.f) * 255.f);
-			buffer[idx+2] = static_cast<unsigned char>(std::clamp(rgb.r(), 0.f, 1.f) * 255.f);
-			idx += 3;
-		}
+	for (size_t idx = 0; const vec3 &rgb : frame_buff.frame_buffer) {
+		buffer[idx]     = static_cast<unsigned char>(std::clamp(rgb.b(), 0.f, 1.f) * 255.f);
+		buffer[idx + 1] = static_cast<unsigned char>(std::clamp(rgb.g(), 0.f, 1.f) * 255.f);
+		buffer[idx + 2] = static_cast<unsigned char>(std::clamp(rgb.r(), 0.f, 1.f) * 255.f);
+		idx += 3;
 	}
 
 	int nx = width; // 图像的宽度

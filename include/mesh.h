@@ -8,10 +8,8 @@ struct Vertex {
 	vec4	position;
 	vec3	normal;
 	vec2	texcoords;
-public:
-	Vertex operator*(float t) const noexcept;
-	Vertex operator+(const Vertex &other) const noexcept;
-	Vertex operator-(const Vertex &other) const noexcept;
+	vec3	tagent;
+	vec3	bitangent;
 };
 
 struct Texture {

@@ -15,7 +15,7 @@ void ShaderBase::set_projection(const mat4 &_projection) {
 	update_mvp();
 }
 
-float ShaderBase::calc_depth(const vec3 &_coords, const std::array<VertexRes *, 3> &vertices) {
+float ShaderBase::calc_depth(const vec3 &coords, const std::array<VertexRes *, 3> &vertices) {
 	float d1 = coords[0] / vertices[0]->position.w();
 	float d2 = coords[1] / vertices[1]->position.w();
 	float d3 = coords[2] / vertices[2]->position.w();
