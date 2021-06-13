@@ -32,4 +32,5 @@ public:
 	void blinn_phong();
 	void normal_mapping();
 	void skybox();
+	void test_plane();
 };

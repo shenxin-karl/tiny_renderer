@@ -35,7 +35,7 @@ void SkyboxShader::initialize() noexcept {
 
 vec4 SkyboxShader::vertex(const Vertex &vertex, SArgsPtr &args) noexcept {
 	args = std::make_shared<SkyboxShaderArgs>(SkyboxShaderArgs{
-		vertex.position
+		vertex.position.head<3>()
 	});
 	auto res = uniform_vp * vertex.position;
 	res.z() = -res.w();			// 欺骗深度测试, 让天空盒的深度永远保持 -1. 最远处

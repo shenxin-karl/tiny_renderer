@@ -13,7 +13,9 @@ public:
 	static Model create_test_cube_obj();
 	static Model cearte_one_triangle();
 	static Model create_skybox_obj();
+	static Model create_test_plane();
 	static std::shared_ptr<ImageInfo> load_image(const std::string &path);
+	static void generate_tagent(std::vector<Vertex> &vertices, const std::vector<int> &incides);
 private:
 	struct ImageCacheRecycle {
 		~ImageCacheRecycle();

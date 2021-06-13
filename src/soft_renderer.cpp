@@ -114,7 +114,7 @@ void SoftRenderer::light_renderer() {
 	while (!window.window_should_be_close()) {
 		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
 		mat4 light_rotate_matrix = Draw::rotate_y(window.get_time() * 10.f);
-		vec3 new_light_dir = light_rotate_matrix * vec4(light_dir, 1.f);
+		vec3 new_light_dir = vec3(light_rotate_matrix * vec4(light_dir, 1.f));
 
 		shader_ptr->set_uniform("light_dir", new_light_dir);
 		shader_ptr->set_view(camera_ptr->get_view());
@@ -139,7 +139,7 @@ void SoftRenderer::blinn_phong() {
 	frame.clear_color(vec3(0.1f, 0.1f, 0.15f));
 	while (!window.window_should_be_close()) {
 		mat4 light_rotate_mat = Draw::rotate_y(window.get_time() * 77.f);
-		vec3 new_light_dir = normalized(light_rotate_mat * vec4(light_dir, 1.f));
+		vec3 new_light_dir = normalized(vec3(light_rotate_mat * vec4(light_dir, 1.f)));
 		shader_ptr->set_uniform("light_dir", new_light_dir);
 
 		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
@@ -154,20 +154,20 @@ void SoftRenderer::blinn_phong() {
 }
 
 void SoftRenderer::normal_mapping() {
-	vec3 light_dir = normalized(vec3(0, 2, 2));
 	Texture2d normal_texture("resources/obj/african_head_nm_tangent.png");
 	Texture2d diffuse_texture("resources/obj/african_head_diffuse.tga");
 	shader_ptr->set_uniform("normal_texture", normal_texture);
 	shader_ptr->set_uniform("diffuse_texture", diffuse_texture);
-	shader_ptr->set_uniform("specular_factor", 32.f);
-	shader_ptr->set_uniform("light_ambient", vec3(0.2f, 0.2f, 0.2f));
-	shader_ptr->set_uniform("light_diffuse", vec3(0.5f, 0.5f, 0.5f));
-	shader_ptr->set_uniform("light_specular", vec3(1.f, 1.f, 1.f));
-	shader_ptr->set_uniform("light_dir", light_dir);
+	shader_ptr->set_uniform("specular_factor", 64.f);
+	shader_ptr->set_uniform("light_ambient", vec3(0.3f, 0.3f, 0.3f));
+	shader_ptr->set_uniform("light_diffuse", vec3(0.9f, 0.9f, 0.9f));
+	shader_ptr->set_uniform("light_specular", vec3(0.3f, 0.3f, 0.3f));
+	shader_ptr->set_uniform("light_dir", normalized(vec3(-2, 2, 2)));
 	shader_ptr->set_face_culling_func([](float cosine) { return cosine >= 0.f; });
 	
 	while (!window.window_should_be_close()) {
 		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
+		shader_ptr->set_model(Draw::rotate_y(window.get_time() * 10.f));
 		shader_ptr->set_view(camera_ptr->get_view());
 		shader_ptr->set_projection(camera_ptr->get_projection());
 		shader_ptr->set_uniform("eye_pos", camera_ptr->get_look_from());
@@ -231,6 +231,31 @@ void SoftRenderer::skybox() {
 		skybox_shader_ptr->set_projection(camera_ptr->get_projection());
 		skybox_shader_ptr->set_uniform("skybox_texture", skybox_texture);
 		skybox_model->draw(frame, *skybox_shader_ptr);
+		window.draw(frame);
+		poll_event();
+	}
+}
+
+void SoftRenderer::test_plane() {
+	vec3 light_dir = normalized(vec3(0, 2, 2));
+	Texture2d normal_texture("resources/test_plane/brickwall_normal.jpg");
+	Texture2d diffuse_texture("resources/test_plane/brickwall.jpg");
+	shader_ptr->set_uniform("normal_texture", normal_texture);
+	shader_ptr->set_uniform("diffuse_texture", diffuse_texture);
+	shader_ptr->set_uniform("specular_factor", 32.f);
+	shader_ptr->set_uniform("light_ambient", vec3(0.2f, 0.2f, 0.2f));
+	shader_ptr->set_uniform("light_diffuse", vec3(0.5f, 0.5f, 0.5f));
+	shader_ptr->set_uniform("light_specular", vec3(1.f, 1.f, 1.f));
+	shader_ptr->set_uniform("light_dir", light_dir);
+	//shader_ptr->set_face_culling_func([](float cosine) { return cosine >= 0.f; });
+
+	while (!window.window_should_be_close()) {
+		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
+		//shader_ptr->set_model(Draw::rotate_x(window.get_time() * 10.f));
+		shader_ptr->set_view(camera_ptr->get_view());
+		shader_ptr->set_projection(camera_ptr->get_projection());
+		shader_ptr->set_uniform("eye_pos", camera_ptr->get_look_from());
+		model_ptr->draw(frame, *shader_ptr);
 		window.draw(frame);
 		poll_event();
 	}

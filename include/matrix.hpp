@@ -27,8 +27,8 @@ public:
     constexpr Matrix(const Matrix &) noexcept = default;
     constexpr Matrix &operator=(const Matrix &) noexcept = default;
 
-    template<size_t UN, typename TSeq> requires (UN > N)
-    constexpr Matrix(const Matrix<T, UN, TSeq> &mat) {
+    template<size_t UN, typename TSeq>
+    explicit constexpr Matrix(const Matrix<T, UN, TSeq> &mat) {
         for (size_t i = 0; i < N; ++i) {
             for (size_t j = 0; j < N; ++j)
                 data[i][j] = mat.data[i][j];
@@ -255,4 +255,20 @@ constexpr Matrix<T, N, TSeq> inverse(const Matrix<T, N, TSeq> &mat) {
     auto adj_m = matrix::adj_matrix(mat);
     adj_m /= value;
     return adj_m;
+}
+
+constexpr mat3 tbn(const vec3 &t, const vec3 &b, const vec3 &n) {
+    return mat3{
+        t.x(), b.x(), n.x(),
+        t.y(), b.y(), n.y(),
+        t.z(), b.z(), n.z(),
+    };
+}
+
+constexpr mat3 inverse_tbn(const vec3 &t, const vec3 &b, const vec3 &n) {
+	return mat3{
+		t.x(), t.y(), t.z(),
+		b.x(), b.y(), b.z(),
+		n.x(), n.y(), n.z(),
+	};
 }

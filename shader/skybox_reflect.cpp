@@ -35,7 +35,7 @@ void SkyboxReflect::initialize() noexcept {
 
 vec4 SkyboxReflect::vertex(const Vertex &vertex, SArgsPtr &args) noexcept {
 	args = std::make_shared<SkyboxReflectArgs>(SkyboxReflectArgs{
-		model * vertex.position,
+		vec3(model * vertex.position),
 		uniform_normal_matrix * vertex.normal
 	});
 	return mvp * vertex.position;

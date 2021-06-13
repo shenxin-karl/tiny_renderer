@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef _MSC_VER
-#define NSVC_ECBO __declspec(empty_bases) 
+#define MSVC_EBCO __declspec(empty_bases) 
 #else
 #define NSVC_ECBO
 #endif // _MSC_VER
@@ -12,27 +12,30 @@ template<typename T, size_t I>
 using identity_t = T;
 
 template<typename T, size_t N, typename Seq = std::make_index_sequence<N>, bool = (N > 1)>
-struct NSVC_ECBO vec;
+struct MSVC_EBCO vec;
 
 template<typename T, size_t N, size_t NV, typename Seq1, typename Seq2, bool = (NV > 0 && NV != N)>
-struct NSVC_ECBO VecBaseImpl {
+struct MSVC_EBCO VecBaseImpl {
     // empty
 };
 
 template<typename T, size_t N, size_t NV, size_t...I1, size_t...I2>
-struct NSVC_ECBO VecBaseImpl<T, N, NV, std::index_sequence<I1...>, std::index_sequence<I2...>, true> {
+struct MSVC_EBCO VecBaseImpl<T, N, NV, std::index_sequence<I1...>, std::index_sequence<I2...>, true> {
 public:
     constexpr VecBaseImpl() = default;
     constexpr VecBaseImpl(const vec<T, NV> &v, identity_t<T, I2>... scalar) noexcept {
         new (static_cast<vec<T, N> *>(this)->data) T[N]{ v[I1]..., decltype(I2, T{})(scalar)... };
     }
+    constexpr VecBaseImpl(identity_t<T, I2>... scalar, const vec<T, NV> &v) noexcept {
+        new (static_cast<vec<T, N> *>(this)->data) T[N] { scalar..., v[I1]... };
+    }
 };
 
 template<typename T, size_t N, typename Seq>
-struct NSVC_ECBO VecBase;
+struct MSVC_EBCO VecBase;
 
 template<typename T, size_t N, size_t ...I>
-struct NSVC_ECBO VecBase<T, N, std::index_sequence<I...>> 
+struct MSVC_EBCO VecBase<T, N, std::index_sequence<I...>> 
     : public VecBaseImpl<T, N, I, std::make_index_sequence<I>, std::make_index_sequence<N-I>>... {
 
     using VecBaseImpl<T, N, I, std::make_index_sequence<I>, std::make_index_sequence<N-I>>::VecBaseImpl...;
@@ -40,7 +43,7 @@ struct NSVC_ECBO VecBase<T, N, std::index_sequence<I...>>
 
 
 template<typename T, size_t N, size_t ...I>
-struct NSVC_ECBO vec<T, N, std::index_sequence<I...>, true> : public VecBase<T, N, std::make_index_sequence<N>> {
+struct MSVC_EBCO vec<T, N, std::index_sequence<I...>, true> : public VecBase<T, N, std::make_index_sequence<N>> {
     T data[N];
 public:
     constexpr explicit vec(T scalar = T{}) noexcept : data{ identity_t<T, I>(scalar)... } {}
@@ -50,7 +53,7 @@ public:
     constexpr vec &operator=(const vec &) = default;
 
     template<size_t UN, typename USeq> requires (UN > N)
-    constexpr vec(const vec<T, UN, USeq> &other) noexcept {
+    explicit constexpr vec(const vec<T, UN, USeq> &other) noexcept {
         *this = other;
     }
 

@@ -46,7 +46,7 @@ void BlinnPhong::initialize() noexcept {
 vec4 BlinnPhong::vertex(const Vertex &vertex, SArgsPtr &args) noexcept {
 	args = std::make_shared<BlinnPhongShaderArgs>(BlinnPhongShaderArgs {
 		uniform_normal_matrix * vertex.normal,
-		model * vertex.position,
+		vec3(model * vertex.position),
 		vertex.texcoords,
 	});
 	return mvp * vertex.position;
@@ -67,7 +67,7 @@ bool BlinnPhong::fragment(const vec3 &point, const SArgsPtr &args, vec3 &color) 
 
 	// specular
 	vec3 eye_dir = normalized(uniform_eye_pos - our_position);
-	vec3 half_vec = normalized(eye_dir + uniform_light_diffuse);
+	vec3 half_vec = normalized(eye_dir + uniform_light_dir);
 	float spec = std::pow(std::max(dot(half_vec, our_normal), 0.f), uniform_specular_factor);
 	vec3 specular = spec * uniform_light_specular * uniform_diffuse_texture.rgb(our_texcoord);
 

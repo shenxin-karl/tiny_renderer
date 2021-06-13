@@ -14,6 +14,7 @@ public:
 	static mat4 view(vec3 look_from, vec3 look_up, vec3 look_at);
 	static mat4 rotate_y(float angle);
 	static mat4 rotate_x(float angle);
+	static mat4 rotate_z(float angle);
 	static bool plane_cutting(std::vector<VertexRes> &out_vertices);
 	// vec I started at Shading Point
 	static vec3 reflect(const vec3 &I, const vec3 &N);

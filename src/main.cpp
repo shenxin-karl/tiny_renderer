@@ -11,16 +11,18 @@ void light_render();
 void blinn_phong();
 void normal_mapping();
 void one_triangle();
+void test_normal_mapping();
 void skybox();
 
 int main(void) {
 	init();
 	//light_render();
 	//test_cube();
-	blinn_phong();
-	//normal_mapping();
+	//blinn_phong();
+	normal_mapping();
 	//one_triangle();
 	//skybox();
+	//test_normal_mapping();
 	return 0;
 }
 
@@ -84,18 +86,17 @@ void blinn_phong() {
 	renderer.blinn_phong();
 }
 
-#if 0
 void normal_mapping() {
 	constexpr float near = 0.1f;
 	constexpr float far = 100.f;
 	std::shared_ptr<CameraBase> camera_ptr
-		= std::make_shared<FpsCamera>(vec3(-2, 0, 0), vec3(0, -1, 0), 45.f, aspect, near, far, 1.f, 0.1f);
-	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<NormalMapping>();
+		= std::make_shared<FpsCamera>(vec3(-2, 0, 0), vec3(0, 1, 0), 45.f, aspect, near, far, 1.f, 0.1f);
+	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<NormalMappingShader>();
 	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::load_obj("resources/obj/african_head.obj"));
 	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
 	renderer.normal_mapping();
 }
-#endif
+
 void one_triangle() {
 	constexpr float near = -0.0001f;
 	constexpr float far = -100.f;
@@ -124,4 +125,22 @@ void skybox() {
 	//std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::create_test_cube_obj());
 	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
 	renderer.skybox();
+}
+
+void test_normal_mapping() {
+	constexpr float near = -0.0001f;
+	constexpr float far = -100.f;
+#if 0
+	vec3 look_from = vec3(-3.03224f, -0.0399167f, 2.54272f);
+	vec3 look_at = vec3(0.728381f, -0.0401317f, -0.683996f);
+	std::shared_ptr<CameraBase> camera_ptr
+		= std::make_shared<FixedCamera>(look_from, look_from + look_at, vec3(0, 1, 0), 40.f, aspect, near, far);
+#else
+	std::shared_ptr<CameraBase> camera_ptr
+		= std::make_shared<FpsCamera>(vec3(-5, 0, 0), vec3(0, 1, 0), 45.f, aspect, near, far, 5.f, 0.1f);
+#endif
+	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<NormalMappingShader>();
+	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::create_test_plane());
+	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
+	renderer.test_plane();
 }

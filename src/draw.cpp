@@ -189,6 +189,19 @@ mat4 Draw::rotate_x(float angle) {
 	};
 }
 
+
+mat4 Draw::rotate_z(float angle) {
+	float radian = Draw::radians(angle);
+	float cosine = std::cos(radian);
+	float sine = std::sin(radian);
+	return {
+		cosine, -sine,		0,		0,
+		sine,	 cosine,	0,		0,
+		0,		 0,			1,		0,
+		0,		 0,			0,		1,
+	};
+}
+
 bool Draw::plane_cutting(std::vector<VertexRes> &out_vertices) {
 	static std::tuple<bool(*)(float, float), int, float(*)(const vec4 &, const vec4 &)> plane_args[] = {
 		{ outside_w_plane,      3, get_w_plane_ratio		   },

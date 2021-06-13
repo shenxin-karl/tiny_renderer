@@ -36,12 +36,12 @@ bool Test::test_barycentric_coord() {
 	vec3 v2(100, 0, 0);
 	vec3 v3(0, 300, 0);
 	vec3 point(-101, 0, 0);
-	vec3 coords = Draw::barycentric_coord(point, v1, v2, v3);
+	vec3 coords = Draw::barycentric_coord(point.head<2>(), v1, v2, v3);
 	if (check_coords(coords))
 		return false;
 
 	point = { 100, 0, 0 };
-	coords = Draw::barycentric_coord(point, v1, v2, v3);
+	coords = Draw::barycentric_coord(point.head<2>(), v1, v2, v3);
 	if (coords[0] != 0 || !check_coords(coords))
 		return false;
 
