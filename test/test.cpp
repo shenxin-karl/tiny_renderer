@@ -92,7 +92,7 @@ bool Test::test_texture2d() {
 
 	int width = 1024;
 	int height = 1024;
-	Texture2d texture("test/test_texture_resource.png");
+	Texture2d texture("resources/test_resource/test_texture_resource.png");
 	FrameBuffer frame(width, height);
 	frame.clear_color(vec3(0, 1, 0));
 	frame.clear(FrameBufferType::ColorBuffer);
