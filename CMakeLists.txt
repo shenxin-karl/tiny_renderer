@@ -22,14 +22,14 @@ add_executable(tiny_renderer
 	"include/texture_cube.h"	"src/texture_cube.cpp"
 	"shader/shader_args.h"		"shader/shader_args.cpp"
 
-	"shader/depth_test/depth_shader.h"			"shader/depth_test/depth_shader.cpp"
-	"shader/light/light_shader.h"				"shader/light/light_shader.cpp"
-	"shader/texture_mapping/texture_mapping.h"  "shader/texture_mapping/texture_mapping.cpp"
-	"shader/blinn_phong/blinn_phong.h"			"shader/blinn_phong/blinn_phong.cpp"
-	"shader/normal_mapping/normal_mapping.h"	"shader/normal_mapping/normal_mapping.cpp"
-	"shader/skybox/skybox_shader.h"				"shader/skybox/skybox_shader.cpp" 
-	"shader/skybox/skybox_reflect.h"			"shader/skybox/skybox_reflect.cpp"
-)
+	"shader/depth_test/depth_shader.h"				"shader/depth_test/depth_shader.cpp"
+	"shader/light/light_shader.h"					"shader/light/light_shader.cpp"
+	"shader/texture_mapping/texture_mapping.h"		"shader/texture_mapping/texture_mapping.cpp"
+	"shader/blinn_phong/blinn_phong.h"				"shader/blinn_phong/blinn_phong.cpp"
+	"shader/normal_mapping/normal_mapping.h"		"shader/normal_mapping/normal_mapping.cpp"
+	"shader/skybox/skybox_shader.h"					"shader/skybox/skybox_shader.cpp" 
+	"shader/skybox/skybox_reflect.h"				"shader/skybox/skybox_reflect.cpp"
+	"shader/parallax_mapping/parallax_mapping.h"	"shader/parallax_mapping/parallax_mapping.cpp")
 
 
 target_include_directories(tiny_renderer PUBLIC

@@ -14,6 +14,8 @@ void one_triangle();
 void test_normal_mapping();
 void skybox();
 void car();
+void parallax_mapping_texcoord();
+
 
 int main(void) {
 	init();
@@ -160,3 +162,9 @@ void car() {
 	renderer.car();
 }
 
+
+void parallax_mapping_texcoord() {
+	constexpr float near = -0.001f;
+	constexpr float far = -100.f;
+	
+}

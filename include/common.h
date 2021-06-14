@@ -63,3 +63,4 @@
 #include "skybox/skybox_shader.h"
 #include "skybox/skybox_reflect.h"
 #include "normal_mapping/normal_mapping.h"
+#include "parallax_mapping/parallax_mapping.h"

@@ -35,7 +35,7 @@ constexpr T2 common_interp(const T1 &v1, const T1 &v2, T2 (_rm_const_point_t<T1>
 }
 
 template<typename T1, typename T2>
-requires std::is_pointer_v<T1> && std::is_base_of_v<ShaderArgsBase, _rm_const_point_t<T1>>
+requires std::is_pointer_v<T1> &&std::is_base_of_v<ShaderArgsBase, _rm_const_point_t<T1>>
 constexpr T2 common_interp(const T1 &v1, const T1 &v2, const T1 &v3, T2 (_rm_const_point_t<T1>::*mem_ptr),
 						   const vec3 &coord, float depth) 
 {
