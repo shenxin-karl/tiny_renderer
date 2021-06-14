@@ -15,7 +15,6 @@ void ShaderBase::set_projection(const mat4 &_projection) {
 	update_mvp();
 }
 
-
 void ShaderBase::set_near(float _near) {
 	near = _near;
 }

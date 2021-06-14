@@ -25,11 +25,7 @@ Window::Window(int _width, int _height, const std::string &title)
 	}
 
 	window_hwnd = CreateWindowEx(
-#ifdef _DEBUG1
-		WS_ICONIC,
-#else
 		WS_EX_TOPMOST,
-#endif // _DEBUG
 		"LYSM_class", 
 		title.c_str(),
 		WS_OVERLAPPEDWINDOW,
