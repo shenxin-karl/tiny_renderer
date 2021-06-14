@@ -13,16 +13,18 @@ void normal_mapping();
 void one_triangle();
 void test_normal_mapping();
 void skybox();
+void car();
 
 int main(void) {
 	init();
 	//light_render();
 	//test_cube();
 	//blinn_phong();
-	normal_mapping();
+	//normal_mapping();
 	//one_triangle();
 	//skybox();
 	//test_normal_mapping();
+	car();
 	return 0;
 }
 
@@ -71,7 +73,7 @@ void light_render() {
 #endif
 	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<LightShader>();
 	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::load_obj("resources/obj/african_head.obj"));
-	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
+	SoftRenderer renderer(width, height, near, far, camera_ptr, shader_ptr, model_ptr);
 	renderer.light_renderer();
 }
 
@@ -82,7 +84,7 @@ void blinn_phong() {
 		= std::make_shared<FpsCamera>(vec3(-2, 0, 0), vec3(0, 1, 0), 45.f, aspect, near, far, 1.f, 0.1f);
 	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<BlinnPhong>();
 	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::load_obj("resources/obj/african_head.obj"));
-	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
+	SoftRenderer renderer(width, height, near, far, camera_ptr, shader_ptr, model_ptr);
 	renderer.blinn_phong();
 }
 
@@ -92,8 +94,9 @@ void normal_mapping() {
 	std::shared_ptr<CameraBase> camera_ptr
 		= std::make_shared<FpsCamera>(vec3(-2, 0, 0), vec3(0, 1, 0), 45.f, aspect, near, far, 1.f, 0.1f);
 	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<NormalMappingShader>();
-	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::load_obj("resources/obj/african_head.obj"));
-	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
+	std::shared_ptr<Model> model_ptr = std::make_shared<Model>("resources/obj/african_head.obj");
+	//std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::load_obj("resources/obj/african_head.obj"));
+	SoftRenderer renderer(width, height, near, far, camera_ptr, shader_ptr, model_ptr);
 	renderer.normal_mapping();
 }
 
@@ -111,7 +114,7 @@ void one_triangle() {
 #endif
 	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<LightShader>();
 	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::cearte_one_triangle());
-	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
+	SoftRenderer renderer(width, height, near, far, camera_ptr, shader_ptr, model_ptr);
 	renderer.light_renderer();
 }
 
@@ -123,7 +126,7 @@ void skybox() {
 	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<TextrueShader>();
 	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::load_obj("resources/obj/african_head.obj"));
 	//std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::create_test_cube_obj());
-	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
+	SoftRenderer renderer(width, height, near, far, camera_ptr, shader_ptr, model_ptr);
 	renderer.skybox();
 }
 
@@ -141,6 +144,19 @@ void test_normal_mapping() {
 #endif
 	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<NormalMappingShader>();
 	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::create_test_plane());
-	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
+	SoftRenderer renderer(width, height, near, far, camera_ptr, shader_ptr, model_ptr);
 	renderer.test_plane();
 }
+
+
+void car() {
+	constexpr float near = -0.0001f;
+	constexpr float far = -500.f;
+	std::shared_ptr<CameraBase> camera_ptr
+		= std::make_shared<FpsCamera>(vec3(-200, 0, 0), vec3(0, 1, 0), 45.f, aspect, near, far, 50.f, 0.1f);
+	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<NormalMappingShader>();
+	std::shared_ptr<Model> model_ptr = std::make_shared<Model>("resources/car/moskvitch.obj");
+	SoftRenderer renderer(width, height, near, far, camera_ptr, shader_ptr, model_ptr);
+	renderer.car();
+}
+

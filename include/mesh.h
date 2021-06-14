@@ -8,7 +8,7 @@ struct Vertex {
 	vec4	position;
 	vec3	normal;
 	vec2	texcoords;
-	vec3	tagent;
+	vec3	tangent;
 	vec3	bitangent;
 };
 

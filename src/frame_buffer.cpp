@@ -1,7 +1,7 @@
 #include "common.h"
 
 constexpr float zbuffer_fill_value = -std::numeric_limits<float>::max();
-FrameBuffer::FrameBuffer(int _width, int _height) 
+FrameBuffer::FrameBuffer(int _width, int _height)
 : width(_width), height(_height), frame_buffer(size_t(_width) * _height)
 , depth_buffer(size_t(_width) * _height, zbuffer_fill_value), fill_color(0) {
 

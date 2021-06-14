@@ -1,5 +1,8 @@
 #pragma once
 
+#undef far
+#undef near
+
 enum class FrameBufferType {
 	ColorBuffer = 0x1, 
 	DepthBuffer = 0x2,

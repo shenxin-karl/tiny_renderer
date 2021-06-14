@@ -61,13 +61,12 @@ void Draw::triangle(FrameBuffer &frame, ShaderBase &shader, std::array<VertexRes
 			if (!(coords[0] >= 0.f) || !(coords[1] >= 0.f) || !(coords[2] >= 0.f))
 				continue;
 		
-			float ndc_z = v1_point.z() * coords[0] + v2_point.z() * coords[1] + v3_point.z() * coords[2];
-			vec3 point = { fx, fy, ndc_z };
+			float depth = calc_depth(coords, vertice);
+			vec3 point = { fx, fy, depth };
 			if (!frame.check_depth(point))
 				continue;
 
 			vec3 color;
-			float depth = shader.calc_depth(coords, vertice);
 			auto args = v1->args->interp(v2->args, v3->args, coords, depth);
 			if (shader.fragment(point, args, color))
 				frame.set_color(point, color);
@@ -256,6 +255,15 @@ vec3 Draw::refract(const vec3 &I, const vec3 &N, float ratio) {
 
 	vec3 res = (ratio * (I + cosine * N)) - (std::sqrt(discriminant) * N);
 	return res;
+}
+
+
+float Draw::calc_depth(const vec3 &coords, std::array<VertexRes *, 3> &vertices) {
+	float d1 = coords[0] / vertices[0]->position.w();
+	float d2 = coords[1] / vertices[1]->position.w();
+	float d3 = coords[2] / vertices[2]->position.w();
+	float depth = (d1 + d2 + d3);
+	return 1.f / depth;
 }
 
 bool Draw::outside_left_plane(float x, float w) {

@@ -3,7 +3,8 @@
 
 Model::Model(const std::string &path) {
 	Assimp::Importer importer;
-	const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate);
+	auto flag = aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_CalcTangentSpace;
+	const aiScene *scene = importer.ReadFile(path, flag);
 	if (scene == nullptr || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || scene->mRootNode == nullptr) {
 		std::cerr << "ERROR:ASSIMP::" << importer.GetErrorString() << std::endl;
 		return;
@@ -28,9 +29,15 @@ Mesh Model::process_mesh(aiMesh *mesh, const aiScene *scene) {
 		vertex.normal.x() = mesh->mNormals[i].x;
 		vertex.normal.y() = mesh->mNormals[i].y;
 		vertex.normal.z() = mesh->mNormals[i].z;
+		vertex.tangent.x() = mesh->mTangents[i].x;
+		vertex.tangent.y() = mesh->mTangents[i].y;
+		vertex.tangent.z() = mesh->mTangents[i].z;
+		vertex.bitangent.x() = mesh->mBitangents[i].x;
+		vertex.bitangent.y() = mesh->mBitangents[i].y;
+		vertex.bitangent.z() = mesh->mBitangents[i].z;
 		if (mesh->mTextureCoords[0]) {
-			vertex.texcoords.s() = mesh->mTextureCoords[0]->x;
-			vertex.texcoords.t() = mesh->mTextureCoords[0]->y;
+			vertex.texcoords.s() = mesh->mTextureCoords[0][i].x;
+			vertex.texcoords.t() = mesh->mTextureCoords[0][i].y;
 		}
 		vertices.emplace_back(std::move(vertex));
 	}

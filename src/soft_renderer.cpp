@@ -1,12 +1,13 @@
 #include "common.h"
 
-SoftRenderer::SoftRenderer(int _width, int _height, 
+SoftRenderer::SoftRenderer(int _width, int _height, float _near, float _far,
 						  std::shared_ptr<CameraBase> _camera_ptr, 
 						  std::shared_ptr<ShaderBase> _shader_ptr, 
 						  std::shared_ptr<Model> _model_ptr) 
 : window(_width, _height, "MySoftRenderer"), frame(_width, _height)
 , camera_ptr(_camera_ptr), shader_ptr(_shader_ptr), model_ptr(_model_ptr)
-, width(_width), height(_height) {
+, width(_width), height(_height) 
+{
 	assert(_width > 0);
 	assert(_height > 0);
 	assert(_camera_ptr != nullptr);
@@ -247,11 +248,37 @@ void SoftRenderer::test_plane() {
 	shader_ptr->set_uniform("light_diffuse", vec3(0.5f, 0.5f, 0.5f));
 	shader_ptr->set_uniform("light_specular", vec3(1.f, 1.f, 1.f));
 	shader_ptr->set_uniform("light_dir", light_dir);
-	//shader_ptr->set_face_culling_func([](float cosine) { return cosine >= 0.f; });
+	shader_ptr->set_face_culling_func([](float cosine) { return cosine >= 0.f; });
 
 	while (!window.window_should_be_close()) {
 		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
 		//shader_ptr->set_model(Draw::rotate_x(window.get_time() * 10.f));
+		shader_ptr->set_view(camera_ptr->get_view());
+		shader_ptr->set_projection(camera_ptr->get_projection());
+		shader_ptr->set_uniform("eye_pos", camera_ptr->get_look_from());
+		model_ptr->draw(frame, *shader_ptr);
+		window.draw(frame);
+		poll_event();
+	}
+}
+
+void SoftRenderer::car() {
+	vec3 light_dir = normalized(vec3(0, 2, 2));
+	Texture2d normal_texture("resources/car/normal.jpg");
+	Texture2d diffuse_texture("resources/car/green.jpg");
+	shader_ptr->set_uniform("normal_texture", normal_texture);
+	shader_ptr->set_uniform("diffuse_texture", diffuse_texture);
+	shader_ptr->set_uniform("specular_factor", 32.f);
+	shader_ptr->set_uniform("light_ambient", vec3(0.1f, 0.1f, 0.1f));
+	shader_ptr->set_uniform("light_diffuse", vec3(0.9f, 0.9f, 0.9f));
+	shader_ptr->set_uniform("light_specular", vec3(0.3f, 0.3f, 0.3f));
+	shader_ptr->set_uniform("light_dir", light_dir);
+	shader_ptr->set_face_culling_func([](float cosine) { return cosine >= 0.f; });
+
+	frame.clear_color(vec3(0.1f, 0.1f, 0.1f));
+	while (!window.window_should_be_close()) {
+		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
+		shader_ptr->set_model(Draw::rotate_y(window.get_time() * 10.f));
 		shader_ptr->set_view(camera_ptr->get_view());
 		shader_ptr->set_projection(camera_ptr->get_projection());
 		shader_ptr->set_uniform("eye_pos", camera_ptr->get_look_from());

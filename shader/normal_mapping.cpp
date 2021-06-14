@@ -45,7 +45,7 @@ void NormalMappingShader::initialize() noexcept {
 }
 
 vec4 NormalMappingShader::vertex(const Vertex &vertex, SArgsPtr &args) noexcept {
-	vec3 T = normalized(uniform_normal_matrix * vertex.tagent);
+	vec3 T = normalized(uniform_normal_matrix * vertex.tangent);
 	vec3 B = normalized(uniform_normal_matrix * vertex.bitangent);
 	vec3 N = normalized(uniform_normal_matrix * vertex.normal);
 	mat3 reverse_tbn = transpose(tbn(T, B, N));
@@ -70,7 +70,6 @@ bool NormalMappingShader::fragment(const vec3 &point, const SArgsPtr &args, vec3
 	vec3 normal = uniform_normal_texture.normal(args_ptr->our_texcoord);
 	float diff = std::max(dot(light_dir, normal), 0.f);
 	vec3 diffuse = diff * uniform_light_diffuse * diffuse_color;
-
 	// specular
 	vec3 eye_dir = normalized(args_ptr->our_eye_pos - args_ptr->our_position);
 	vec3 half_vec = normalized(eye_dir + light_dir);

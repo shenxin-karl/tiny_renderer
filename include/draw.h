@@ -19,6 +19,7 @@ public:
 	// vec I started at Shading Point
 	static vec3 reflect(const vec3 &I, const vec3 &N);
 	static vec3 refract(const vec3 &I, const vec3 &N, float ratio);
+	static float calc_depth(const vec3 &coords, std::array<VertexRes *, 3> &vertices);
 private:
 	constexpr static float plane_w_limit = -0.000001f;
 	static bool outside_left_plane(float x, float w);

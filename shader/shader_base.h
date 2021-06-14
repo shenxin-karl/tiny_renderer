@@ -23,8 +23,8 @@ struct ShaderBase {
 	void set_model(const mat4 &_model);
 	void set_view(const mat4 &_view);
 	void set_projection(const mat4 &_projection);
-	float calc_depth(const vec3 &coords, const std::array<VertexRes *, 3> &vertices);
-	float get_depth() const noexcept;
+	void set_near(float _near);
+	void set_far(float _far);
 
 	// face_func accepts a value for the cosine of the sum normal, and returns true to eliminate triangles
 	void set_face_culling_func(const std::function<bool(float)> &face_func);
@@ -37,7 +37,8 @@ protected:
 	mat4 model;		
 	mat4 viewport;
 	mat4 mvp;
-	float depth;
+	float near;
+	float far;
 	std::function<bool(float)> face_culling_func;		// ±³ÃæÌÞ³ýº¯Êý
 private:
 	using uniform_key_type = std::string;

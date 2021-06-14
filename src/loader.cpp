@@ -56,7 +56,7 @@ Model Loader::load_obj(const std::string &path) {
 	std::generate_n(std::back_insert_iterator(indices), vertices.size(), [n = 0]() mutable {
 		return n++;
 	});
-	generate_tagent(vertices, indices);
+	generate_tangent(vertices, indices);
 	Mesh mesh(std::move(vertices), std::move(indices), {});
 	Model res;
 	res.meshs.push_back(std::move(mesh));
@@ -232,23 +232,23 @@ Model Loader::create_test_plane() {
 	std::array<int, 3> indices1 = { 0, 1, 2 };
 	auto &&[tangent1, bitangent1] = calc_tangent(vertices[0], vertices[1], vertices[2]);
 	for (int i = 0; i < 3; ++i) {
-		vertices[i].tagent = tangent1;
+		vertices[i].tangent = tangent1;
 		vertices[i].bitangent = bitangent1;
 	}
 
 	std::array<int, 3> indices2 = { 0, 2, 3 };
 	auto &&[tangent2, bitangent2] = calc_tangent(vertices[0], vertices[2], vertices[3]);
 	for (int i : indices2) {
-		vertices[i].tagent = tangent2;
+		vertices[i].tangent = tangent2;
 		vertices[i].bitangent = bitangent2;
 	}
 	std::vector<int> indices;
 	indices.insert(indices.end(), indices1.begin(), indices1.end());
 	indices.insert(indices.end(), indices2.begin(), indices2.end());
-	generate_tagent(vertices, indices);
+	generate_tangent(vertices, indices);
 #ifdef _DEBUG
 	for (const auto &v : vertices) 
-		std::cout << "tangent: " << v.tagent << "\t bitangent " << v.bitangent << std::endl;
+		std::cout << "tangent: " << v.tangent << "\t bitangent " << v.bitangent << std::endl;
 #endif // _DEBUG
 
 	Mesh mesh(std::move(vertices), std::move(indices), {});
@@ -274,7 +274,7 @@ std::shared_ptr<ImageInfo> Loader::load_image(const std::string &path) {
 }
 
 
-void Loader::generate_tagent(std::vector<Vertex> &vertices, const std::vector<int> &indices) {
+void Loader::generate_tangent(std::vector<Vertex> &vertices, const std::vector<int> &indices) {
 	if (indices.size() < 3ul)
 		return;
 
@@ -288,9 +288,9 @@ void Loader::generate_tagent(std::vector<Vertex> &vertices, const std::vector<in
 		vec3 E2 = v3.position.head<3>() - v1.position.head<3>();
 		float t1 = v2.texcoords.t() - v1.texcoords.t();
 		float t2 = v3.texcoords.t() - v1.texcoords.t();
-		vec3 tagent = t2 * E1 - t1 * E2;
+		vec3 tangent = t2 * E1 - t1 * E2;
 		for (int j = 0; j < 3; ++j)
-			temp_tagent[indices[i + j]] += tagent;
+			temp_tagent[indices[i + j]] += tangent;
 	}
 
 	for (size_t i = 0; i < vertices.size(); ++i) {
@@ -298,7 +298,7 @@ void Loader::generate_tagent(std::vector<Vertex> &vertices, const std::vector<in
 		vec3 t = temp_tagent[i];
 		t -= v.normal * dot(t, v.normal);
 		t.normalize();
-		v.tagent = t;
+		v.tangent = t;
 		v.bitangent = cross(v.normal, t);
 	}
 }

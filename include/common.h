@@ -33,6 +33,8 @@
 #include <conio.h>
 #undef max
 #undef min
+#undef far
+#undef near
 
 #include "vec.hpp"
 #include "matrix.hpp"
