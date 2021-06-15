@@ -70,7 +70,8 @@ bool ParallaxMappingShader::fragment(const vec3 &point, const SArgsPtr &args, ve
 
 	vec3 view_dir = normalized(args_ptr->our_tangent_eye_pos - args_ptr->our_tangent_position);
 	//vec2 depth_texcoord = parallax_mapping_texcoord(view_dir, args_ptr->our_texcoord);
-	vec2 depth_texcoord = step_parallax_mapping_texcoord(view_dir, args_ptr->our_texcoord);
+	//vec2 depth_texcoord = steep_parallax_mapping_texcoord(view_dir, args_ptr->our_texcoord);
+	vec2 depth_texcoord = parallax_occlusion_mapping(view_dir, args_ptr->our_texcoord);
 	if (depth_texcoord.s() < 0.f || depth_texcoord.s() > 1.f || depth_texcoord.t() < 0.f || depth_texcoord.t() > 1.f)
 		return false;
 
@@ -100,21 +101,46 @@ vec2 ParallaxMappingShader::parallax_mapping_texcoord(const vec3 &view_dir, cons
 	return texcoord - p;
 }
 
-vec2 ParallaxMappingShader::step_parallax_mapping_texcoord(const vec3 &view_dir, vec2 texcoord) const {
+vec2 ParallaxMappingShader::steep_parallax_mapping_texcoord(const vec3 &view_dir, vec2 texcoord) const {
 	float depth = uniform_depth_map.rgb(texcoord).r();
 	vec2 p = (vec2(view_dir)) / view_dir.z() * (depth * uniform_height_scale);
-	constexpr float min_layers = 8.f;
-	constexpr float max_layers = 32.f;
+	constexpr float min_layers = 4.f;
+	constexpr float max_layers = 16.f;
 	float layers = Draw::mix(max_layers, min_layers, std::abs(view_dir.z()));
 
 	vec2 delta_p = p / layers;
-	float delta_depth = depth / layers;
-	float curr_depth = 0.f;
-	float expect_depth = depth;
-	while (curr_depth < expect_depth) {
-		expect_depth -= delta_depth;
+	float delta_depth = 1.f / layers;
+	float curr_depth = 1.f;
+	float expect_depth = 0.f;
+	while (curr_depth > expect_depth) {
+		expect_depth += delta_depth;
 		texcoord -= delta_p;
 		curr_depth = uniform_depth_map.rgb(texcoord).r();
 	}
 	return texcoord;
+}
+
+vec2 ParallaxMappingShader::parallax_occlusion_mapping(const vec3 &view_dir, vec2 texcoord) const {
+	float depth = uniform_depth_map.rgb(texcoord).r();
+	vec2 p = (vec2(view_dir)) / view_dir.z() * (depth * uniform_height_scale);
+	constexpr float min_layers = 4.f;
+	constexpr float max_layers = 16.f;
+	float layers = Draw::mix(max_layers, min_layers, std::abs(view_dir.z()));
+
+	vec2 delta_p = p / layers;
+	float delta_depth = 1.f / layers;
+	float curr_depth = 1.f;
+	float expect_depth = 0.f;
+	while (curr_depth > expect_depth) {
+		expect_depth += delta_depth;
+		texcoord -= delta_p;
+		curr_depth = uniform_depth_map.rgb(texcoord).r();
+	}
+
+	vec2 prev_texcoord = texcoord + delta_p;
+	float prev_depth = uniform_depth_map.rgb(prev_texcoord).r();
+	float after_depth = curr_depth - expect_depth;
+	float before_depth = prev_depth - expect_depth + delta_depth;
+	float weight = after_depth / (after_depth - before_depth);
+	return Draw::mix(texcoord, prev_texcoord, weight);
 }

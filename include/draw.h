@@ -28,7 +28,7 @@ public:
 		std::declval<T>() - std::declval<T>();
 	}
 	static T mix(const T &t1, const T &t2, float radio) {
-		return t1 + (t2 - t1) * radio;
+		return (t1 * radio) + (t2 * (1.f - radio));
 	}
 private:
 	constexpr static float plane_w_limit = -0.000001f;

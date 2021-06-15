@@ -31,5 +31,6 @@ public:
 	virtual vec4 vertex(const Vertex &vertex, SArgsPtr &args) noexcept override;
 	virtual bool fragment(const vec3 &point, const SArgsPtr &args, vec3 &color) noexcept override;
 	vec2 parallax_mapping_texcoord(const vec3 &view_dir, const vec2 &texcoord) const;
-	vec2 step_parallax_mapping_texcoord(const vec3 &view_dir, vec2 texcoord) const;
+	vec2 steep_parallax_mapping_texcoord(const vec3 &view_dir, vec2 texcoord) const;
+	vec2 parallax_occlusion_mapping(const vec3 &view_dir, vec2 texcoord) const;
 };

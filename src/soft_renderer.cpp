@@ -301,7 +301,7 @@ void SoftRenderer::parallax_mapping() {
 	shader_ptr->set_uniform("light_diffuse", vec3(0.9f, 0.9f, 0.9f));
 	shader_ptr->set_uniform("light_specular", vec3(0.3f, 0.3f, 0.3f));
 	shader_ptr->set_uniform("light_dir", light_dir);
-	shader_ptr->set_uniform("height_scale", 0.15f);
+	shader_ptr->set_uniform("height_scale", 0.2f);
 	shader_ptr->set_face_culling_func([](float cosine) { return cosine >= 0.f; });
 	shader_ptr->set_model(Draw::rotate_y(90.f));
 
