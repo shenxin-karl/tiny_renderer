@@ -36,4 +36,5 @@ public:
 	void skybox();
 	void test_plane();
 	void car();
+	void parallax_mapping();
 };

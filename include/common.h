@@ -22,6 +22,7 @@
 #include <utility>
 #include <cstring>
 #include <type_traits>
+#include <array>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>

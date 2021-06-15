@@ -1,5 +1,6 @@
 #pragma once
 
+
 class Draw {
 public:
 	static void line(FrameBuffer &frame, const vec3 &start, const vec3 &last, const vec3 &color);
@@ -20,6 +21,15 @@ public:
 	static vec3 reflect(const vec3 &I, const vec3 &N);
 	static vec3 refract(const vec3 &I, const vec3 &N, float ratio);
 	static float calc_depth(const vec3 &coords, std::array<VertexRes *, 3> &vertices);
+
+	template<typename T> requires requires {
+		std::declval<T>() + std::declval<T>();
+		std::declval<T>() * std::declval<T>();
+		std::declval<T>() - std::declval<T>();
+	}
+	static T mix(const T &t1, const T &t2, float radio) {
+		return t1 + (t2 - t1) * radio;
+	}
 private:
 	constexpr static float plane_w_limit = -0.000001f;
 	static bool outside_left_plane(float x, float w);

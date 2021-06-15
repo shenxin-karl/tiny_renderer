@@ -287,3 +287,32 @@ void SoftRenderer::car() {
 		poll_event();
 	}
 }
+
+void SoftRenderer::parallax_mapping() {
+	vec3 light_dir = normalized(vec3(-2.f, 3.f, 0.2f));
+	Texture2d diffuse_map("resources/test_plane/bricks2.jpg");
+	Texture2d normal_map("resources/test_plane/bricks2_normal.jpg");
+	Texture2d depth_map("resources/test_plane/bricks2_disp.jpg");
+	shader_ptr->set_uniform("normal_map", normal_map);
+	shader_ptr->set_uniform("diffuse_map", diffuse_map);
+	shader_ptr->set_uniform("depth_map", depth_map);
+	shader_ptr->set_uniform("specular_factor", 32.f);
+	shader_ptr->set_uniform("light_ambient", vec3(0.1f, 0.1f, 0.1f));
+	shader_ptr->set_uniform("light_diffuse", vec3(0.9f, 0.9f, 0.9f));
+	shader_ptr->set_uniform("light_specular", vec3(0.3f, 0.3f, 0.3f));
+	shader_ptr->set_uniform("light_dir", light_dir);
+	shader_ptr->set_uniform("height_scale", 0.15f);
+	shader_ptr->set_face_culling_func([](float cosine) { return cosine >= 0.f; });
+	shader_ptr->set_model(Draw::rotate_y(90.f));
+
+	frame.clear_color(vec3(0.1f, 0.1f, 0.1f));
+	while (!window.window_should_be_close()) {
+		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
+		shader_ptr->set_view(camera_ptr->get_view());
+		shader_ptr->set_projection(camera_ptr->get_projection());
+		shader_ptr->set_uniform("eye_pos", camera_ptr->get_look_from());
+		model_ptr->draw(frame, *shader_ptr);
+		window.draw(frame);
+		poll_event();
+	}
+}

@@ -22,9 +22,14 @@ struct ParallaxMappingShader : public ShaderBase {
 	Texture2d	uniform_normal_map;
 	Texture2d	uniform_depth_map;
 	float		uniform_height_scale;
+	vec3		uniform_light_ambient;
+	vec3		uniform_light_diffuse;
+	vec3		uniform_light_specular;
+	float		uniform_specular_factor;
 public:
 	virtual void initialize() noexcept override;
 	virtual vec4 vertex(const Vertex &vertex, SArgsPtr &args) noexcept override;
 	virtual bool fragment(const vec3 &point, const SArgsPtr &args, vec3 &color) noexcept override;
 	vec2 parallax_mapping_texcoord(const vec3 &view_dir, const vec2 &texcoord) const;
+	vec2 step_parallax_mapping_texcoord(const vec3 &view_dir, vec2 texcoord) const;
 };

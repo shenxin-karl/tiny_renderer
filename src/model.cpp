@@ -52,10 +52,12 @@ Mesh Model::process_mesh(aiMesh *mesh, const aiScene *scene) {
 	int index = mesh->mNumAnimMeshes;
 	if (index >= 0) {
 		aiMaterial *material = scene->mMaterials[index];
-		std::vector<Texture> diffuse_map = load_material_texture(material, aiTextureType_DIFFUSE, "texture_diffuse");
+		std::vector<Texture> diffuse_map = load_material_texture(material, aiTextureType_DIFFUSE, "diffuse_map");
 		textures.insert(textures.end(), diffuse_map.begin(), diffuse_map.end());
-		std::vector<Texture> specular_map = load_material_texture(material, aiTextureType_SPECULAR, "texture_specular");
+		std::vector<Texture> specular_map = load_material_texture(material, aiTextureType_SPECULAR, "specular_map");
 		textures.insert(textures.end(), specular_map.begin(), specular_map.end());
+		std::vector<Texture> normal_map = load_material_texture(material, aiTextureType_NORMALS, "normal_map");
+		textures.insert(textures.end(), normal_map.begin(), normal_map.end());
 	}
 
 	return Mesh{ std::move(vertices), std::move(indices), std::move(textures) };
