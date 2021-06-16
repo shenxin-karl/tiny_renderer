@@ -47,7 +47,7 @@ bool SkyboxReflect::fragment(const vec3 &point, const SArgsPtr &args, vec3 &colo
 	vec3 our_normal = args_ptr->our_position;
 
 	vec3 eye_dir = normalized(uniform_eye_pos - our_position);
-	vec3 reflect = Draw::reflect(eye_dir, our_normal);
+	vec3 reflect = draw::reflect(eye_dir, our_normal);
 	color = uniform_skybox_texture.rgb(reflect);
 	return true;
 }

@@ -94,7 +94,7 @@ void SoftRenderer::test_cube(float near, float far) {
 	while (!window.window_should_be_close()) {
 		//frame.clear_color(vec3(0.1f, 0.3f, 0.1f));
 		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
-		shader_ptr->set_model(Draw::rotate_y(window.get_time() * 30.f));
+		shader_ptr->set_model(draw::rotate_y(window.get_time() * 30.f));
 		shader_ptr->set_view(camera_ptr->get_view());
 		shader_ptr->set_projection(camera_ptr->get_projection());
 		model_ptr->draw(frame, *shader_ptr);
@@ -114,7 +114,7 @@ void SoftRenderer::light_renderer() {
 	frame.clear_color(vec3(0.1f, 0.2f, 0.3f));
 	while (!window.window_should_be_close()) {
 		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
-		mat4 light_rotate_matrix = Draw::rotate_y(window.get_time() * 10.f);
+		mat4 light_rotate_matrix = draw::rotate_y(window.get_time() * 10.f);
 		vec3 new_light_dir = vec3(light_rotate_matrix * vec4(light_dir, 1.f));
 
 		shader_ptr->set_uniform("light_dir", new_light_dir);
@@ -139,12 +139,12 @@ void SoftRenderer::blinn_phong() {
 
 	frame.clear_color(vec3(0.1f, 0.1f, 0.15f));
 	while (!window.window_should_be_close()) {
-		mat4 light_rotate_mat = Draw::rotate_y(window.get_time() * 77.f);
+		mat4 light_rotate_mat = draw::rotate_y(window.get_time() * 77.f);
 		vec3 new_light_dir = normalized(vec3(light_rotate_mat * vec4(light_dir, 1.f)));
 		shader_ptr->set_uniform("light_dir", new_light_dir);
 
 		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
-		shader_ptr->set_model(Draw::rotate_y(window.get_time() * 30.f));
+		shader_ptr->set_model(draw::rotate_y(window.get_time() * 30.f));
 		shader_ptr->set_view(camera_ptr->get_view());
 		shader_ptr->set_projection(camera_ptr->get_projection());
 		shader_ptr->set_uniform("eye_pos", camera_ptr->get_look_from());
@@ -168,7 +168,7 @@ void SoftRenderer::normal_mapping() {
 	
 	while (!window.window_should_be_close()) {
 		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
-		shader_ptr->set_model(Draw::rotate_y(window.get_time() * 10.f));
+		shader_ptr->set_model(draw::rotate_y(window.get_time() * 10.f));
 		shader_ptr->set_view(camera_ptr->get_view());
 		shader_ptr->set_projection(camera_ptr->get_projection());
 		shader_ptr->set_uniform("eye_pos", camera_ptr->get_look_from());
@@ -227,7 +227,7 @@ void SoftRenderer::skybox() {
 		curr_shader->set_projection(camera_ptr->get_projection());
 		model_ptr->draw(frame, *curr_shader);
 		// draw skybox
-		skybox_shader_ptr->set_model(Draw::rotate_y(window.get_time() * 10.f));
+		skybox_shader_ptr->set_model(draw::rotate_y(window.get_time() * 10.f));
 		skybox_shader_ptr->set_view(camera_ptr->get_view());
 		skybox_shader_ptr->set_projection(camera_ptr->get_projection());
 		skybox_shader_ptr->set_uniform("skybox_texture", skybox_texture);
@@ -252,7 +252,7 @@ void SoftRenderer::test_plane() {
 
 	while (!window.window_should_be_close()) {
 		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
-		//shader_ptr->set_model(Draw::rotate_x(window.get_time() * 10.f));
+		//shader_ptr->set_model(draw::rotate_x(window.get_time() * 10.f));
 		shader_ptr->set_view(camera_ptr->get_view());
 		shader_ptr->set_projection(camera_ptr->get_projection());
 		shader_ptr->set_uniform("eye_pos", camera_ptr->get_look_from());
@@ -278,7 +278,7 @@ void SoftRenderer::car() {
 	frame.clear_color(vec3(0.1f, 0.1f, 0.1f));
 	while (!window.window_should_be_close()) {
 		frame.clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
-		shader_ptr->set_model(Draw::rotate_y(window.get_time() * 10.f));
+		shader_ptr->set_model(draw::rotate_y(window.get_time() * 10.f));
 		shader_ptr->set_view(camera_ptr->get_view());
 		shader_ptr->set_projection(camera_ptr->get_projection());
 		shader_ptr->set_uniform("eye_pos", camera_ptr->get_look_from());
@@ -303,7 +303,7 @@ void SoftRenderer::parallax_mapping() {
 	shader_ptr->set_uniform("light_dir", light_dir);
 	shader_ptr->set_uniform("height_scale", 0.2f);
 	shader_ptr->set_face_culling_func([](float cosine) { return cosine >= 0.f; });
-	shader_ptr->set_model(Draw::rotate_y(90.f));
+	shader_ptr->set_model(draw::rotate_y(90.f));
 
 	frame.clear_color(vec3(0.1f, 0.1f, 0.1f));
 	while (!window.window_should_be_close()) {

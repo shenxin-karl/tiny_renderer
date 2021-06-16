@@ -36,12 +36,12 @@ bool Test::test_barycentric_coord() {
 	vec3 v2(100, 0, 0);
 	vec3 v3(0, 300, 0);
 	vec3 point(-101, 0, 0);
-	vec3 coords = Draw::barycentric_coord(point.head<2>(), v1, v2, v3);
+	vec3 coords = draw::barycentric_coord(point.head<2>(), v1, v2, v3);
 	if (check_coords(coords))
 		return false;
 
 	point = { 100, 0, 0 };
-	coords = Draw::barycentric_coord(point.head<2>(), v1, v2, v3);
+	coords = draw::barycentric_coord(point.head<2>(), v1, v2, v3);
 	if (coords[0] != 0 || !check_coords(coords))
 		return false;
 
@@ -49,7 +49,7 @@ bool Test::test_barycentric_coord() {
 	v1 = { 590.952515f, 352.662018f, 1.29826248f };
 	v2 = { 591.149719f, 355.008820f, 1.29185522f };
 	v3 = { 590.959473f, 352.809326f, 1.28281009f };
-	coords = Draw::barycentric_coord(p, v1, v2, v3);
+	coords = draw::barycentric_coord(p, v1, v2, v3);
 	//if (!(coords[0] > 0.f) || !(coords[1] > 0.f) || !(coords[2] > 0.f))
 		//return false;
 	return true;
@@ -61,7 +61,7 @@ bool Test::test_view() {
 		vec3 look_from = { 2, 2, 0 };
 		vec3 look_up = { 0, 1, 0 };
 		vec3 look_at = { 0, 0, 0 };
-		auto view = Draw::view(look_from, look_up, look_at);
+		auto view = draw::view(look_from, look_up, look_at);
 		auto point = vec4(look_from, 1.f);
 		auto res = view * point;
 		if (res.x() != 0 && res.y() != 0 && res.z() != 0 && res.w() != 1)
@@ -76,7 +76,7 @@ bool Test::test_view() {
 		vec3 look_from = { 1, 2, 2 };
 		vec3 look_up = { 0, 1, 0 };
 		vec3 look_at = { 1, 2, 0 };
-		mat4 view = Draw::view(look_from, look_up, look_at);
+		mat4 view = draw::view(look_from, look_up, look_at);
 		vec4 point = { 0, 0, 0, 1 };
 		auto point_res = view * point;
 		if (point_res.x() != -1.f || point_res.y() != -2.f || point_res.z() != -2.f)
@@ -175,10 +175,10 @@ bool Test::test_matrix() {
 
 bool Test::test_orhto() {
 	std::vector<vec3> vertices = { {2, 0, -2}, {0, 2, -2}, {-2, 0, -2} };
-	auto view = Draw::view({ 0, 0, -1 }, { 0, 1, 0 }, { 0, 0, -2 });
+	auto view = draw::view({ 0, 0, -1 }, { 0, 1, 0 }, { 0, 0, -2 });
 #if 0
 	for (int fov = 15; fov < 80; ++fov) {
-		auto ortho = Draw::ortho(fov, 1, 15.f, 100.f);
+		auto ortho = draw::ortho(fov, 1, 15.f, 100.f);
 		auto mvp = viewport * ortho * view;
 		std::cout << "fov " << fov << std::endl;
 		for (const auto &v :vertices)
@@ -189,7 +189,7 @@ bool Test::test_orhto() {
 	constexpr float near = 15.f;
 	constexpr float far = 100.f;
 	vec4 point = { 1, 1, 50.f, 1.0 };
-	auto ortho = Draw::ortho(45.f, 1.f, near, far);
+	auto ortho = draw::ortho(45.f, 1.f, near, far);
 	auto res = ortho * point;
 	return true;
 }
@@ -209,9 +209,9 @@ bool Test::test_projection() {
 	vec3 look_at(0, 0, -1);
 	vec3 look_up(0, 1, 0);
 
-	auto view = Draw::view(look_from, look_up, look_at);
+	auto view = draw::view(look_from, look_up, look_at);
 	// 在 near 的时候, z 是 1
-	auto projection = Draw::projection(45.f, 1.f, near, far);
+	auto projection = draw::projection(45.f, 1.f, near, far);
 	vec4 point = { 0.f, 0.f, near, 1.f };
 	auto res = projection * point;
 
@@ -224,7 +224,7 @@ bool Test::test_projection() {
 
 	look_from = vec3(0, 0, near);
 	point = vec4(look_from + vec3(0, 0, far), 1.f);
-	view = Draw::view(look_from, vec3(0, 1, 0), vec3(0, 0, 0));
+	view = draw::view(look_from, vec3(0, 1, 0), vec3(0, 0, 0));
 	auto mvp = projection * view;
 	res = mvp * point;
 	point = { 1.f, 1.f, -0.1f, 1.f };

@@ -1,7 +1,7 @@
 #include "common.h"
 
 using std::swap;
-void Draw::line(FrameBuffer &frame, const vec3 &start, const vec3 &last, const vec3 &color) {
+void draw::line(FrameBuffer &frame, const vec3 &start, const vec3 &last, const vec3 &color) {
 	int x = static_cast<int>(std::ceil(start.x()));
 	int y = static_cast<int>(std::ceil(start.y()));
 	int sx = start.x() < last.x() ? 1 : -1;
@@ -31,7 +31,7 @@ void Draw::line(FrameBuffer &frame, const vec3 &start, const vec3 &last, const v
 	}
 }
 
-void Draw::triangle(FrameBuffer &frame, ShaderBase &shader, std::array<VertexRes *, 3> vertice) {
+void draw::triangle(FrameBuffer &frame, ShaderBase &shader, std::array<VertexRes *, 3> vertice) {
 	vec2 bboxmin(std::numeric_limits<float>::max());
 	vec2 bboxmax(std::numeric_limits<float>::min());
 	for (const VertexRes *vertex_ptr : vertice) {
@@ -75,7 +75,7 @@ void Draw::triangle(FrameBuffer &frame, ShaderBase &shader, std::array<VertexRes
 	}
 }
 
-vec3 Draw::barycentric_coord(vec2 point, const vec3 &v1, const vec3 &v2, const vec3 &v3) {
+vec3 draw::barycentric_coord(vec2 point, const vec3 &v1, const vec3 &v2, const vec3 &v3) {
 	constexpr auto create_line_func = [](const vec3 &p1, const vec3 &p2) {
 		float x0 = p1.x();
 		float x1 = p2.x();
@@ -98,18 +98,18 @@ vec3 Draw::barycentric_coord(vec2 point, const vec3 &v1, const vec3 &v2, const v
 	return { alpha, beta, (1.f-alpha-beta) };
 }
 
-float Draw::radians(float angle) {
+float draw::radians(float angle) {
 	return angle / 180.f * M_PI;
 }
 
-float Draw::random() noexcept {
+float draw::random() noexcept {
 	static std::random_device rd;
 	static std::mt19937 gen(rd());
 	static std::uniform_real_distribution<float> dis(0.f, 1.f);
 	return dis(gen);
 }
 
-mat4 Draw::ortho(float fov, float aspect, float n, float f) {
+mat4 draw::ortho(float fov, float aspect, float n, float f) {
 	float t = std::tan(radians(fov / 2.f)) * std::abs(n);
 	float b = -t;
 	float r = t * aspect;
@@ -132,7 +132,7 @@ mat4 Draw::ortho(float fov, float aspect, float n, float f) {
 	return res;
 }
 
-mat4 Draw::projection(float fov, float aspect, float n, float f) {
+mat4 draw::projection(float fov, float aspect, float n, float f) {
 	n = -std::abs(n);
 	f = -std::abs(f);
 	mat4 perspective = {
@@ -144,7 +144,7 @@ mat4 Draw::projection(float fov, float aspect, float n, float f) {
 	return ortho(fov, aspect, n, f) * perspective;
 }
 
-mat4 Draw::view(vec3 look_from, vec3 look_up, vec3 look_at) {
+mat4 draw::view(vec3 look_from, vec3 look_up, vec3 look_at) {
 	mat4 trans = {
 		1, 0, 0, -look_from.x(),
 		0, 1, 0, -look_from.y(),
@@ -165,8 +165,8 @@ mat4 Draw::view(vec3 look_from, vec3 look_up, vec3 look_at) {
 	return transpose_rotate * trans;
 }
 
-mat4 Draw::rotate_y(float angle) {
-	float radian = Draw::radians(angle);
+mat4 draw::rotate_y(float angle) {
+	float radian = draw::radians(angle);
 	float cosine = std::cos(radian);
 	float sine = std::sin(radian);
 	return {
@@ -177,8 +177,8 @@ mat4 Draw::rotate_y(float angle) {
 	};
 }
 
-mat4 Draw::rotate_x(float angle) {
-	float radian = Draw::radians(angle);
+mat4 draw::rotate_x(float angle) {
+	float radian = draw::radians(angle);
 	float cosine = std::cos(radian);
 	float sine = std::sin(radian);
 	return {
@@ -190,8 +190,8 @@ mat4 Draw::rotate_x(float angle) {
 }
 
 
-mat4 Draw::rotate_z(float angle) {
-	float radian = Draw::radians(angle);
+mat4 draw::rotate_z(float angle) {
+	float radian = draw::radians(angle);
 	float cosine = std::cos(radian);
 	float sine = std::sin(radian);
 	return {
@@ -202,7 +202,7 @@ mat4 Draw::rotate_z(float angle) {
 	};
 }
 
-bool Draw::plane_cutting(std::vector<VertexRes> &out_vertices) {
+bool draw::plane_cutting(std::vector<VertexRes> &out_vertices) {
 	static std::tuple<bool(*)(float, float), int, float(*)(const vec4 &, const vec4 &)> plane_args[] = {
 		{ outside_w_plane,      3, get_w_plane_ratio		   },
 		{ outside_left_plane,   0, get_negative_plane_ratio<0> },
@@ -243,12 +243,12 @@ bool Draw::plane_cutting(std::vector<VertexRes> &out_vertices) {
 	return out_vertices.size() >= 3;
 }
 
-vec3 Draw::reflect(const vec3 &I, const vec3 &N) {
+vec3 draw::reflect(const vec3 &I, const vec3 &N) {
 	float cosine = dot(I, N);
 	return cosine * N * 2 - I;
 }
 
-vec3 Draw::refract(const vec3 &I, const vec3 &N, float ratio) {
+vec3 draw::refract(const vec3 &I, const vec3 &N, float ratio) {
 	float cosine = dot(-I, N);
 	float discriminant = 1.f - (ratio * ratio) * (1.f - cosine * cosine);
 	if (discriminant < 0.f)		// 发生全内反射, 所有的能量都是反射出去
@@ -259,7 +259,7 @@ vec3 Draw::refract(const vec3 &I, const vec3 &N, float ratio) {
 }
 
 
-float Draw::calc_depth(const vec3 &coords, std::array<VertexRes *, 3> &vertices) {
+float draw::calc_depth(const vec3 &coords, std::array<VertexRes *, 3> &vertices) {
 	float d1 = coords[0] / vertices[0]->position.w();
 	float d2 = coords[1] / vertices[1]->position.w();
 	float d3 = coords[2] / vertices[2]->position.w();
@@ -267,35 +267,35 @@ float Draw::calc_depth(const vec3 &coords, std::array<VertexRes *, 3> &vertices)
 	return 1.f / depth;
 }
 
-bool Draw::outside_left_plane(float x, float w) {
+bool draw::outside_left_plane(float x, float w) {
 	return x > -w;
 }
 
-bool Draw::outside_right_plane(float x, float w) {
+bool draw::outside_right_plane(float x, float w) {
 	return x < w;
 }
 
-bool Draw::outside_top_plane(float y, float w) {
+bool draw::outside_top_plane(float y, float w) {
 	return y < w;
 }
 
-bool Draw::outside_bottom_plane(float y, float w) {
+bool draw::outside_bottom_plane(float y, float w) {
 	return y > -w;
 }
 
-bool Draw::outside_near_plane(float z, float w) {
+bool draw::outside_near_plane(float z, float w) {
 	return z < w;
 }
 
-bool Draw::outside_far_plane(float z, float w) {
+bool draw::outside_far_plane(float z, float w) {
 	return z > -w;
 }
 
-bool Draw::outside_w_plane(float, float w) {
+bool draw::outside_w_plane(float, float w) {
 	return w >= plane_w_limit;
 }
 
-VertexRes Draw::interp_vertex_res(const VertexRes &start, const VertexRes &last, float t) {
+VertexRes draw::interp_vertex_res(const VertexRes &start, const VertexRes &last, float t) {
 	return {
 		start.position + (t * (last.position - start.position)),
 		start.args->interp(last.args, t),

@@ -1,7 +1,7 @@
 #pragma once
 
 
-class Draw {
+class draw {
 public:
 	static void line(FrameBuffer &frame, const vec3 &start, const vec3 &last, const vec3 &color);
 	static void triangle(FrameBuffer &frame, ShaderBase &shader, std::array<VertexRes *, 3> vertice);

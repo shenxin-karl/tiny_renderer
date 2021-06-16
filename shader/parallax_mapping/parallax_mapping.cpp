@@ -106,7 +106,7 @@ vec2 ParallaxMappingShader::steep_parallax_mapping_texcoord(const vec3 &view_dir
 	vec2 p = (vec2(view_dir)) / view_dir.z() * (depth * uniform_height_scale);
 	constexpr float min_layers = 4.f;
 	constexpr float max_layers = 16.f;
-	float layers = Draw::mix(max_layers, min_layers, std::abs(view_dir.z()));
+	float layers = draw::mix(max_layers, min_layers, std::abs(view_dir.z()));
 
 	vec2 delta_p = p / layers;
 	float delta_depth = 1.f / layers;
@@ -125,7 +125,7 @@ vec2 ParallaxMappingShader::parallax_occlusion_mapping(const vec3 &view_dir, vec
 	vec2 p = (vec2(view_dir)) / view_dir.z() * (depth * uniform_height_scale);
 	constexpr float min_layers = 4.f;
 	constexpr float max_layers = 16.f;
-	float layers = Draw::mix(max_layers, min_layers, std::abs(view_dir.z()));
+	float layers = draw::mix(max_layers, min_layers, std::abs(view_dir.z()));
 
 	vec2 delta_p = p / layers;
 	float delta_depth = 1.f / layers;
@@ -142,5 +142,5 @@ vec2 ParallaxMappingShader::parallax_occlusion_mapping(const vec3 &view_dir, vec
 	float after_depth = curr_depth - expect_depth;
 	float before_depth = prev_depth - expect_depth + delta_depth;
 	float weight = after_depth / (after_depth - before_depth);
-	return Draw::mix(texcoord, prev_texcoord, weight);
+	return draw::mix(texcoord, prev_texcoord, weight);
 }

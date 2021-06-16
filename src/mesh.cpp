@@ -34,7 +34,7 @@ void Mesh::process_triangle(FrameBuffer &frame, ShaderBase &shader, std::array<i
 		out_vertices.push_back({ point, std::move(args) });
 	}
 	
-	if (!Draw::plane_cutting(out_vertices))
+	if (!draw::plane_cutting(out_vertices))
 		return;
 
 	int half_width = frame.get_width() / 2;
@@ -58,7 +58,7 @@ void Mesh::process_triangle(FrameBuffer &frame, ShaderBase &shader, std::array<i
 		VertexRes &v3 = out_vertices[i+2];
 		if (backface_culling(shader, v1, v2, v3))
 			continue;
-		Draw::triangle(frame, shader, { &v1, &v2, &v3 });
+		draw::triangle(frame, shader, { &v1, &v2, &v3 });
 	}
 }
 
