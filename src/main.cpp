@@ -24,9 +24,9 @@ int main(void) {
 	//blinn_phong();
 	//normal_mapping();
 	//one_triangle();
-	//skybox();
+	skybox();
 	//test_normal_mapping();
-	car();
+	//car();
 	//parallax_mapping_texcoord();
 	return 0;
 }

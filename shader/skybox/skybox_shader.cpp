@@ -37,8 +37,9 @@ vec4 SkyboxShader::vertex(const Vertex &vertex, SArgsPtr &args) noexcept {
 	args = std::make_shared<SkyboxShaderArgs>(SkyboxShaderArgs{
 		vertex.position.head<3>()
 	});
-	auto res = vertex.position;
-	return uniform_vp * res;
+	auto res = uniform_vp * vertex.position;
+	res.z() = -res.w();
+	return res;
 }
 
 bool SkyboxShader::fragment(const vec3 &point, const SArgsPtr &args, vec3 &color) noexcept {
