@@ -8,9 +8,9 @@ struct ParallaxMappingShaderArgs : public ShaderArgsBase {
 public:
 	ParallaxMappingShaderArgs(const vec2 &texcoord, const vec3 &tangent_position, const vec3 &tangent_eye_pos,
 							  const vec3 &tangent_light_dir);
-	virtual SArgsPtr interp(const SArgsPtr &other, float t) const noexcept;
-	virtual SArgsPtr interp(const SArgsPtr &v2, const SArgsPtr &v3, const vec3 &coord, float depth) const noexcept;
-	virtual void perspective_divide(float inverse_z) noexcept;
+	virtual SArgsPtr interp(const SArgsPtr &other, float t) const noexcept override;
+	virtual SArgsPtr interp(const SArgsPtr &v2, const SArgsPtr &v3, const vec3 &coord, float depth) const noexcept override;
+	virtual void perspective_divide(float inverse_z) noexcept override;
 };
 
 

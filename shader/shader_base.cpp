@@ -15,14 +15,6 @@ void ShaderBase::set_projection(const mat4 &_projection) {
 	update_mvp();
 }
 
-void ShaderBase::set_near(float _near) {
-	near = _near;
-}
-
-void ShaderBase::set_far(float _far) {
-	far = _far;
-}
-
 void ShaderBase::set_face_culling_func(const std::function<bool(float)> &func) {
 	face_culling_func = func;
 }

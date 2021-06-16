@@ -1,6 +1,6 @@
 #include "common.h"
 
-SoftRenderer::SoftRenderer(int _width, int _height, float _near, float _far,
+SoftRenderer::SoftRenderer(int _width, int _height,
 						  std::shared_ptr<CameraBase> _camera_ptr, 
 						  std::shared_ptr<ShaderBase> _shader_ptr, 
 						  std::shared_ptr<Model> _model_ptr) 

@@ -1,6 +1,6 @@
 #include "common.h"
 
-constexpr float zbuffer_fill_value = -std::numeric_limits<float>::max();
+constexpr float zbuffer_fill_value = 1.f;
 FrameBuffer::FrameBuffer(int _width, int _height)
 : width(_width), height(_height), frame_buffer(size_t(_width) * _height)
 , depth_buffer(size_t(_width) * _height, zbuffer_fill_value), fill_color(0) {
@@ -21,7 +21,7 @@ int FrameBuffer::get_index(const vec2 &point) const {
 
 bool FrameBuffer::check_depth(const vec3 &point) const {
 	int index = get_index(point.head<2>());
-	return point.z() > depth_buffer[index];
+	return point.z() <= depth_buffer[index];
 }
 
 void FrameBuffer::resize(int _width, int _height, bool refresh_buffer) {

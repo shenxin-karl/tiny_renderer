@@ -11,10 +11,8 @@ class SoftRenderer {
 	float	last_time = 0.f;
 	int		now_time = 0;
 	int		fps = 0;
-	float	far;
-	float	near;
 public:
-	SoftRenderer(int _width, int _height, float _near, float _far, std::shared_ptr<CameraBase> _camera_ptr, 
+	SoftRenderer(int _width, int _height, std::shared_ptr<CameraBase> _camera_ptr, 
 				 std::shared_ptr<ShaderBase> _shader_ptr, std::shared_ptr<Model> _model_ptr);
 	SoftRenderer(const SoftRenderer &) = delete;
 	~SoftRenderer() = default;

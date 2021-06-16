@@ -61,12 +61,13 @@ void Draw::triangle(FrameBuffer &frame, ShaderBase &shader, std::array<VertexRes
 			if (!(coords[0] >= 0.f) || !(coords[1] >= 0.f) || !(coords[2] >= 0.f))
 				continue;
 		
-			float depth = calc_depth(coords, vertice);
-			vec3 point = { fx, fy, depth };
+			float ndc_z = v1_point.z() * coords[0] + v2_point.z() * coords[1] + v3_point.z() * coords[2];
+			vec3 point = { fx, fy, ndc_z };
 			if (!frame.check_depth(point))
 				continue;
 
 			vec3 color;
+			float depth = calc_depth(coords, vertice);
 			auto args = v1->args->interp(v2->args, v3->args, coords, depth);
 			if (shader.fragment(point, args, color))
 				frame.set_color(point, color);

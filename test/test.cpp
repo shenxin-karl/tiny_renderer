@@ -205,14 +205,14 @@ bool Test::test_projection() {
 	constexpr float aspect = static_cast<float>(widht) / static_cast<float>(height);
 	constexpr float near = -0.1f;
 	constexpr float far = -100.f;
-	vec3 look_from(0, 0, 2);
+	vec3 look_from(0, 0, 0);
 	vec3 look_at(0, 0, -1);
 	vec3 look_up(0, 1, 0);
 
 	auto view = Draw::view(look_from, look_up, look_at);
 	// 在 near 的时候, z 是 1
 	auto projection = Draw::projection(45.f, 1.f, near, far);
-	vec4 point = { 0.f, 0.f, -near, 1.f };
+	vec4 point = { 0.f, 0.f, near, 1.f };
 	auto res = projection * point;
 
 	// 在 far 的时候, z 是 -1

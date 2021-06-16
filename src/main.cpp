@@ -26,8 +26,8 @@ int main(void) {
 	//one_triangle();
 	//skybox();
 	//test_normal_mapping();
-	//car();
-	parallax_mapping_texcoord();
+	car();
+	//parallax_mapping_texcoord();
 	return 0;
 }
 
@@ -50,10 +50,9 @@ void init() {
 #endif // _DEBUG
 }
 
-#if 0
 void test_cube() {
 	constexpr float near = 0.1f;
-	constexpr float far = 100.f;
+	constexpr float far = -100.f;
 	constexpr float fov = 45.f;
 	std::shared_ptr<CameraBase> camera_ptr
 		= std::make_shared<FpsCamera>(vec3(-5, 0, 0), vec3(0, 1, 0), 45.f, aspect, near, far, 5.f, 0.1f);
@@ -62,7 +61,6 @@ void test_cube() {
 	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
 	renderer.test_cube(near, far);
 }
-#endif
 
 void light_render() {
 	constexpr float near = -0.1f;
@@ -76,35 +74,35 @@ void light_render() {
 #endif
 	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<LightShader>();
 	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::load_obj("resources/obj/african_head.obj"));
-	SoftRenderer renderer(width, height, near, far, camera_ptr, shader_ptr, model_ptr);
+	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
 	renderer.light_renderer();
 }
 
 void blinn_phong() {
-	constexpr float near = -0.001f;
+	constexpr float near = -0.1f;
 	constexpr float far = -100.f;
 	std::shared_ptr<CameraBase> camera_ptr
 		= std::make_shared<FpsCamera>(vec3(-2, 0, 0), vec3(0, 1, 0), 45.f, aspect, near, far, 1.f, 0.1f);
 	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<BlinnPhong>();
 	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::load_obj("resources/obj/african_head.obj"));
-	SoftRenderer renderer(width, height, near, far, camera_ptr, shader_ptr, model_ptr);
+	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
 	renderer.blinn_phong();
 }
 
 void normal_mapping() {
-	constexpr float near = 0.1f;
-	constexpr float far = 100.f;
+	constexpr float near = -0.1f;
+	constexpr float far = -100.f;
 	std::shared_ptr<CameraBase> camera_ptr
 		= std::make_shared<FpsCamera>(vec3(-2, 0, 0), vec3(0, 1, 0), 45.f, aspect, near, far, 1.f, 0.1f);
 	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<NormalMappingShader>();
 	std::shared_ptr<Model> model_ptr = std::make_shared<Model>("resources/obj/african_head.obj");
 	//std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::load_obj("resources/obj/african_head.obj"));
-	SoftRenderer renderer(width, height, near, far, camera_ptr, shader_ptr, model_ptr);
+	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
 	renderer.normal_mapping();
 }
 
 void one_triangle() {
-	constexpr float near = -0.0001f;
+	constexpr float near = -0.1f;
 	constexpr float far = -100.f;
 #if 0
 	vec3 look_from = vec3(-5, 0, 0);
@@ -117,24 +115,24 @@ void one_triangle() {
 #endif
 	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<LightShader>();
 	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::cearte_one_triangle());
-	SoftRenderer renderer(width, height, near, far, camera_ptr, shader_ptr, model_ptr);
+	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
 	renderer.light_renderer();
 }
 
 void skybox() {
-	constexpr float near = -0.0001f;
+	constexpr float near = -0.1f;
 	constexpr float far = -100.f;
 	std::shared_ptr<CameraBase> camera_ptr
 		= std::make_shared<FpsCamera>(vec3(-5, 0, 0), vec3(0, 1, 0), 45.f, aspect, near, far, 5.f, 0.1f);
 	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<TextrueShader>();
 	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::load_obj("resources/obj/african_head.obj"));
 	//std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::create_test_cube_obj());
-	SoftRenderer renderer(width, height, near, far, camera_ptr, shader_ptr, model_ptr);
+	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
 	renderer.skybox();
 }
 
 void test_normal_mapping() {
-	constexpr float near = -0.0001f;
+	constexpr float near = -0.1f;
 	constexpr float far = -100.f;
 #if 0
 	vec3 look_from = vec3(-3.03224f, -0.0399167f, 2.54272f);
@@ -147,30 +145,30 @@ void test_normal_mapping() {
 #endif
 	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<NormalMappingShader>();
 	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::create_test_plane());
-	SoftRenderer renderer(width, height, near, far, camera_ptr, shader_ptr, model_ptr);
+	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
 	renderer.test_plane();
 }
 
 
 void car() {
-	constexpr float near = -0.0001f;
-	constexpr float far = -500.f;
+	constexpr float near = -0.1f;
+	constexpr float far = -1000.f;
 	std::shared_ptr<CameraBase> camera_ptr
 		= std::make_shared<FpsCamera>(vec3(-200, 0, 0), vec3(0, 1, 0), 45.f, aspect, near, far, 50.f, 0.1f);
 	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<NormalMappingShader>();
 	std::shared_ptr<Model> model_ptr = std::make_shared<Model>("resources/car/moskvitch.obj");
-	SoftRenderer renderer(width, height, near, far, camera_ptr, shader_ptr, model_ptr);
+	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
 	renderer.car();
 }
 
 
 void parallax_mapping_texcoord() {
-	constexpr float near = -0.001f;
+	constexpr float near = -0.1f;
 	constexpr float far = -100.f;
 	std::shared_ptr<CameraBase> camera_ptr
 		= std::make_shared<FpsCamera>(vec3(-5, 0, 0), vec3(0, 1, 0), 45.f, aspect, near, far, 5.f, 0.1f);
 	std::shared_ptr<ShaderBase> shader_ptr = std::make_shared<ParallaxMappingShader>();
 	std::shared_ptr<Model> model_ptr = std::make_shared<Model>(Loader::create_test_plane());
-	SoftRenderer renderer(width, height, near, far, camera_ptr, shader_ptr, model_ptr);
+	SoftRenderer renderer(width, height, camera_ptr, shader_ptr, model_ptr);
 	renderer.parallax_mapping();
 }

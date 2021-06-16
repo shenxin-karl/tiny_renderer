@@ -40,13 +40,17 @@ void Mesh::process_triangle(FrameBuffer &frame, ShaderBase &shader, std::array<i
 	int half_width = frame.get_width() / 2;
 	int half_height = frame.get_height() / 2;
 	for (auto &v : out_vertices) {
+		// perspective divide
 		float inverse_z = 1.f / v.position.w();
 		v.position.head<3>() *= inverse_z;
+		v.args->perspective_divide(inverse_z);
+
+		// viewport transform
 		v.position.x() = v.position.x() * half_width + half_width;
 		v.position.y() = v.position.y() * half_height + half_height;
-		v.args->perspective_divide(inverse_z);
+		v.position.z() = (1.f - (v.position.z() + 1.f) * 0.5f);		
 	}
-	
+
 	size_t limit = out_vertices.size() - 2;
 	for (size_t i = 0; i < limit; ++i) {
 		VertexRes &v1 = out_vertices[0];
