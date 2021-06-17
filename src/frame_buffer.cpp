@@ -2,14 +2,18 @@
 
 constexpr float zbuffer_fill_value = 1.f;
 FrameBuffer::FrameBuffer(int _width, int _height)
-: width(_width), height(_height), frame_buffer(size_t(_width) * _height)
-, depth_buffer(size_t(_width) * _height, zbuffer_fill_value), fill_color(0) {
-
+: width(_width), height(_height) {
+	frame_buffer = std::unique_ptr<frame_color_t[]>(new frame_color_t[width * height]);
+	depth_buffer = std::unique_ptr<depth_color_t[]>(new depth_color_t[width * height]);
 }
 
 void FrameBuffer::set_color(const vec3 &point, const vec3 &color) {
 	int index = get_index(point.head<2>());
-	frame_buffer[index] = color;
+	frame_buffer[index] = {
+		static_cast<unsigned char>(color.r() * 255.f),
+		static_cast<unsigned char>(color.g() * 255.f),
+		static_cast<unsigned char>(color.b() * 255.f),
+	};
 	depth_buffer[index] = point.z();
 }
 
@@ -30,17 +34,17 @@ void FrameBuffer::resize(int _width, int _height, bool refresh_buffer) {
 	width = _width;
 	height = _height;
 	size_t new_size = static_cast<size_t>(width) * static_cast<size_t>(height);
-	frame_buffer.resize(new_size);
-	depth_buffer.resize(new_size);
+	//frame_buffer.resize(new_size);
+	//depth_buffer.resize(new_size);
 	if (refresh_buffer)
 		clear(FrameBufferType::ColorBuffer | FrameBufferType::DepthBuffer);
 }
 
 void FrameBuffer::clear(FrameBufferType type) {
-	if (type & FrameBufferType::ColorBuffer)
-		std::fill(frame_buffer.begin(), frame_buffer.end(), fill_color);
-	if (type & FrameBufferType::DepthBuffer)
-		std::fill(depth_buffer.begin(), depth_buffer.end(), zbuffer_fill_value);
+	//if (type & FrameBufferType::ColorBuffer)
+	//	std::fill(frame_buffer.begin(), frame_buffer.end(), fill_color);
+	//if (type & FrameBufferType::DepthBuffer)
+	//	std::fill(depth_buffer.begin(), depth_buffer.end(), zbuffer_fill_value);
 }
 
 void FrameBuffer::clear_color(const vec3 &color) {
@@ -48,30 +52,30 @@ void FrameBuffer::clear_color(const vec3 &color) {
 }
 
 void FrameBuffer::save(const std::string &path, FrameBufferType flag) const {
-	auto save_frame = [&]() {
-		if (!(flag & FrameBufferType::ColorBuffer)) 
-			return;
+	//auto save_frame = [&]() {
+	//	if (!(flag & FrameBufferType::ColorBuffer)) 
+	//		return;
 
-		std::string file_name = path + ".frame.ppm";
-		std::fstream stream(file_name, std::ios::binary | std::ios::out);
-		if (!stream.is_open()) {
-			std::cout << "failed open " << file_name << std::endl;
-			return;
-		}
-		
-		int index = 0;
-		stream << "P6\n" << width << " " << height << "\n255\n";
-		for (int x = 0; x < width; ++x) {
-			for (int y = height-1; y >= 0; --y) {
-				const vec3 &vec = frame_buffer[index++];
-				stream << static_cast<unsigned char>(vec.r() * 255)
-					   << static_cast<unsigned char>(vec.g() * 255)
-					   << static_cast<unsigned char>(vec.b() * 255);
-			}
-		}
-		stream.close();
-	};
-	save_frame();
+	//	std::string file_name = path + ".frame.ppm";
+	//	std::fstream stream(file_name, std::ios::binary | std::ios::out);
+	//	if (!stream.is_open()) {
+	//		std::cout << "failed open " << file_name << std::endl;
+	//		return;
+	//	}
+	//	
+	//	int index = 0;
+	//	stream << "P6\n" << width << " " << height << "\n255\n";
+	//	for (int x = 0; x < width; ++x) {
+	//		for (int y = height-1; y >= 0; --y) {
+	//			const vec3 &vec = frame_buffer[index++];
+	//			stream << static_cast<unsigned char>(vec.r() * 255)
+	//				   << static_cast<unsigned char>(vec.g() * 255)
+	//				   << static_cast<unsigned char>(vec.b() * 255);
+	//		}
+	//	}
+	//	stream.close();
+	//};
+	//save_frame();
 }
 
 int FrameBuffer::get_width() const {
@@ -82,6 +86,6 @@ int FrameBuffer::get_height() const {
 	return height;
 }
 
-const float *FrameBuffer::get_frame_data() const noexcept {
-	return reinterpret_cast<const float *>(frame_buffer.data());
+const unsigned char *FrameBuffer::get_frame_data() const noexcept {
+	return reinterpret_cast<const unsigned char *>(frame_buffer.get());
 }

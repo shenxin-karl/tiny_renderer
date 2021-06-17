@@ -22,9 +22,9 @@ int main(void) {
 	//light_render();
 	//test_cube();
 	//blinn_phong();
-	//normal_mapping();
+	normal_mapping();
 	//one_triangle();
-	skybox();
+	//skybox();
 	//test_normal_mapping();
 	//car();
 	//parallax_mapping_texcoord();

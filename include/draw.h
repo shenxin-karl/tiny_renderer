@@ -7,7 +7,7 @@ public:
 	static void triangle(FrameBuffer &frame, ShaderBase &shader, std::array<VertexRes *, 3> vertice);
 	static vec3 barycentric_coord(vec2 point, const vec3 &v1, const vec3 &v2, const vec3 &v3);
 
-	static inline float M_PI = std::acos(-1.f);
+	constexpr static float M_PI = 3.141592653f;
 	static float radians(float angle);
 	static float random() noexcept;
 	static mat4 ortho(float fov, float aspect, float n, float f);

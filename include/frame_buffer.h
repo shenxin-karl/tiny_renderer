@@ -17,12 +17,18 @@ constexpr bool operator&(const FrameBufferType &lhs, const FrameBufferType &rhs)
 }
 
 
+
 class FrameBuffer {
-	std::vector<vec3>	frame_buffer;
-	std::vector<float>	depth_buffer;
-	int					width;
-	int					height;
-	vec3				fill_color;
+	using frame_color_t = std::array<unsigned char, 3>;
+	using depth_color_t = unsigned char;
+public:
+	//std::vector<vec3>	frame_buffer;
+	//std::vector<float>	depth_buffer;
+	std::unique_ptr<frame_color_t[]>	frame_buffer;
+	std::unique_ptr<depth_color_t[]>  depth_buffer;
+	int	 width;
+	int	 height;
+	vec3 fill_color;
 public:
 	FrameBuffer(int _width, int _height);
 	FrameBuffer(const FrameBuffer &) = delete;
@@ -35,7 +41,7 @@ public:
 	void save(const std::string &path, FrameBufferType flag) const;
 	int get_width() const;
 	int get_height() const;
-	const float *get_frame_data() const noexcept;
+	const unsigned char *get_frame_data() const noexcept;
 	~FrameBuffer() = default;
 	friend class Window;
 };

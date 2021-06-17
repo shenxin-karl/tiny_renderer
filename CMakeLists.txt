@@ -28,9 +28,9 @@ add_executable(tiny_renderer
 	"shader/blinn_phong/blinn_phong.h"				"shader/blinn_phong/blinn_phong.cpp"
 	"shader/normal_mapping/normal_mapping.h"		"shader/normal_mapping/normal_mapping.cpp"
 	"shader/skybox/skybox_shader.h"					"shader/skybox/skybox_shader.cpp" 
+	"shader/parallax_mapping/parallax_mapping.h"	"shader/parallax_mapping/parallax_mapping.cpp"
 	"shader/skybox/skybox_reflect.h"				"shader/skybox/skybox_reflect.cpp"
-	"shader/parallax_mapping/parallax_mapping.h"	"shader/parallax_mapping/parallax_mapping.cpp")
-
+)
 
 target_include_directories(tiny_renderer PUBLIC
 	${PROJECT_SOURCE_DIR}/include

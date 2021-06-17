@@ -70,8 +70,8 @@ bool ParallaxMappingShader::fragment(const vec3 &point, const SArgsPtr &args, ve
 
 	vec3 view_dir = normalized(args_ptr->our_tangent_eye_pos - args_ptr->our_tangent_position);
 	//vec2 depth_texcoord = parallax_mapping_texcoord(view_dir, args_ptr->our_texcoord);
-	//vec2 depth_texcoord = steep_parallax_mapping_texcoord(view_dir, args_ptr->our_texcoord);
-	vec2 depth_texcoord = parallax_occlusion_mapping(view_dir, args_ptr->our_texcoord);
+	vec2 depth_texcoord = steep_parallax_mapping_texcoord(view_dir, args_ptr->our_texcoord);
+	//vec2 depth_texcoord = parallax_occlusion_mapping(view_dir, args_ptr->our_texcoord);
 	if (depth_texcoord.s() < 0.f || depth_texcoord.s() > 1.f || depth_texcoord.t() < 0.f || depth_texcoord.t() > 1.f)
 		return false;
 
