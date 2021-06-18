@@ -1,12 +1,13 @@
 #pragma once
 
-class TextureCube;
 template<typename T>
 concept uniform_key_constraint = (
 	std::same_as<T, bool> || std::same_as<T, int> || std::same_as<T, float> ||
 	std::same_as<T, vec2> || std::same_as<T, vec3> || std::same_as<T, vec4> ||
 	std::same_as<T, mat2> || std::same_as<T, mat3> || std::same_as<T, mat4> ||
-	std::same_as<T, Texture2d> || std::same_as<T, TextureCube>
+	std::same_as<T, Texture2d> || std::same_as<T, TextureCube>	||
+	std::same_as<T, std::shared_ptr<ColorBuffer>>				||
+	std::same_as<T, std::shared_ptr<DepthBuffer>>
 );
 
 struct VertexRes {
@@ -38,7 +39,15 @@ protected:
 	std::function<bool(float)> face_culling_func;		// ±³ÃæÌÞ³ýº¯Êý
 private:
 	using uniform_key_type = std::string;
-	using uniform_value_type = std::variant<bool, int, float, vec2, vec3, vec4, mat2, mat3, mat4, Texture2d, TextureCube>;
+	using uniform_value_type = std::variant<
+		bool, int, float, 
+		vec2, vec3, vec4, 
+		mat2, mat3, mat4,
+		Texture2d, TextureCube, 
+		std::shared_ptr<ColorBuffer>, 
+		std::shared_ptr<DepthBuffer>
+	>;
+
 	std::unordered_map<uniform_key_type, uniform_value_type> uniforms;
 public:
 	template<uniform_key_constraint T>

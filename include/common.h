@@ -37,11 +37,22 @@
 #undef far
 #undef near
 
+
+struct ShaderBase;
+struct VertexRes;
+struct ImageInfo;
+struct ShaderArgsBase;
+
+class TextureCube;
+class ColorBuffer;
+class DepthBuffer;
+class Loader;
+class FrameBuffer;
+enum class FrameBufferType;
+
 #include "vec.hpp"
 #include "matrix.hpp"
-
 #include "test.h"
-
 #include "texture2d.h"
 #include "mesh.h"
 #include "texture_cube.h"

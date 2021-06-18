@@ -1,8 +1,5 @@
 #pragma once
 
-class FrameBuffer;
-class Loader;
-
 class Model {
 	std::vector<Mesh> meshs;
 	std::string		  directory;

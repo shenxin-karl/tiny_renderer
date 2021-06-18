@@ -1,9 +1,5 @@
 #pragma once
 
-class FrameBuffer;
-struct ShaderBase;
-struct VertexRes;
-
 struct Vertex {
 	vec4	position;
 	vec3	normal;

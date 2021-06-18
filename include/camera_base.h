@@ -1,6 +1,4 @@
 #pragma once
-#undef near
-#undef far
 
 class CameraBase {
 protected:

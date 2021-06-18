@@ -1,6 +1,5 @@
 #pragma once
 
-struct ShaderArgsBase;
 using SArgsPtr = std::shared_ptr<ShaderArgsBase>;
 struct ShaderArgsBase {
 	virtual ~ShaderArgsBase() = default;

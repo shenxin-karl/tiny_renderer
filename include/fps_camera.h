@@ -1,8 +1,5 @@
 #pragma once
 
-#undef near
-#undef far
-
 class FpsCamera : public CameraBase {
 	vec3  world_up;
 	vec3  world_right;

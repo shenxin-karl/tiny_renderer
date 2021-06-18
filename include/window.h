@@ -1,6 +1,5 @@
 #pragma once
 
-class FrameBuffer;
 class Window {
 public:
 	enum class WindowKey {

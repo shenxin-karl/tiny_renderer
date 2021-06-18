@@ -19,10 +19,10 @@ void parallax_mapping_texcoord();
 
 int main(void) {
 	init();
-	//light_render();
+	light_render();
 	//test_cube();
 	//blinn_phong();
-	normal_mapping();
+	//normal_mapping();
 	//one_triangle();
 	//skybox();
 	//test_normal_mapping();

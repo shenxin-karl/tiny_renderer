@@ -89,15 +89,6 @@ void Window::draw(const FrameBuffer &frame_buff) {
 	if (frame_buff.width != width || frame_buff.height != height)
 		return;
 
-	size_t size = size_t(width) * size_t(height) * 3ul;
-	std::unique_ptr<unsigned char[]> buffer(new unsigned char[size]);
-	for (size_t idx = 0; const vec3 &rgb : frame_buff.frame_buffer) {
-		buffer[idx]     = static_cast<unsigned char>(std::clamp(rgb.b(), 0.f, 1.f) * 255.f);
-		buffer[idx + 1] = static_cast<unsigned char>(std::clamp(rgb.g(), 0.f, 1.f) * 255.f);
-		buffer[idx + 2] = static_cast<unsigned char>(std::clamp(rgb.r(), 0.f, 1.f) * 255.f);
-		idx += 3;
-	}
-
 	int nx = width; // 图像的宽度
 	int ny = height; // 图像的高度
 	int channels = 3; // 3代表rgb三通道，4则表示还有A，Alpha透明通道
@@ -108,14 +99,15 @@ void Window::draw(const FrameBuffer &frame_buff) {
 	bmi.bmiHeader.biWidth = nx;  // 指定位图宽度
 	bmi.bmiHeader.biHeight = ny; // 指定位图高度
 	bmi.bmiHeader.biPlanes = 1;  // 指定层数，位图有能是多维的
-	bmi.bmiHeader.biBitCount = 24; // 指定每个像素的位数，这里是rgb，分别用char类型表示，共24位
-								   // 如果你的帧数据是rgba，这里应制定32
-	bmi.bmiHeader.biCompression = BI_RGB; // BI_RGB = 0，表示压缩程度，0是无损耗，图像质量高
-	bmi.bmiHeader.biSizeImage = nx * ny * 3; // 图像的大小
+	// 指定每个像素的位数，这里是rgb，分别用char类型表示，共24位
+	bmi.bmiHeader.biBitCount = static_cast<WORD>(channels * sizeof(unsigned char) * 8); 
+	// 如果你的帧数据是rgba，这里应制定32							   
+	bmi.bmiHeader.biCompression = BI_RGB;			// BI_RGB = 0，表示压缩程度，0是无损耗，图像质量高
+	bmi.bmiHeader.biSizeImage = nx * ny * channels; // 图像的大小
 
 	StretchDIBits(hdc, 0, 0, bmi.bmiHeader.biWidth,
 		bmi.bmiHeader.biHeight, 0, 0, bmi.bmiHeader.biWidth,
-		bmi.bmiHeader.biHeight, buffer.get(), (BITMAPINFO *)&bmi.bmiHeader,
+		bmi.bmiHeader.biHeight, frame_buff.color_buffer->data(), (BITMAPINFO *)&bmi.bmiHeader,
 		DIB_RGB_COLORS, SRCCOPY);
 }
 

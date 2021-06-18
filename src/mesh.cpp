@@ -48,7 +48,7 @@ void Mesh::process_triangle(FrameBuffer &frame, ShaderBase &shader, std::array<i
 		// viewport transform
 		v.position.x() = v.position.x() * half_width + half_width;
 		v.position.y() = v.position.y() * half_height + half_height;
-		v.position.z() = (1.f - (v.position.z() + 1.f) * 0.5f);		
+		v.position.z() = (v.position.z() + 1.f) * 0.5f;		
 	}
 
 	size_t limit = out_vertices.size() - 2;
