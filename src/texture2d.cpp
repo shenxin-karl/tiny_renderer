@@ -44,17 +44,17 @@ Texture2d::operator bool() const noexcept {
 
 std::tuple<unsigned char *, int> Texture2d::unpack_texcoord(vec2 texcoord) const noexcept {
 	static unsigned char default_color[4] = { 0 };
-#ifdef _DEBUG
 	if (image_info_ptr == nullptr) {
-		std::cerr << texture_name << " texture: image_data is nullptr" << std::endl;
+		assert(false);
 		return { default_color, 0 };
 	}
-#endif
+
 	int width = image_info_ptr->width;
 	int height = image_info_ptr->height;
 	int channel = image_info_ptr->channel;
-	int y = std::clamp(static_cast<int>((1 - texcoord.t()) * height), 0, height - 1);
-	int x = std::clamp(static_cast<int>(texcoord.s() * width), 0, width - 1);
-	int index = y * height * channel + x * channel;
+	int y = std::clamp(static_cast<int>((1.f - texcoord.t()) * height), 0, height-1);
+	int x = std::clamp(static_cast<int>(texcoord.s() * width), 0, width-1);
+	int index = (y * width * channel) + (x * channel);
+	assert(index >= 0 && index < (width * height * channel));
 	return { image_info_ptr->data, index };
 }

@@ -28,6 +28,7 @@ public:
 	bool check_depth(const vec3 &point) const noexcept;
 	float depth(vec2 texcoord) const noexcept;
 	void set(int index, float z) noexcept;
+	void save(const std::string &path) const;
 };
 
 
@@ -36,7 +37,7 @@ class ColorBuffer {
 	std::vector<std::array<unsigned char, 3>> buffer;
 	std::array<unsigned char, 3> fill_color;
 	int  width;
-	int	 hegiht;
+	int	 height;
 public:
 	ColorBuffer(int _width, int _height, const vec3 &_fill_color = vec3{});
 	ColorBuffer(const ColorBuffer &) = delete;
@@ -47,6 +48,7 @@ public:
 	vec3 rgb(vec2 texcoord) const noexcept;
 	vec3 normal(vec2 texcoord) const noexcept;
 	const unsigned char *data() const noexcept;
+	void save(const std::string &path) const;
 };
 
 

@@ -14,7 +14,7 @@ std::pair<std::string_view, std::function<bool(void)>> Test::test_func[]{
 #undef DECLARE_TEST_FUNC
 
 
-void Test::check_depth() {
+void Test::run_test_func() {
 	using std::pair;
 	using std::function;
 	using std::string_view;
@@ -88,13 +88,13 @@ bool Test::test_view() {
 }
 
 bool Test::test_texture2d() {
-	return true;
+	//return true;
 
-	int width = 1024;
-	int height = 1024;
+	int width = 300;
+	int height = 300;
 	Texture2d texture("resources/test_resource/test_texture_resource.png");
 	FrameBuffer frame(width, height);
-	frame.clear_color(vec3(0, 1, 0));
+	frame.clear_color(vec3(0, 0, 0));
 	frame.clear(FrameBufferType::ColorBuffer);
 	for (int y = 0; y < height; ++y) {
 		for (int x = 0; x < width; ++x) {
@@ -104,7 +104,7 @@ bool Test::test_texture2d() {
 		}
 	}
 	frame.save("test_texture2d", FrameBufferType::ColorBuffer);
-	return true;
+	return false;
 }
 
 bool Test::test_vec() {

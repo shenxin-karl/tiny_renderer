@@ -19,9 +19,9 @@ void parallax_mapping_texcoord();
 
 int main(void) {
 	init();
-	light_render();
+	//light_render();
 	//test_cube();
-	//blinn_phong();
+	blinn_phong();
 	//normal_mapping();
 	//one_triangle();
 	//skybox();
@@ -46,7 +46,7 @@ void init_path() {
 void init() {
 	init_path();
 #ifdef _DEBUG
-	Test::check_depth();
+	Test::run_test_func();
 #endif // _DEBUG
 }
 
